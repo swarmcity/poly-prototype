@@ -20,7 +20,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/web3-wallet/web3-wallet.html">
 <link rel="import" href="../bower_components/ipfs-upload/ipfs-upload.html">
 
 <link rel="import" href="my-icons.html">
@@ -44,19 +43,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       .drawer-list {
-        margin: 0 20px;
       }
 
       .drawer-list a {
-        display: block;
-
-        padding: 0 16px;
-
-        text-decoration: none;
-
-        color: var(--app-secondary-color);
-
-        line-height: 40px;
       }
 
       .drawer-list a.iron-selected {
@@ -67,14 +56,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <app-location route="{{route}}"></app-location>
 
-    <ac-blockdata name="blockdata" blockdata="{{blockdata}}"></ac-blockdata>
-
-    <web3-wallet host="https://eth.arcadecity.world" name="wallet" account="{{account}}" balance="{{balance}}"></web3-wallet>
-    <ipfs-upload host="https://ipfs.arcadecity.world"></ipfsupload>
-
     <app-route
         route="{{route}}"
-        pattern="/:page/:key"
+        pattern="/:page"
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
 
@@ -86,6 +70,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <a name="profile" href="/profile">Profile</a>
           <a name="wallet" href="/wallet">Wallet</a>
           <a name="settings" href="/settings">Settings</a>
+          <a name="list" href="/list">List</a>
         </iron-selector>
       </app-drawer>
 
@@ -125,6 +110,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
+
+    <ipfs-upload host="ipfs.arcadecity.world" hidefileinput></ipfsupload>
+
   </template>
 
   <script>
@@ -158,4 +146,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     });
   </script>
+  <script src="scripts/helpers.js"></script>
+
 </dom-module>

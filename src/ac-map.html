@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
+<link rel="import" href="./ac-blockdata.html">
 
 <dom-module id="ac-map">
   <!-- Defines the element's style and local DOM -->
@@ -7,7 +8,6 @@
     <style>
       :host {
         display: block;
-        padding: 16px;
       }
 
       leaflet-map {
@@ -27,10 +27,11 @@
       min-zoom="8"
       max-zoom="17"
       zoom="16"
-      hidden="{{!locationfound}}">
+      hidden="{{!locationknown}}">
 
       <leaflet-geolocation
         id="geolocation"
+        on-locationfound="locationfound"
         enable-high-accuracy
         latitude="{{latitude}}"
         longitude="{{longitude}}"
@@ -41,7 +42,7 @@
         url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
       </leaflet-tilelayer>
 
-      <template is="dom-repeat" items="{{data}}">
+      <template is="dom-repeat" items="{{blockdata}}">
         <leaflet-marker
           on-tap="selectoffer"
           ipfshash="{{item.ipfshash}}"
@@ -53,11 +54,40 @@
       </template>
     </leaflet-map>
 
+    <ac-blockdata name="blockdata" blockdata="{{blockdata}}"></ac-blockdata>
+
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>
     Polymer({
-      is: 'ac-map'
+      is: 'ac-map',
+
+      properties: {
+        locationknown: {
+            type: Boolean,
+            value: false
+          },
+          blockdata: {
+            type: Array,
+            observer: '_blockdata'
+          }
+      },
+
+      attached: function() {
+        this.locationknown = false;
+      },
+
+      _blockdata: function() {
+        var blockdata = this.blockdata;
+        console.log(blockdata);
+        for (var i = 0; i < blockdata.length; i++) {
+          blockdata[i];
+        }
+      },
+
+      locationfound: function() {
+        this.locationknown = true;
+      }
     });
   </script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js"></script>

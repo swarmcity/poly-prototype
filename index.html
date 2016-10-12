@@ -57,6 +57,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       (function() {
         'use strict';
 
+        var app = document.querySelector('#app');
+
         var onload = function() {
           // For native Imports, manually fire WebComponentsReady so user code
           // can use the same code path for native and polyfill'd imports.
@@ -105,6 +107,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
   </head>
   <body>
-    <ac-app></ac-app>
+    <ac-app id="app"></ac-app>
   </body>
 </html>
