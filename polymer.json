@@ -2,9 +2,19 @@
   "entrypoint": "index.html",
   "shell": "src/my-app.html",
   "fragments": [
-    "src/my-view1.html",
-    "src/my-view2.html",
-    "src/my-view3.html",
+    "src/ac-map.html",
+    "src/ac-marker.html",
+    "src/ac-list.html",
+    "src/ac-listitem.html",
+    "src/ac-filter.html",
+    "src/ac-detail.html",
+    "src/ac-newoffer.html",
+    "src/ac-wallet.html",
+    "src/ac-profile.html",
+    "src/ac-myitems.html",
+    "src/ac-myitem.html",
+    "src/ac-mylistitem.html",
+    "src/ac-settings.html",
     "src/my-view404.html"
   ],
   "sourceGlobs": [
