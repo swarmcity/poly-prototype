@@ -12,7 +12,7 @@
       }
     </style>
     <template is="dom-repeat" items="{{blockdata}}">
-      <ac-listitem key="{{item.ipfshash}}" sizeview="{{sizeview}}"></ac-listitem>
+      <ac-listitem key="{{item.ipfshash}}" status="{{item.status}}" sizeview="{{sizeview}}"></ac-listitem>
     </template>
     <ac-blockdata name="blockdata" blockdata="{{blockdata}}"></ac-blockdata>
   </template>
