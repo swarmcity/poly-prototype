@@ -21,6 +21,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/ipfs-upload/ipfs-upload.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 
 <link rel="import" href="my-icons.html">
 
@@ -62,9 +63,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
 
-    <app-drawer-layout fullbleed>
+    <app-drawer-layout fullbleed force-narrow>
       <!-- Drawer content -->
-      <app-drawer force-narrow>
+      <app-drawer>
         <app-toolbar>Menu</app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
           <a name="profile" href="/profile">Profile</a>
@@ -90,28 +91,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             fallback-selection="view404"
             role="main">
 
-            <ac-map name="map" blockdata="[[blockdata]]"></ac-map>
-            <ac-list name="list" blockdata="[[blockdata]]"></ac-list>
+            <ac-map name="map" sizeview="{{sizeview}}" ></ac-map>
+            <ac-list name="list" sizeview="{{sizeview}}" ></ac-list>
 
-            <ac-detail name="detail" key="[[key]]" blockdata="[[blockdata]]"></ac-detail>
+            <ac-detail name="detail" key="[[key]]" sizeview="{{sizeview}}" ></ac-detail>
 
-            <ac-myitems name="myitems" blockdata="[[blockdata]]"></ac-myitems>
-            <ac-myitem name="myitem" key="[[key]]" blockdata="[[blockdata]]"></ac-myitem>
+            <ac-myitems name="myitems" sizeview="{{sizeview}}" ></ac-myitems>
+            <ac-myitem name="myitem" key="[[key]]" sizeview="{{sizeview}}" ></ac-myitem>
 
-            <ac-newoffer name="newoffer"></ac-newoffer>
+            <ac-newoffer name="newoffer" sizeview="{{sizeview}}" ></ac-newoffer>
 
-            <ac-profile name="profile" account="[[account]]"></ac-profile>
-            <ac-wallet name="wallet" account="[[account]]" balance="[[balance]]"></ac-wallet>
+            <ac-profile name="profile" account="[[account]]" sizeview="{{sizeview}}" ></ac-profile>
+            <ac-wallet name="wallet" account="[[account]]" balance="[[balance]]" sizeview="{{sizeview}}" ></ac-wallet>
 
-            <ac-settings name="settings"></ac-settings>
+            <ac-settings name="settings" sizeview="{{sizeview}}" ></ac-settings>
 
-            <ac-view404 name="view404"></ac-view404>
+            <ac-view404 name="view404" sizeview="{{sizeview}}" ></ac-view404>
 
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
 
-    <ipfs-upload host="ipfs.arcadecity.world" hidefileinput></ipfsupload>
+    <iron-media-query query="(min-width:0px) and (max-width: 600px)" query-matches="{{phoneview}}"></iron-media-query>
+    <iron-media-query query="(min-width:601px) and (max-width: 1200px)" query-matches="{{desktopview}}"></iron-media-query>
+    <iron-media-query query="(min-width:1201px)" query-matches="{{xlargeview}}"></iron-media-query>
 
   </template>
 
@@ -124,7 +127,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           reflectToAttribute: true,
           observer: '_pageChanged'
-        }
+        },
+
+        phoneview: {
+          type: Boolean,
+          observer: '_sizeview'
+        },
+
+        desktopview: {
+          type: Boolean,
+          observer: '_sizeview'
+        },
+
+        xlargeview: {
+          type: Boolean,
+          observer: '_sizeview'
+        },
       },
 
       observers: [
@@ -143,9 +161,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _showPage404: function() {
         this.page = 'view404';
+      },
+
+      _sizeview: function(){
+        if (this.phoneview) {
+          this.sizeview = 'phone';
+        }
+        if (this.desktopview) {
+          this.sizeview = 'desktop';
+        }
+        if (this.xlargeview) {
+          this.sizeview = 'xlarge';
+        }
+
       }
     });
   </script>
   <script src="scripts/helpers.js"></script>
+  <script src="../bower_components/geohash-js/geohash.js" type="text/javascript"></script>
 
 </dom-module>

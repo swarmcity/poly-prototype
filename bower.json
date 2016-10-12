@@ -25,7 +25,11 @@
     "jsencrypt": "^2.2.0",
     "node-uuid": "^1.4.7",
     "web3-wallet": "https://github.com/BlockTube/web3-wallet.git",
-    "ipfs-upload": "https://github.com/sponnet/ipfs-upload.git#^0.0.26"
+    "ipfs-upload": "https://github.com/sponnet/ipfs-upload.git#^0.0.26",
+    "ac-style": "https://github.com/ArcadeCity/ac-style.git",
+    "ac-button": "https://github.com/ArcadeCity/ac-button.git",
+    "ac-loader": "https://github.com/ArcadeCity/ac-loader.git",
+    "ac-input": "https://github.com/ArcadeCity/ac-input.git"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

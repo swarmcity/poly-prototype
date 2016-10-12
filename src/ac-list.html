@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="./ac-blockdata.html">
+<link rel="import" href="./ac-listitem.html">
 
 <dom-module id="ac-list">
   <!-- Defines the element's style and local DOM -->
@@ -7,15 +8,11 @@
     <style>
       :host {
         display: block;
-
         padding: 16px;
       }
     </style>
-    <h1>Listview</h1>
     <template is="dom-repeat" items="{{blockdata}}">
-      <p>
-        {{item}}
-      </p>
+      <ac-listitem key="{{item.ipfshash}}" sizeview="{{sizeview}}"></ac-listitem>
     </template>
     <ac-blockdata name="blockdata" blockdata="{{blockdata}}"></ac-blockdata>
   </template>
