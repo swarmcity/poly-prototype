@@ -1,6 +1,6 @@
 {
   "entrypoint": "index.html",
-  "shell": "src/my-app.html",
+  "shell": "src/ac-app.html",
   "fragments": [
     "src/ac-map.html",
     "src/ac-marker.html",
@@ -15,7 +15,8 @@
     "src/ac-myitem.html",
     "src/ac-mylistitem.html",
     "src/ac-settings.html",
-    "src/my-view404.html"
+    "src/ac-blockdata.html",
+    "src/ac-view404.html"
   ],
   "sourceGlobs": [
    "src/**/*",

@@ -20,6 +20,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/web3-wallet/web3-wallet.html">
+<link rel="import" href="../bower_components/ipfs-upload/ipfs-upload.html">
+
 <link rel="import" href="my-icons.html">
 
 <dom-module id="ac-app">
@@ -72,7 +75,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <app-route
         route="{{route}}"
-        pattern="/:page"
+        pattern="/:page/:key"
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
 
@@ -142,12 +145,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ],
 
       _routePageChanged: function(page) {
-        this.page = page || 'view1';
+        this.page = page || 'map';
       },
 
       _pageChanged: function(page) {
         // Load page import on demand. Show 404 page if fails
-        var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
+        var resolvedPageUrl = this.resolveUrl('ac-' + page + '.html');
         this.importHref(resolvedPageUrl, null, this._showPage404, true);
       },
 
