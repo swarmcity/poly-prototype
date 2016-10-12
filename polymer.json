@@ -16,6 +16,8 @@
     "src/ac-mylistitem.html",
     "src/ac-settings.html",
     "src/ac-blockdata.html",
+    "src/ac-password.html",
+    "src/ac-newuser.html",
     "src/ac-view404.html"
   ],
   "sourceGlobs": [

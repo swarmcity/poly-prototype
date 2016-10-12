@@ -1,13 +1,3 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
@@ -22,6 +12,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/ipfs-upload/ipfs-upload.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../bower_components/ac-style/ac-style.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 <link rel="import" href="my-icons.html">
 
@@ -53,6 +45,73 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: black;
         font-weight: bold;
       }
+
+      .topbar {
+    width: 100%;
+    @apply(--base-structure);
+/*    background-color: var(--ac-base);*/
+    height: var(--topbar-height);
+    @apply(--layout-horizontal);
+    @apply(--layout-center);
+    box-sizing: border-box;
+    padding: 10px 20px 10px 20px;
+  }
+
+
+  .container {
+    width: 100%;
+    @apply(--layout-vertical);
+    @apply(--layout-center);
+    @apply(--layout-start-justified);
+    background-color: white;
+  }
+
+  .main {
+    width: 100%;
+    max-width: 90vw;
+    @apply(--layout-horizontal);
+    @apply(--layout-wrap);
+    display: var(--main-display);
+
+  }
+
+  .avatararea {
+  width: var(--avatararea-width);
+  @apply(--layout-horizontal);
+  @apply(--layout-start);
+  @apply(--layout-center-justified);
+  box-sizing: border-box;
+  padding: 0px;
+  margin: 0px 0px 10px 0px;
+}
+
+.totalinfo {
+  width: var(--totalinfo-width);
+  @apply(--layout-flex);
+  @apply(--layout-vertical);
+  @apply(--layout-start);
+  @apply(--layout-center-justified);
+}
+
+.avatarbg {
+  width: var(--avatarbg-size);
+  height: var(--avatarbg-size);
+  margin: var(--avatararea-margin);
+  border-radius: 50%;
+  background-position: center;
+  background: url(../../images/locals-bg3.png);
+  background-size: var(--bg-size);
+}
+
+
+.menuicon {
+  cursor: pointer;
+  height: 60px;
+  width: 60px;
+  @apply(--layout-horizontal);
+  @apply(--layout-center-center);
+}
+
     </style>
 
     <app-location route="{{route}}"></app-location>
@@ -65,7 +124,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <app-drawer-layout fullbleed force-narrow>
       <!-- Drawer content -->
-      <app-drawer>
+      <app-drawer id="drawer" swipe-open>
         <app-toolbar>Menu</app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
           <a name="profile" href="/profile">Profile</a>
@@ -78,18 +137,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <!-- Main content -->
       <app-header-layout has-scrolling-region>
 
-        <app-header condenses reveals effects="waterfall">
-          <app-toolbar>
-            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-            <div main-title>Arcade City</div>
-          </app-toolbar>
-        </app-header>
+        <div class="topbar">
+        <div class="menuicon">
+        <ac-icon icon="ac-brandlogo-color" big on-tap="firetoggle"></ac-icon>
+        </div>
+
+        <div class="userinfo" on-tap="toProfile">
+           <div class="avatar" id="avatar">
+            <img src="{{_getipfsurl(userdata.avatar)}}" observe="userdata.avatar">
+          </div>
+          <p class="username">{{userdata.username}}</p>
+        </div>
+
+        <p class="flex"></p>
+
+      </div>
+
+        </div>
 
         <iron-pages
             selected="[[page]]"
             attr-for-selected="name"
             fallback-selection="view404"
             role="main">
+
+            <ac-newuser name="newuser" sizeview="{{sizeview}}"></ac-newuser>
+            <ac-password name="password" sizeview="{{sizeview}}"></ac-password>
 
             <ac-map name="map" sizeview="{{sizeview}}" ></ac-map>
             <ac-list name="list" sizeview="{{sizeview}}" ></ac-list>
@@ -115,6 +188,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <iron-media-query query="(min-width:0px) and (max-width: 600px)" query-matches="{{phoneview}}"></iron-media-query>
     <iron-media-query query="(min-width:601px) and (max-width: 1200px)" query-matches="{{desktopview}}"></iron-media-query>
     <iron-media-query query="(min-width:1201px)" query-matches="{{xlargeview}}"></iron-media-query>
+    <ipfs-upload host="ipfs.arcadecity.world" id="ipfsupload" ipfs="{{ipfs}}" hidefileinput></ipfsupload>
 
   </template>
 
@@ -149,6 +223,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         '_routePageChanged(routeData.page)'
       ],
 
+      attached: function() {
+        if(sessionStorage.getItem("ac-password", this.password)){
+          if(localStorage.getItem("ac-user")){
+            app.set('route.path', '/list/');
+          } else {
+            app.set('route.path', '/password/');
+          }
+        } else {
+          app.set('route.path', '/newuser/');
+        }
+      },
+
       _routePageChanged: function(page) {
         this.page = page || 'map';
       },
@@ -163,6 +249,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.page = 'view404';
       },
 
+      firetoggle: function(){
+        this.$.drawer.toggle();
+      },
+
       _sizeview: function(){
         if (this.phoneview) {
           this.sizeview = 'phone';
@@ -174,7 +264,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.sizeview = 'xlarge';
         }
 
-      }
+      },
+
+      _getipfsurl: function(hash) {
+          if(this.$.ipfsupload){
+           var url = this.$.ipfsupload.url(hash);
+           return url;
+         }
+        },
     });
   </script>
   <script src="scripts/helpers.js"></script>
