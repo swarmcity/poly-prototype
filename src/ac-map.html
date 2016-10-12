@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
 
 <dom-module id="ac-map">
   <!-- Defines the element's style and local DOM -->
@@ -6,12 +7,52 @@
     <style>
       :host {
         display: block;
-
         padding: 16px;
       }
+
+      leaflet-map {
+        width: 100vw;
+        height: 87vh;
+        z-index: 1;
+      }
+
     </style>
 
-    <h1>Map view</h1>
+    <leaflet-map
+      id="leafletmap"
+      draggable
+      latitude="{{latitude}}"
+      longitude="{{longitude}}"
+      no-Zoom-Control="true"
+      min-zoom="8"
+      max-zoom="17"
+      zoom="16"
+      hidden="{{!locationfound}}">
+
+      <leaflet-geolocation
+        id="geolocation"
+        enable-high-accuracy
+        latitude="{{latitude}}"
+        longitude="{{longitude}}"
+        accuracy="3">
+      </leaflet-geolocation>
+
+      <leaflet-tilelayer
+        url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
+      </leaflet-tilelayer>
+
+      <template is="dom-repeat" items="{{data}}">
+        <leaflet-marker
+          on-tap="selectoffer"
+          ipfshash="{{item.ipfshash}}"
+          title="{{item.ipfshash}}"
+          icon="car"
+          latitude="{{item.latitude}}"
+          longitude="{{item.longitude}}">
+        </leaflet-marker>
+      </template>
+    </leaflet-map>
+
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>
@@ -19,4 +60,5 @@
       is: 'ac-map'
     });
   </script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js"></script>
 </dom-module>
