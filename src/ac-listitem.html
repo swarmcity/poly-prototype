@@ -1,5 +1,4 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/ipfs-upload/ipfs-upload.html">
 <link rel="import" href="../bower_components/ac-button/ac-button.html">
 <link rel="import" href="../bower_components/ac-loader/ac-loader.html">
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
@@ -484,7 +483,7 @@
   </div>
 </template>
 
-<ipfs-upload host="ipfs.arcadecity.world" id="ipfsupload" ipfs="{{ipfs}}" hidefileinput></ipfsupload>
+<ac-ipfs id="ipfs"></ac-ipfs>
 
 </template>
 <!-- Creates the element's prototype and registers it -->
@@ -502,7 +501,10 @@ Polymer({
     sizeview: {
         type: String,
         observer: '_sizeview'
-      },
+    },
+    ipfs: {
+      type: Object
+    }
   },
 
   listeners: {
@@ -519,25 +521,9 @@ Polymer({
 
   _key: function() {
     var self = this;
-    //console.log(this.ipfshash, this.mode);
-
-    self.ipfs = this.$.ipfsupload.ipfs;
 
     if(this.key){
-      self.ipfs.cat(self.key, function(err, res) {
-        var buf= "";
-        if (err) {
-          console.log('ipfs error', err);
-          return;
-        }
-        res
-        .on('error', function(err) {
-          throw (err);
-        })
-        .on('data', function(data) {
-          buf += data;
-        })
-        .on('end', function() {
+      self.$.ipfs.cat(self.key, function(err, buf) {
           var ipfsData = JSON.parse(buf);
 
           //console.log(ipfsData);
@@ -563,7 +549,6 @@ Polymer({
           self.data = point;
           self.dataloaded = false;
         });
-      });
     }
   },
 

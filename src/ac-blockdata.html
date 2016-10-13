@@ -1,7 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel="import" href="../bower_components/web3-wallet/web3-wallet.html">
-
+<link rel="import" href="./ac-ipfs.html">
 <dom-module id="ac-blockdata">
   <!-- Defines the element's style and local DOM -->
   <template>
@@ -27,13 +27,16 @@
 
     <web3-wallet
       id="web3wallet"
+      account="{{account}}"
+      password="{{password}}"
+      balance="{{balance}}"
+      keystore="{{keystore}}"
       walletname="ac-wallet"
-      account="[[account]]"
-      password="[[password]]"
-      balance="[[balance]]"
-      keystore="[[keystore]]"
-      host="https://eth.arcadecity.world:8545"
-      web3="[[web3]]"></web3-wallet>
+      host="{{web3host}}"
+      web3="{{web3}}"></web3-wallet>
+
+      <ac-ipfs id="ipfs"></ac-ipfs>
+      <ac-config web3host="{{web3host}}"></ac-config>
 
   </template>
   <!-- Creates the element's prototype and registers it -->
@@ -68,6 +71,7 @@
 
       _web3: function() {
 //        console.log('got web3');
+        this.getBlockData();
       },
 
       initlastblock: function(){
@@ -119,7 +123,7 @@
           }
 
           this.getblockdata = true;
-          console.log('Starting getBlockData');
+          console.log('Starting getBlockData at block',this.lastblock);
 
           var self = this;
 
@@ -148,17 +152,25 @@
                     status: 'added'
                   };
 
-                  self.lastblock = event.blockNumber+1;
+                  // resolve IPFS data
+                  self.$.ipfs.cat(event.args.ipfsdescr, function(err, data) {
+                    point.ipfsdata = JSON.parse(data);
 
-                  if (!self.blockobject[event.args.offerID.toNumber()]){
-                    self.blockobject[event.args.offerID.toNumber()] = self.blockdata.length;
-                    self.push('blockdata', point);
-                  }
+                    self.lastblock = event.blockNumber + 1;
 
+                    if (!self.blockobject[event.args.offerID.toNumber()]) {
+                      self.blockobject[event.args.offerID.toNumber()] = self.blockdata.length;
+                      self.push('blockdata', point);
+                    }
+                  });
 
                   break;
                 case 'OfferClaimed':
                   var offerid = event.args.offerID.toNumber();
+                  // claim events from (too) old are ignored
+                  if (!self.blockdata[self.blockobject[offerid]]){
+                    return;
+                  }
                   self.blockdata[self.blockobject[offerid]].status = 'claimed';
                   self.lastblock = event.blockNumber+1;
                   break;

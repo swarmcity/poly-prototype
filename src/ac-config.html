@@ -1,0 +1,28 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="ac-config">
+  <script>
+    Polymer({
+      is: 'ac-config',
+      properties: {
+        ipfs: {
+          type: Object,
+          notify: true
+        },
+        web3host: {
+          type: String,
+          notify:true
+        }
+      },
+      ready: function(){
+        // TODO : add if development then this set - othersie use other set.
+        this.ipfs = {
+          host: 'ipfs.arcadecity.world',
+          protocol: 'https'
+        };
+        this.web3host = 'https://eth.arcadecity.world:8545';
+
+      }
+    });
+  </script>
+</dom-module>

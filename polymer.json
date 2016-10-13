@@ -19,7 +19,9 @@
     "src/ac-password.html",
     "src/ac-newuser.html",
     "src/ac-locationpicker.html",
-    "src/ac-view404.html"
+    "src/ac-view404.html",
+    "src/ac-ipfs.html",
+    "src/ac-config.html"
   ],
   "sourceGlobs": [
    "src/**/*",
