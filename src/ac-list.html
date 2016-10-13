@@ -10,252 +10,6 @@
 <dom-module id="ac-list">
   <!-- Defines the element's style and local DOM -->
   <template>
-    <!-- <style>
-    :host {
-  display: block;
-  @apply(--base-structure);
-  --topbar-height: 70px;
-  --avatararea-height: 800px;
-  --avatararea-width: 100%;
-  z-index: 3;
-}
-
-h3 {
-  @apply(--ac-font-h3);
-}
-
-p {
-  @apply(--ac-font-body1);
-}
-
-li {
-  @apply(--ac-font-body1);
-}
-
-a {
-  @apply(--ac-font-body1);
-  color:var(--ac-base);
-  text-decoration: none;
-  outline: none;
-  font-size: 12px;
-  border-bottom: 1px dashed var(--ac-base);
-}
-
-::-webkit-scrollbar {
-  display: none;
-}
-
-.karma {
-  @apply(--ac-font-body1);
-  color:var(--ac-base);
-  text-decoration: none;
-  outline: none;
-  font-size: 12px;
-}
-
-.topbar {
-  width: 100%;
-  height: 12vh;
-  /*height: var(--topbar-height);*/
-  @apply(--layout-horizontal);
-  @apply(--layout-center);
-  box-sizing: border-box;
-  padding: 10px 20px 0px 25px;
-}
-
-.container {
-  width: 100%;
-  @apply(--layout-vertical);
-  @apply(--layout-center);
-  @apply(--layout-start-justified);
-}
-
-.main {
-  overflow-y: scroll;
-  height: 88vh;
-  width: 100%;
-  @apply(--layout-vertical);
-  @apply(--layout-center);
-}
-
-.maintop {
-  width: 100%;
-  @apply(--layout-vertical);
-  @apply(--layout-center);
-  box-sizing: border-box;
-  padding: 0px 0px 40px 0px;
-}
-
-.tussenschot {
-  width: 100%;
-  height: 1px;
-  background-color: rgba(0,0,0,0.05);
-}
-
-#therest {
-  width: 100%;
-  @apply(--layout-vertical);
-  @apply(--layout-left);
-  line-height: normal;
-}
-
-.whitespace {
-  width: 100%;
-  height: 2vh;
-  min-height: 20px;
-}
-
-.absolutepos {
-  position: absolute;
-}
-
-.flex {
-  @apply(--layout-horizontal);
-  @apply(--layout-flex);
-}
-
-paper-fab {
-  width: 80px;
-  height: 80px;
-  position: fixed;
-  bottom: 40px;
-  right: 40px;
-  z-index: 1;
-}
-
-.main h1 {
-  color: var(--ac-base);
-  @apply(--montserrat-reg);
-  -webkit-margin-before:7px;
-  -webkit-margin-after:7px;
-  -webkit-margin-start:0em;
-  -webkit-margin-end:0em;
-  margin: 7px 0px 7px 0px;
-  padding: 0px;
-  font-size: 28px;
-  line-height: 34px;
-  word-break: break-all;
-}
-
-.showconstit {
-
-}
-
-.offer {
-  width: 90%;
-  box-sizing: border-box;
-  padding: 0px;
-  border-bottom: 1px solid rgba(0,0,0,0.25);
-  color: var(--ac-base);
-  background-color: white;
-  margin: 5px 0px 5px 0px;
-  border-radius: 2px;
-  @apply(--base-shadow);
-}
-
-.downcontrols {
-  @apply(--layout-horizontal);
-  @apply(--layout-center-center);
-  position: fixed;
-  bottom: 40px;
-  right: 40px;
-  z-index: 1;
-}
-
-#exitbtn {
-opacity: 0.5;
-}
-
-#md {
-margin: 24px;
-}
-
-.item {
-box-sizing: border-box;
-border-radius: 2px;
-margin: 5px 10px 5px 0px;
-background-color: var(--ac-base);
-@apply(--base-shadow);
-padding: 10px 20px 10px 15px;
-transition: all .025s linear;
-transform: scale(1,1);
-min-width: 150px;
-}
-
-.item:hover {
-transform: scale(1.05,1.05);
-transform-origin: right;
-cursor: pointer;
-}
-
-.item p {
-color: var(--ac-white);
-font-size: 14px;
-}
-
-.small {
-@apply(--montserrat-light);
-font-size: 12px;
-margin-left: 6px;
-opacity: 0.5;
-}
-
-.gold {
-background-color: var(--ac-green);
-padding: 12px 14px 10px 14px;
-}
-
-.gold p {
-@apply(--montserrat-reg);
-font-size: 18px;
-}
-
-.silver {
-background-color: var(--ac-blue);
-padding: 14px 20px 14px 15px;
-}
-
-.silver p {
-@apply(--montserrat-reg);
-font-size: 16px;
-}
-
-.changeview {
-box-sizing: border-box;
-padding: 1px 6px 1px 6px;
-border-radius: 2px;
-@apply(--base-shadow);
-border: 1px solid var(--ac-blue);
-margin-right: 18px;
-/*background-color: var(--ac-blue);*/
-}
-
-.changeview p {
-color: var(--ac-blue);
-font-size: 10px;
-margin: 0px 0px 0px 0px;
-}
-
-.myoffers {
-@apply(--layout-vertical);
-@apply(--layout-center);
-box-sizing: border-box;
-padding-bottom: 30px;
-border-bottom: 1px dashed rgba(255,255,255,0.1);
-width: 100%;
-}
-
-.alloffers {
-@apply(--layout-vertical);
-@apply(--layout-center);
-box-sizing: border-box;
-padding-top: 30px;
-width: 100%;
-}
-
-</style>
- -->
-
     <style>
     /*  GENERAL STUFF  */
     :host {
@@ -265,6 +19,7 @@ width: 100%;
       --toppart-height: 12vh;
       --toppart-padding: 10px 20px 10px 20px;
       --container-height: 88vh;
+      --container-padding: 5vh 20px 0px 20px;
 
       --avatar-size: 40px;
 
@@ -343,10 +98,13 @@ width: 100%;
         @apply(--layout-vertical);
         @apply(--layout-center);
         @apply(--layout-start-justified);
+        box-sizing: border-box;
+        padding: var(--container-padding);
       }
 
 
-      /*  avatar and username  */
+
+      /*  toppart  */
 
       .userinfo {
         width: 100%;
@@ -376,7 +134,6 @@ width: 100%;
       }
 
       .viewswitch {
-        background-color: var(--ac-base);
         border-bottom: 1px dashed var(--ac-yellow);
         margin: 0px 10px 0px 0px;
         box-sizing: border-box;
@@ -392,6 +149,19 @@ width: 100%;
         color: var(--ac-yellow);
         font-size: 12px;
       }
+
+
+
+      /*    */
+
+      ac-listitem {
+        @apply(--base-shadow);
+        margin-bottom: 10px;        
+      }
+
+
+
+
 
 
     </style>
@@ -411,11 +181,11 @@ width: 100%;
 
     <div class="main">
       <div class="container">
-        <div class="alloffers">
+        <!-- <div class="alloffers"> -->
           <template is="dom-repeat" items="{{blockdata}}">
             <ac-listitem offerid="{{item.offerid}}" key="{{item.ipfshash}}" status="{{item.status}}" sizeview="{{sizeview}}"></ac-listitem>
           </template>
-        </div>
+        <!-- </div> -->
       </div>
     </div>
 
@@ -454,12 +224,13 @@ width: 100%;
         app.set('route.path', '/map/');
       },
 
-_sizeview: function(){
+      _sizeview: function(){
         switch(this.sizeview) {
           case 'phone':
             this.customStyle['--toppart-height'] = '12vh';
             this.customStyle['--toppart-padding'] = '10px 20px 10px 20px';
             this.customStyle['--container-height'] = '88vh';
+            this.customStyle['--container-padding'] = '5vh 20px 5vh 20px';
 
             this.customStyle['--avatar-size'] = '35px';
 
@@ -469,15 +240,17 @@ _sizeview: function(){
             this.customStyle['--toppart-height'] = '10vh';
             this.customStyle['--toppart-padding'] = '10px 20px 10px 26px';
             this.customStyle['--container-height'] = '90vh';
+            this.customStyle['--container-padding'] = '5vh 20px 5vh 20px';
 
             this.customStyle['--avatar-size'] = '40px';
 
             this.updateStyles();
           break;
           case 'xlarge':
-            this.customStyle['--toppart-height'] = '8vh';
-            this.customStyle['--toppart-padding'] = '10px 20px 10px 20px';
-            this.customStyle['--container-height'] = '92vh';
+            this.customStyle['--toppart-height'] = '10vh';
+            this.customStyle['--toppart-padding'] = '10px 40px 10px 40px';
+            this.customStyle['--container-height'] = '90vh';
+            this.customStyle['--container-padding'] = '5vh 40px 5vh 40px';
 
             this.customStyle['--avatar-size'] = '40px';
 

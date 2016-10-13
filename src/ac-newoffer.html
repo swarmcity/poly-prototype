@@ -1,8 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
-
-<script src="../bower_components/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js"></script>
+<link rel="import" href="./ac-locationpicker.html">
 
 <dom-module id="ac-newoffer">
   <!-- Defines the element's style and local DOM -->
@@ -15,6 +12,101 @@
   leaflet-map {
     height: 100vh;
   }
+  .fixedplace {
+    position: fixed;
+    top: 70px;
+    z-index: 1;
+    width: 75%;
+    max-width: 500px;
+    @apply(--layout-vertical);
+    @apply(--layout-center-center);
+  }
+
+  .fixedplace h1 {
+    color: var(--ac-base);
+    font-size: 18px;
+    line-height: 24px;
+    margin: 0px;
+    width: 100%;
+    text-align: center;
+    background-color: var(--ac-yellow);
+    box-sizing: border-box;
+    padding: 4px 8px 4px 8px;
+    @apply(--montserrat-light);
+  }
+
+  /*.acinputdiv {
+    background-color: var(--ac-yellow);
+    height: 24px;
+  }*/
+
+  .fixedplace p {
+    color: var(--ac-base);
+    font-size: 26px;
+    line-height: 32px;
+    @apply(--montserrat-ultralight);
+    opacity: 0.5;
+    text-align: center;
+    background-color: var(--ac-yellow);
+    width: auto;
+    box-sizing: border-box;
+    padding: 10px 18px 10px 18px;
+  }
+
+  .fixedtoolbar {
+    position: fixed;
+      width: 100%;
+      height: 10vh;
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+      @apply(--layout-end-justified);
+      box-sizing: border-box;
+      padding: 10px 20px 0px 25px;
+  }
+
+
+
+
+
+  .fixedtitle {
+
+    position: fixed;
+    top: 80px;
+    right: 0;
+    left: 0;
+    z-index: 1;
+    @apply(--layout-horizontal);
+    @apply(--layout-center-center);
+
+  }
+
+  .fixedtitle h1 {
+    color: var(--ac-base);
+    background-color: rgba(255,255,255,0.25);
+    box-sizing: border-box;
+    padding: 4px 15px 4px 15px;
+  }
+
+
+
+  .belowmap {
+    @apply(--base-structure);
+    height: 20vh;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 30px 10vw 0px 10vw;
+    @apply(--layout-horizontal);
+    @apply(--layout-start);
+    @apply(--layout-center-justified);
+  }
+  .belowmaptxt {
+    width: 80%;
+    @apply(--layout-vertical);
+    @apply(--layout-start);
+    @apply(--layout-start-justified);
+  }
+
+
   </style>
   <div class="container">
 
@@ -23,41 +115,8 @@
 
     <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'first')}}">
 
-    <div hidden="{{locationbound}}" class="spinnerdiv">
-      <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
-    </div>
+    <ac-locationpicker current-geo="{{fromgeo}}" resolved-address="{{fromaddress}}"></ac-locationpicker>
 
-    <leaflet-map
-      id="newleafletmapfrom"
-      draggable="true"
-      zoom="17"
-      latitude="{{latitude}}"
-      longitude="{{longitude}}"
-      no-Zoom-Control="true"
-      min-zoom="8"
-      max-zoom="19">
-
-    <leaflet-geolocation
-      on-locationfound="locationfound"
-      enable-high-accuracy
-      latitude="{{latitude}}"
-      longitude="{{longitude}}"
-      accuracy="3">
-    </leaflet-geolocation>
-
-    <leaflet-tilelayer
-    url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
-  </leaflet-tilelayer>
-
-    <leaflet-marker
-    id="frommarker"
-    on-dragend="setfrom"
-    draggable="true"
-    latitude="{{mylatitude}}"
-    longitude="{{mylongitude}}">
-  </leaflet-marker>
-
-</leaflet-map>
 <div class="fixedplace" hidden="{{!locationbound}}">
   <p><i18n-msg msgid="From">
   </i18n-msg></p>
@@ -69,50 +128,6 @@
 </div>
 
 </template>
-<template is="dom-if" if="{{_is(offerview, 'second')}}">
-
-  <leaflet-map
-  id="newleafletmapto"
-  draggable="true"
-  latitude="[[latitude]]"
-  longitude="[[longitude]]"
-  zoom="17"
-  no-Zoom-Control="true"
-  min-zoom="8"
-  max-zoom="19">
-
-  <leaflet-tilelayer
-  url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
-</leaflet-tilelayer>
-
-<template is="dom-if" if="{{tolocationbound}}">
-  <leaflet-marker
-  id="tomarker"
-  on-dragend="setto"
-  draggable="true"
-  latitude="[[destlatitude]]"
-  longitude="[[destlongitude]]">
-</leaflet-marker>
-</template>
-
-</leaflet-map>
-<div class="fixedplace">
-  <p><i18n-msg msgid="to">
-  </i18n-msg></p>
-  <h1>{{toaddress.display_name}}</h1>
-  <div class="acinputdiv">
-    <i18n-msg hidden msgid="Destination" msg="{{str_Destination}}">
-    </i18n-msg>
-    <ac-input on-change="resolveDestination" label="{{str_Destination}}" placeholder="{{toaddress.display_name}}" bind-value="{{destination}}"></ac-input>
-  </div>
-</div>
-<div class="confirmbtns">
-  <ac-icon icon="ac-decline" on-tap="toHome" small class="exitbtn" iconcolor="base"></ac-icon>
-  <ac-button on-tap="toThird" bg="yellow" txtcolor="big" icon="ac-arrowright"></ac-button>
-</div>
-
-</template>
-
 
 <template is="dom-if" if="{{_is(offerview, 'third')}}">
   <div class="spinner" hidden="{{routingprocess}}">
