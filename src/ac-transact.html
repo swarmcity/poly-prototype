@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/web3-wallet/web3-wallet.html">
+<link rel="import" href="./ac-config.html">
 
 <dom-module id="ac-transact">
 
@@ -24,6 +25,7 @@
       },
       attached: function(){
         console.log('ac-transact -> attached');
+        console.log('ac-transact -> web3host=',this.web3host);
         //debugger;
       },
 
