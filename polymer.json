@@ -18,7 +18,9 @@
     "src/ac-blockdata.html",
     "src/ac-password.html",
     "src/ac-newuser.html",
-    "src/ac-view404.html"
+    "src/ac-view404.html",
+    "src/ac-ipfs.html",
+    "src/ac-config.html"
   ],
   "sourceGlobs": [
    "src/**/*",
