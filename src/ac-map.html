@@ -101,16 +101,16 @@
       </leaflet-tilelayer>
 
       <template is="dom-repeat" items="{{blockdata}}">
-        <leaflet-marker
+        <!-- <leaflet-marker
           on-tap="selectoffer"
           ipfshash="{{item.ipfshash}}"
           title="{{item.ipfshash}}"
           icon="car"
           latitude="{{item.latitude}}"
           longitude="{{item.longitude}}">
-        </leaflet-marker>
+        </leaflet-marker> -->
       </template>
-      
+
     </leaflet-map>
 
     <ac-blockdata name="blockdata" blockdata="{{blockdata}}"></ac-blockdata>
