@@ -101,6 +101,8 @@
           this.getAddress(e.detail.target._latlng).then(function(response) {
             self.resolvedAddress = JSON.parse(response);
             self.fire('dragend', { 'resolvedaddress': response, 'lat': e.detail.target._latlng.lat, 'lng': e.detail.target._latlng.lng});
+//            debugger;
+            self.currentGeo = { 'lat': e.detail.target._latlng.lat, 'lng': e.detail.target._latlng.lng };
           }, function(error) {
             self.fire('error', error);
           });

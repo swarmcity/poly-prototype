@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="./ac-locationpicker.html">
 <link rel="import" href="./ac-routeplanner.html">
+<link rel="import" href="./ac-transact.html">
 <link rel="import" href="../bower_components/ac-button/ac-button.html">
 <link rel="import" href="../bower_components/ac-loader/ac-loader.html">
 <link rel="import" href="../bower_components/ac-icon/ac-icon.html">
@@ -515,7 +516,15 @@
         <ac-loader small><i18n-msg msgid="Your offer is being prepared">
         </i18n-msg></ac-loader>
       </div> -->
-      <ac-routeplanner fromlatlon="{{fromlatlon}}" tolatlon="{{tolatlon}}"></ac-routeplanner>
+      <ac-routeplanner routedetails="{{routedetails}}" fromlatlon="{{fromlatlon}}" tolatlon="{{tolatlon}}"></ac-routeplanner>
+
+      <div class="confirmbtns">
+        <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="yellow"></ac-icon>
+        <!-- <template dom-is="if" if="{{!error}}"> -->
+        <ac-button id="commitoffer" on-tap="toFourth" bg="yellow" txtcolor="base" icon="ac-v"></ac-button>
+        <!-- </template> -->
+      </div>
+
     </div>
 
 
@@ -523,9 +532,11 @@
 </template>
 
 
-<template is="dom-if" if="{{_is(offerview, 'fourth')}}">
+<template is="dom-if" if="{{_is(offerview, 'fourth')}}" restamp>
   <div class="offerview">
     <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
+
+    <ac-transact on-txhash="" on-mined="" on-error="" id="transact" id="transact"></ac-transact>
 
     <h1>Publishing offer</h1>
     <div class="logger" on-tap="logCollapse">
@@ -538,7 +549,7 @@
 
       <iron-collapse id="logcollapser">
         <div class="log">
-          <template is="dom-repeat" items="{{statuslog}}">
+          <template is="dom-repeat" items="{{statuslog}}" restamp>
             <p>{{item.msg}}</p>
           </template>
         </div>
@@ -550,6 +561,7 @@
 
 <template is="dom-if" if="{{_is(offerview, 'fifth')}}">
   <div class="offerview">
+ 
     <ac-icon icon="ac-v" iconcolor="yellow"></ac-icon>
     <h1>Your offer is published.</h1>
     <div class="whitespace"></div>
@@ -557,6 +569,7 @@
   </div>
 </template>
 
+  <ac-transact id="transact"></ac-transact>
 
 </div>
 </template>
@@ -572,16 +585,18 @@ Polymer({
     },
     fromlatlon: {
       type: Object,
-      observer: 'll'
     },
     tolatlon: {
       type: Object,
-      observer: 'll'
     },
   },
 
   ll: function(){
     //debugger;
+  },
+
+  toPlaceoffer: function(){
+    this.rit = this.routedetails;
   },
 
   attached: function() {
@@ -602,6 +617,12 @@ Polymer({
     //window.setTimeout(function() {
       //self.doRouting(self.fromlatlon, self.tolatlon);
     //}, 2000);
+  },
+  toFourth: function(){
+    // this.routedetails omvormen tot this.rit
+    this.$.transact.rit = {
+      ///
+    };
   },
 
   _is: function(a, b) {
