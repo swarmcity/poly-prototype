@@ -160,15 +160,16 @@
         </iron-pages>
 
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
-<!-- 
-    <ipfs-upload host="ipfs.arcadecity.world" id="ipfsupload" ipfs="{{ipfs}}" hidefileinput></ipfsupload> -->
 
-    <!-- this is just a demo / test -->
-    <ac-locationtracker
-      id="locationtracker"
-      active="{{online}}"
-      on-location-changed="locationchanged"
-    ></ac-locationtracker>
+    <!-- location tracker -->
+    <template is="dom-if" if="{{online}}" restamp>
+      <ac-locationtracker
+        id="locationtracker"
+        online="{{online}}"
+        on-location-changed="locationchanged"
+      ></ac-locationtracker>
+    </template>
+
 
   </template>
 
@@ -185,6 +186,9 @@
         route: {
           type: String,
           observer: '_route'
+        },
+        online:{
+          type: Boolean
         }
       },
 
@@ -202,6 +206,14 @@
         } else {
           app.set('route.path', '/newuser/');
         }
+
+        // debug code - remove me..
+        var self= this;
+        setInterval(function(){
+          console.log('setting online to true');
+          self.online = !self.online;
+        },15*1000);
+
       },
 
       _routePageChanged: function(page) {
