@@ -83,6 +83,13 @@
         }.bind(this));
         this.locationbound = true;
         this.currentGeo = { 'lat': e.detail.latitude, 'lng': e.detail.longitude };
+        var self = this;
+        this.getAddress(this.currentGeo).then(function(response) {
+          //console.log("Success!", JSON.parse(response));
+          self.resolvedAddress = JSON.parse(response);
+        }, function(error) {
+          //console.error("Failed!", error);
+        });
         this.appendMarker(e.detail.latitude, e.detail.longitude);
       },
 
