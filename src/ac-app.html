@@ -11,9 +11,9 @@
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/ipfs-upload/ipfs-upload.html">
-<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="./ac-sizeview.html">
 
 <link rel="import" href="my-icons.html">
 
@@ -188,9 +188,7 @@
 <!--       </app-header-layout>
     </app-drawer-layout> -->
 
-    <iron-media-query query="(min-width:0px) and (max-width: 600px)" query-matches="{{phoneview}}"></iron-media-query>
-    <iron-media-query query="(min-width:601px) and (max-width: 1200px)" query-matches="{{desktopview}}"></iron-media-query>
-    <iron-media-query query="(min-width:1201px)" query-matches="{{xlargeview}}"></iron-media-query>
+    <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
 
     <ipfs-upload host="ipfs.arcadecity.world" id="ipfsupload" ipfs="{{ipfs}}" hidefileinput></ipfsupload>
 
@@ -205,22 +203,7 @@
           type: String,
           reflectToAttribute: true,
           observer: '_pageChanged'
-        },
-
-        phoneview: {
-          type: Boolean,
-          observer: '_sizeview'
-        },
-
-        desktopview: {
-          type: Boolean,
-          observer: '_sizeview'
-        },
-
-        xlargeview: {
-          type: Boolean,
-          observer: '_sizeview'
-        },
+        }
       },
 
       observers: [
@@ -255,19 +238,6 @@
 
       firetoggle: function(){
         this.$.drawer.toggle();
-      },
-
-      _sizeview: function(){
-        if (this.phoneview) {
-          this.sizeview = 'phone';
-        }
-        if (this.desktopview) {
-          this.sizeview = 'desktop';
-        }
-        if (this.xlargeview) {
-          this.sizeview = 'xlarge';
-        }
-
       },
 
       _getipfsurl: function(hash) {

@@ -4,16 +4,17 @@
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 
 <link rel="import" href="./ac-blockdata.html">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js"></script>
 
 <dom-module id="ac-map">
   <!-- Defines the element's style and local DOM -->
   <template>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js"></script>
 
     <style>
-      :host {
-        display: block;
-      }
+    :host {
+      display: block;
+      height: 100%;
+    }
 
       h1 {
         @apply(--ac-font-h1);
@@ -64,9 +65,14 @@
 
 
 
-
     </style>
     <div class="toppart"></div>
+
+    <div id="spinner" hidden$="{{!locationunknown}}" class="spinnerdiv">
+      <ac-icon class="refresher" icon="refresh1" iconcolor="pink"></ac-icon>
+		</div>
+
+    <ac-button on-tap="toList" icon="ac-hashtagbolder" bg="red" txtcolor="white"></ac-button>
 
     <leaflet-map
       id="leafletmap"
@@ -76,8 +82,7 @@
       no-Zoom-Control="true"
       min-zoom="8"
       max-zoom="17"
-      zoom="16"
-      hidden="{{!locationknown}}">
+      zoom="16">
 
       <leaflet-geolocation
         id="geolocation"
@@ -93,15 +98,16 @@
       </leaflet-tilelayer>
 
       <template is="dom-repeat" items="{{blockdata}}">
-        <leaflet-marker
+        <!-- <leaflet-marker
           on-tap="selectoffer"
           ipfshash="{{item.ipfshash}}"
           title="{{item.ipfshash}}"
           icon="car"
           latitude="{{item.latitude}}"
           longitude="{{item.longitude}}">
-        </leaflet-marker>
+        </leaflet-marker> -->
       </template>
+
     </leaflet-map>
 
     <ac-blockdata name="blockdata" blockdata="{{blockdata}}"></ac-blockdata>
@@ -113,18 +119,18 @@
       is: 'ac-map',
 
       properties: {
-        locationknown: {
+        locationunknown: {
             type: Boolean,
-            value: false
-          },
-          blockdata: {
-            type: Array,
-            observer: '_blockdata'
-          }
+            value: true
+        },
+        blockdata: {
+          type: Array,
+          observer: '_blockdata'
+        }
       },
 
       attached: function() {
-        this.locationknown = false;
+        this.locationunknown = true;
       },
 
       _blockdata: function() {
@@ -135,8 +141,16 @@
         }
       },
 
+      toList: function() {
+        app.set('route.path', '/list/');
+      },
+
       locationfound: function() {
-        this.locationknown = true;
+        this.locationunknown = false;
+        // this.$.spinner.hidden = true;
+        // console.log('location found: ', this.locationunknown);
+        // this.$.leafletmap.hidden = false;
+        this.$.leafletmap.map.invalidateSize();
       }
     });
   </script>

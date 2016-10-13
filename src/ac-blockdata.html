@@ -8,8 +8,6 @@
     <style>
       :host {
         display: block;
-
-        padding: 16px;
       }
     </style>
 
@@ -29,9 +27,9 @@
 
     <web3-wallet
       id="web3wallet"
-      walletname="locals-wallet"
+      walletname="ac-wallet"
       account="[[account]]"
-      password="{{password}}"
+      password="[[password]]"
       balance="[[balance]]"
       keystore="[[keystore]]"
       host="https://eth.arcadecity.world:8545"
@@ -110,8 +108,7 @@
 
       getBlockData: function(){
 
-
-          // check if all needed data items are in place.          
+          // check if all needed data items are in place.
           if (!this.web3 || !this.blockobject || !this.lastblock ){
             return;
           }
@@ -120,9 +117,9 @@
           if (this.getblockdata === true){
             return;
           }
+
           this.getblockdata = true;
           console.log('Starting getBlockData');
-
 
           var self = this;
 
