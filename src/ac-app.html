@@ -128,38 +128,6 @@
         data="{{subrouteData}}"
         pattern="/:key"></app-route>
 
-<!--     <app-drawer-layout fullbleed force-narrow>
-      <app-drawer id="drawer" swipe-open>
-        <app-toolbar>Menu</app-toolbar>
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="profile" href="/profile">Profile</a>
-          <a name="wallet" href="/wallet">Wallet</a>
-          <a name="settings" href="/settings">Settings</a>
-          <a name="list" href="/list">List</a>
-          <a name="map" href="/map">Map</a>
-        </iron-selector>
-      </app-drawer> -->
-
-<!--       <app-header-layout has-scrolling-region>
-
-        <div class="topbar">
-        <div class="menuicon">
-        <ac-icon icon="ac-brandlogo-color" big on-tap="firetoggle"></ac-icon>
-        </div>
-
-        <div class="userinfo" on-tap="toProfile">
-           <div class="avatar" id="avatar">
-            <img src="{{_getipfsurl(userdata.avatar)}}" observe="userdata.avatar">
-          </div>
-          <p class="username">{{userdata.username}}</p>
-        </div>
-
-        <p class="flex"></p>
-
-      </div>
-
-        </div>
- -->
         <iron-pages
             selected="[[page]]"
             attr-for-selected="name"
@@ -189,8 +157,7 @@
             <ac-locationpicker name="locationpicker" sizeview="{{sizeview}}"></ac-locationpicker>
 
         </iron-pages>
-<!--       </app-header-layout>
-    </app-drawer-layout> -->
+
 
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
 
