@@ -6,17 +6,15 @@
     <style>
       :host {
         display: block;
-
-        padding: 16px;
       }
     </style>
 
-    <template is="dom-if" if="accountlocked">
-      <h1>Account locked</h1>
+    <template is="dom-if" if="{{accountlocked}}">
+      <h1>Profile: Account locked</h1>
     </template>
 
-    <template is="dom-if" if="!accountlocked">
-      <h1>Account open</h1>
+    <template is="dom-if" if="{{!accountlocked}}">
+      <h1>Profile: Account open</h1>
     </template>
 
   </template>

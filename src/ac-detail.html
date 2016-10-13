@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="./ac-blockdata.html">
 
 <dom-module id="ac-detail">
   <!-- Defines the element's style and local DOM -->
@@ -6,15 +7,22 @@
     <style>
       :host {
         display: block;
-
         padding: 16px;
       }
     </style>
 
     <h1>New view</h1>
+
     <p>
-      {{key}}
+      {{data.ipfshash}}
     </p>
+
+    <p>
+      {{data.status}}
+    </p>
+
+    <ac-blockdata name="blockdata" blockdata="{{blockdata}}"></ac-blockdata>
+
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>
@@ -22,8 +30,20 @@
       is: 'ac-detail',
       properties: {
         key: {
-          type: String
+          type: String,
+          observer: '_blockdata'
+        },
+        blockdata: {
+          type: Array,
+          observer: '_blockdata'
+        },
+        data: {
+          type: Object
         }
+      },
+
+      _blockdata: function() {
+        this.data = this.blockdata[this.key];
       }
     });
   </script>

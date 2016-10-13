@@ -1,24 +1,184 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
+
+<link rel="import" href="../bower_components/ac-style/ac-style.html">
+<link rel="import" href="../bower_components/ac-button/ac-button.html">
+
 <link rel="import" href="./ac-blockdata.html">
+<link rel="import" href="./ac-blockdata.html">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js"></script>
 
 <dom-module id="ac-map">
   <!-- Defines the element's style and local DOM -->
   <template>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js"></script>
 
     <style>
-      :host {
-        display: block;
+    /*  GENERAL STUFF  */
+    :host {
+      display: block;
+      height: 100%;
+
+      --toppart-height: 12vh;
+      --toppart-padding: 10px 20px 10px 20px;
+      --container-height: 88vh;
+
+      --avatar-size: 40px;
+
+    }
+
+      h1 {
+        @apply(--ac-font-h1);
       }
+
+      h2 {
+        @apply(--ac-font-h2);
+      }
+
+      h3 {
+        @apply(--ac-font-h3);
+      }
+
+      p {
+        @apply(--ac-font-body1);
+      }
+
+      li {
+        @apply(--ac-font-body1);
+      }
+
+      .flex {
+        @apply(--layout-flex);
+      }
+
+      .absolutepos {
+        position: absolute;
+      }
+
+
+      .toppart {
+        width: 100%;
+        height: var(--toppart-height);
+        z-index: 2;
+        @apply(--base-structure);
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+        box-sizing: border-box;
+        padding: var(--toppart-padding);
+      }
+
+      .bottompart {
+        width: 100%;
+        height: 120px;
+        z-index: 4;
+        background-color: transparent;
+        @apply(--layout-horizontal);
+        @apply(--layout-start);
+        @apply(--layout-end-justified);
+        position: fixed;
+        bottom: 0px;
+        right: 0px;
+        box-sizing: border-box;
+        padding: 0px 40px 0px 0px;
+      }
+
+
+
+
+
+    /*  SPECIFIC STUFF  */
 
       leaflet-map {
         width: 100vw;
-        height: 87vh;
+        height: var(--container-height);
         z-index: 1;
       }
 
+
+      /*  avatar and username  */
+
+      .userinfo {
+        width: 100%;
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        box-sizing: border-box;
+      }
+
+      .avatar {
+        width: var(--avatar-size);
+        height: var(--avatar-size);
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: transparent;
+      }
+
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+
+      .username {
+        margin: 0px 0px 0px 10px;
+        @apply(--montserrat-light);
+        color:var(--ac-yellow);
+      }
+
+      .viewswitch {
+        background-color: var(--ac-base);
+        border: 1px solid var(--ac-turquoise);
+        border-radius: 5px;
+        margin: 0px 10px 0px 0px;
+        box-sizing: border-box;
+        padding: 2px 6px 2px 6px;
+      }
+
+      .viewswitch:hover {
+        cursor: pointer;
+      }
+
+      .viewswitch p {
+        @apply(--montserrat-reg);
+        color: var(--ac-turquoise);
+        font-size: 12px;
+      }
+
+
+
+
+
+
+  /*      .spinnerdiv {
+          width: 100%;
+          height: var(--container-height);
+          position: fixed;
+          z-index: 1;
+          @apply(--base-structure);
+          @apply(--layout-horizontal);
+          @apply(--layout-center-center);
+          opacity: 0.3;
+        }
+  */
+
+
     </style>
+
+    <div class="toppart">
+      <div class="userinfo">
+         <div class="avatar" id="avatar">
+          <img src="http://media.hotbirthdays.com/files/1932/06/28/pat-morita-1.jpg">
+        </div>
+        <p class="username">Mr Myaghi</p>
+      </div>
+      <span class="flex"></span>
+      <div class="viewswitch" on-tap="toList"><p>listview</p></div>
+      <ac-button icon="menu" bg="base" txtcolor="yellow" small></ac-button>
+
+    </div>
+
+    <!-- <div id="spinner" hidden$="{{!locationunknown}}" class="spinnerdiv">
+      <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
+		</div> -->
 
     <leaflet-map
       id="leafletmap"
@@ -28,8 +188,7 @@
       no-Zoom-Control="true"
       min-zoom="8"
       max-zoom="17"
-      zoom="16"
-      hidden="{{!locationknown}}">
+      zoom="16">
 
       <leaflet-geolocation
         id="geolocation"
@@ -45,18 +204,24 @@
       </leaflet-tilelayer>
 
       <template is="dom-repeat" items="{{blockdata}}">
-        <leaflet-marker
+        <!-- <leaflet-marker
           on-tap="selectoffer"
           ipfshash="{{item.ipfshash}}"
           title="{{item.ipfshash}}"
           icon="car"
           latitude="{{item.latitude}}"
           longitude="{{item.longitude}}">
-        </leaflet-marker>
+        </leaflet-marker> -->
       </template>
+
     </leaflet-map>
 
+    <div class="bottompart">
+      <ac-button icon="ac-plus" bg="red" txtcolor="white"></ac-button>
+    </div>
+    
     <ac-blockdata name="blockdata" blockdata="{{blockdata}}"></ac-blockdata>
+    <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
 
   </template>
   <!-- Creates the element's prototype and registers it -->
@@ -65,18 +230,22 @@
       is: 'ac-map',
 
       properties: {
-        locationknown: {
+        locationunknown: {
             type: Boolean,
-            value: false
-          },
-          blockdata: {
-            type: Array,
-            observer: '_blockdata'
-          }
+            value: true
+        },
+        blockdata: {
+          type: Array,
+          observer: '_blockdata'
+        },
+        sizeview: {
+          type: String,
+          observer: '_sizeview'
+        }
       },
 
       attached: function() {
-        this.locationknown = false;
+        this.locationunknown = true;
       },
 
       _blockdata: function() {
@@ -87,9 +256,52 @@
         }
       },
 
+      toList: function() {
+        app.set('route.path', '/list/');
+      },
+
       locationfound: function() {
-        this.locationknown = true;
+        this.locationunknown = false;
+        // this.$.spinner.hidden = true;
+        // console.log('location found: ', this.locationunknown);
+        // this.$.leafletmap.hidden = false;
+        this.$.leafletmap.map.invalidateSize();
+      },
+
+      _sizeview: function(){
+        switch(this.sizeview) {
+          case 'phone':
+            this.customStyle['--toppart-height'] = '12vh';
+            this.customStyle['--toppart-padding'] = '10px 20px 10px 20px';
+            this.customStyle['--container-height'] = '88vh';
+
+            this.customStyle['--avatar-size'] = '35px';
+
+            this.updateStyles();
+          break;
+          case 'desktop':
+            this.customStyle['--toppart-height'] = '9vh';
+            this.customStyle['--toppart-padding'] = '10px 20px 10px 20px';
+            this.customStyle['--container-height'] = '91vh';
+
+            this.customStyle['--avatar-size'] = '40px';
+
+            this.updateStyles();
+          break;
+          case 'xlarge':
+            this.customStyle['--toppart-height'] = '8vh';
+            this.customStyle['--toppart-padding'] = '10px 20px 10px 20px';
+            this.customStyle['--container-height'] = '92vh';
+
+            this.customStyle['--avatar-size'] = '40px';
+
+            this.updateStyles();
+          break;
+          default:
+          console.log('!!! ** Niks');
+        }
       }
+
     });
   </script>
 </dom-module>

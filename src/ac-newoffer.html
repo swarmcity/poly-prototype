@@ -1,22 +1,404 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
+
+<script src="../bower_components/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js"></script>
 
 <dom-module id="ac-newoffer">
   <!-- Defines the element's style and local DOM -->
   <template>
-    <style>
-      :host {
-        display: block;
+  <style>
+  :host {
+    display: block;
+  }
 
-        padding: 16px;
-      }
-    </style>
+  leaflet-map {
+    height: 100vh;
+  }
+  </style>
+  <div class="container">
 
-    <h1>New view</h1>
-  </template>
-  <!-- Creates the element's prototype and registers it -->
-  <script>
-    Polymer({
-      is: 'ac-newoffer'
+    <template id="zerotemp" is="dom-if" if="{{_is(offerview, 'zero')}}">
+    </template>
+
+    <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'first')}}">
+
+    <div hidden="{{locationbound}}" class="spinnerdiv">
+      <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
+    </div>
+
+    <leaflet-map
+      id="newleafletmapfrom"
+      draggable="true"
+      zoom="17"
+      latitude="{{latitude}}"
+      longitude="{{longitude}}"
+      no-Zoom-Control="true"
+      min-zoom="8"
+      max-zoom="19">
+
+    <leaflet-geolocation
+      on-locationfound="locationfound"
+      enable-high-accuracy
+      latitude="{{latitude}}"
+      longitude="{{longitude}}"
+      accuracy="3">
+    </leaflet-geolocation>
+
+    <leaflet-tilelayer
+    url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
+  </leaflet-tilelayer>
+
+    <leaflet-marker
+    id="frommarker"
+    on-dragend="setfrom"
+    draggable="true"
+    latitude="{{mylatitude}}"
+    longitude="{{mylongitude}}">
+  </leaflet-marker>
+
+</leaflet-map>
+<div class="fixedplace" hidden="{{!locationbound}}">
+  <p><i18n-msg msgid="From">
+  </i18n-msg></p>
+  <h1>{{fromaddress.display_name}}</h1>
+</div>
+<div class="confirmbtns" hidden="{{!locationbound}}">
+  <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="base"></ac-icon>
+  <ac-button on-tap="toSecond" bg="yellow" txtcolor="big" icon="ac-arrowright"></ac-button>
+</div>
+
+</template>
+<template is="dom-if" if="{{_is(offerview, 'second')}}">
+
+  <leaflet-map
+  id="newleafletmapto"
+  draggable="true"
+  latitude="[[latitude]]"
+  longitude="[[longitude]]"
+  zoom="17"
+  no-Zoom-Control="true"
+  min-zoom="8"
+  max-zoom="19">
+
+  <leaflet-tilelayer
+  url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
+</leaflet-tilelayer>
+
+<template is="dom-if" if="{{tolocationbound}}">
+  <leaflet-marker
+  id="tomarker"
+  on-dragend="setto"
+  draggable="true"
+  latitude="[[destlatitude]]"
+  longitude="[[destlongitude]]">
+</leaflet-marker>
+</template>
+
+</leaflet-map>
+<div class="fixedplace">
+  <p><i18n-msg msgid="to">
+  </i18n-msg></p>
+  <h1>{{toaddress.display_name}}</h1>
+  <div class="acinputdiv">
+    <i18n-msg hidden msgid="Destination" msg="{{str_Destination}}">
+    </i18n-msg>
+    <ac-input on-change="resolveDestination" label="{{str_Destination}}" placeholder="{{toaddress.display_name}}" bind-value="{{destination}}"></ac-input>
+  </div>
+</div>
+<div class="confirmbtns">
+  <ac-icon icon="ac-decline" on-tap="toHome" small class="exitbtn" iconcolor="base"></ac-icon>
+  <ac-button on-tap="toThird" bg="yellow" txtcolor="big" icon="ac-arrowright"></ac-button>
+</div>
+
+</template>
+
+
+<template is="dom-if" if="{{_is(offerview, 'third')}}">
+  <div class="spinner" hidden="{{routingprocess}}">
+    <ac-loader small><i18n-msg msgid="Your offer is being prepared">
+    </i18n-msg></ac-loader>
+  </div>
+
+  <div class="overviewtotal" hidden="{{!routingprocess}}">
+    <leaflet-map
+    id="overviewmap"
+    map="{{leafletmap}}"
+    draggable="true"
+    latitude="[[latitude]]"
+    longitude="[[longitude]]"
+    no-Zoom-Control="true"
+    fit-to-markers="true">
+
+    <leaflet-tilelayer
+    url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
+  </leaflet-tilelayer>
+
+</leaflet-map>
+
+
+<div class="overviewinfo">
+  <div  class="overviewinfoitemtotal">
+    <div class="fromto">
+      <p><i18n-msg msgid="From"></i18n-msg></p>
+    </div>
+    <div class="overviewinfoitem">
+      <p>{{fromaddress.display_name}}</p>
+    </div>
+  </div>
+  <div class="overviewinfoitemtotal">
+    <div class="fromto">
+      <p><i18n-msg msgid="to"></i18n-msg></p>
+    </div>
+    <div class="overviewinfoitem">
+      <p>{{toaddress.display_name}}</p>
+    </div>
+  </div>
+
+  <div class="confirmbtns">
+    <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="yellow"></ac-icon>
+    <!-- <template dom-is="if" if="{{!error}}"> -->
+    <ac-button id="commitoffer" on-tap="toPlaceoffer" bg="yellow" txtcolor="base" icon="ac-v"></ac-button>
+    <!-- </template> -->
+  </div>
+
+</div>
+
+
+</div>
+</template>
+
+
+<template is="dom-if" if="{{_is(offerview, 'fourth')}}">
+  <div class="offerview">
+    <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
+
+    <h1>Publishing offer</h1>
+    <div class="logger" on-tap="logCollapse">
+      <template is="dom-if" if="{{!logshown}}">
+        <p class="loggercollapse">show log</p>
+      </template>
+      <template is="dom-if" if="{{logshown}}">
+        <p class="loggercollapse">hide log</p>
+      </template>
+
+      <iron-collapse id="logcollapser">
+        <div class="log">
+          <template is="dom-repeat" items="{{statuslog}}">
+            <p>{{item.msg}}</p>
+          </template>
+        </div>
+      </iron-collapse>
+    </div>
+
+  </div>
+</template>
+
+<template is="dom-if" if="{{_is(offerview, 'fifth')}}">
+  <div class="offerview">
+    <ac-icon icon="ac-v" iconcolor="yellow"></ac-icon>
+    <h1>Your offer is published.</h1>
+    <div class="whitespace"></div>
+    <ac-button on-tap="backtohashtag" small txtbtn txtcolor="base" bg="blue">Back to hashtag</ac-button>
+  </div>
+</template>
+
+
+</div>
+</template>
+<!-- Creates the element's prototype and registers it -->
+<script>
+Polymer({
+  is: 'ac-newoffer',
+
+  properties: {
+    offerview: {
+      type: String,
+      value: 'zero'
+    }
+  },
+
+  attached: function() {
+    this.offerview = 'first';
+  },
+
+  locationfound: function(e) {
+    this.locationbound = true;
+    // this.tolocationbound = true;
+    this.mylatitude = e.detail.latitude;
+    this.mylongitude = e.detail.longitude;
+    this.fromlatlon.lat= e.detail.latitude;
+    this.fromlatlon.lng= e.detail.longitude;
+    // this.tolatlon.lat= e.detail.latitude;
+    // this.tolatlon.lng= e.detail.longitude;
+    // this.destlatitude = e.detail.latitude;
+    // this.destlongitude = e.detail.longitude;
+    var fromgeo = { 'detail':
+                    { 'target':
+                      { '_latlng':
+                        {'lat': this.fromlatlon.lat ,
+                        'lng': this.fromlatlon.lng }
+                      }
+                    }
+                  };
+    this.setfrom(fromgeo);
+    var leaflet = document.querySelector('#newleafletmapfrom');
+    leaflet.longitude = e.detail.longitude;
+    leaflet.latitude = e.detail.latitude;
+    this.$.newleafletmapfrom.map.invalidateSize();
+  },
+
+  setfrom: function(e) {
+    //var marker = this.$.frommarker;
+    var self = this;
+    console.log(e.detail.target._latlng);
+    this.fromlatlon = e.detail.target._latlng;
+    console.log(this.fromlatlon);
+    var lat = this.fromlatlon.lat;
+    var lon = this.fromlatlon.lng;
+    this.getaddress(lat, lon).then(function(response) {
+      console.log("Success!", JSON.parse(response));
+      var r = JSON.parse(response);
+      self.fromaddress = r;
+      //self.fromaddress = r.address.house_number + ' ' + r.address.road + '/ ' + r.address.postcode + ' ' + r.address.city;
+    }, function(error) {
+      console.error("Failed!", error);
     });
-  </script>
+  },
+
+  setto: function(e) {
+    //var marker = this.$.frommarker;
+    var self = this;
+    console.log(e.detail.target._latlng);
+    this.tolatlon = e.detail.target._latlng;
+    var lat = this.tolatlon.lat;
+    var lon = this.tolatlon.lng;
+    //this.$.newleafletmapto.map.invalidateSize();
+    this.getaddress(lat, lon).then(function(response) {
+      console.log("Success!", JSON.parse(response));
+      self.toaddress = JSON.parse(response);
+    }, function(error) {
+      console.error("Failed!", error);
+    });
+  },
+
+  getaddress: function(lat, lon) {
+
+    var options = 'format=json&lat='+lat+'&lon='+lon+'&zoom=18&addressdetails=1';
+    var url = '//nominatim.openstreetmap.org/reverse?' + options;
+
+    // Return a new promise.
+    return new Promise(function(resolve, reject) {
+      // Do the usual XHR stuff
+      var req = new XMLHttpRequest();
+      req.open('GET', url);
+
+      req.onload = function() {
+        // This is called even on 404 etc
+        // so check the status
+        if (req.status == 200) {
+          // Resolve the promise with the response text
+          resolve(req.response);
+        }
+        else {
+          // Otherwise reject with the status text
+          // which will hopefully be a meaningful error
+          reject(Error(req.statusText));
+        }
+      };
+
+      // Handle network errors
+      req.onerror = function() {
+        reject(Error("Network Error"));
+      };
+
+      // Make the request
+      req.send();
+    });
+  },
+
+  getdestination: function(destination) {
+
+    var options = destination+'&format=json&polygon=1&addressdetails=1';
+    var url = '//nominatim.openstreetmap.org/search?q=' + options;
+    // Return a new promise.
+    return new Promise(function(resolve, reject) {
+      // Do the usual XHR stuff
+      var req = new XMLHttpRequest();
+      req.open('GET', url);
+
+      req.onload = function() {
+        // This is called even on 404 etc
+        // so check the status
+        if (req.status == 200) {
+          // Resolve the promise with the response text
+          resolve(req.response);
+        }
+        else {
+          // Otherwise reject with the status text
+          // which will hopefully be a meaningful error
+          reject(Error(req.statusText));
+        }
+      };
+
+      // Handle network errors
+      req.onerror = function() {
+        reject(Error("Network Error"));
+      };
+
+      // Make the request
+      req.send();
+    });
+  },
+
+  doRouting: function(fromlatlon, tolatlon) {
+    var self = this;
+    var mapelement = document.querySelector('#overviewmap');
+
+    var routing = L.Routing.control({
+      waypoints: [
+        L.latLng(fromlatlon.lat, fromlatlon.lng),
+        L.latLng(tolatlon.lat, tolatlon.lng)
+      ],
+      router: L.Routing.mapbox('pk.eyJ1Ijoia2luZ2ZsdXJrZWwiLCJhIjoiT3VwdHJzNCJ9.BxS8Ogtc7_W8qg3MpS1iNw')
+    }).addTo(mapelement.map);
+
+    routing.on('routesfound', function(e) {
+      var routes = e.routes;
+      console.log(routes);
+      var routedistance = routes[0].summary.totalDistance;
+      var routetime = routes[0].summary.totalTime;
+      this.routetime = new moment.duration({ seconds:routetime}).humanize();
+      this.routedistance = routetime / 100;
+      this.routedistance = this.routedistance.toFixed(2);
+      this.costestimate = routetime * 0.02;
+      this.costestimate = this.costestimate.toFixed(2);
+      var coinsaldo = document.querySelector('locals-wallet').localcoinbalance;
+      if(coinsaldo < this.costestimate){
+        this.error = true;
+        this.errmsg = 'Insert coins first.';
+      }
+      this.routingprocess = true;
+      this.offeramount = this.costestimate;
+      //mapelement.fitToMarkers = true;
+      // this.customStyle['--map-shit'] = 'none';
+      // this.updateStyles();
+      var iti = document.querySelector('#overviewmap');
+      var cc = iti.querySelector('.leaflet-control-container');
+      cc.style = "display: none";
+      mapelement.map.invalidateSize();
+    }.bind(this));
+
+  },
+
+  _is: function(a, b) {
+    if (b === undefined){
+      b = true;
+    }
+    //console.log(a ,'(',typeof a,') is',b,'(',typeof b,') they are equal for ==',a == b,', they are equal for ===',a === b);
+    return a === b;
+  },
+
+});
+</script>
 </dom-module>
