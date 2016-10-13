@@ -11,12 +11,28 @@
       }
     </style>
 
-    <h1>New view</h1>
+    <template is="dom-if" if="accountlocked">
+      <h1>Account locked</h1>
+    </template>
+
+    <template is="dom-if" if="!accountlocked">
+      <h1>Account open</h1>
+    </template>
+
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>
     Polymer({
-      is: 'ac-profile'
+      is: 'ac-profile',
+      properties: {
+        name: {
+          type: Boolean
+        }
+      },
+
+      attached: function() {
+        this.accountlocked = true;
+      },
     });
   </script>
 </dom-module>

@@ -122,6 +122,11 @@
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
 
+    <app-route
+        route="{{subroute}}"
+        data="{{subrouteData}}"
+        pattern="/:key"></app-route>
+
     <app-drawer-layout fullbleed force-narrow>
       <!-- Drawer content -->
       <app-drawer id="drawer" swipe-open>
@@ -131,6 +136,7 @@
           <a name="wallet" href="/wallet">Wallet</a>
           <a name="settings" href="/settings">Settings</a>
           <a name="list" href="/list">List</a>
+          <a name="map" href="/map">Map</a>
         </iron-selector>
       </app-drawer>
 
@@ -164,22 +170,22 @@
             <ac-newuser name="newuser" sizeview="{{sizeview}}"></ac-newuser>
             <ac-password name="password" sizeview="{{sizeview}}"></ac-password>
 
-            <ac-map name="map" sizeview="{{sizeview}}" ></ac-map>
-            <ac-list name="list" sizeview="{{sizeview}}" ></ac-list>
+            <ac-map name="map" sizeview="{{sizeview}}"></ac-map>
+            <ac-list name="list" sizeview="{{sizeview}}"></ac-list>
 
-            <ac-detail name="detail" key="[[key]]" sizeview="{{sizeview}}" ></ac-detail>
+            <ac-detail name="detail" key="[[subrouteData.key]]" sizeview="{{sizeview}}"></ac-detail>
 
-            <ac-myitems name="myitems" sizeview="{{sizeview}}" ></ac-myitems>
-            <ac-myitem name="myitem" key="[[key]]" sizeview="{{sizeview}}" ></ac-myitem>
+            <ac-myitems name="myitems" sizeview="{{sizeview}}"></ac-myitems>
+            <ac-myitem name="myitem" key="[[key]]" sizeview="{{sizeview}}"></ac-myitem>
 
-            <ac-newoffer name="newoffer" sizeview="{{sizeview}}" ></ac-newoffer>
+            <ac-newoffer name="newoffer" sizeview="{{sizeview}}"></ac-newoffer>
 
-            <ac-profile name="profile" account="[[account]]" sizeview="{{sizeview}}" ></ac-profile>
-            <ac-wallet name="wallet" account="[[account]]" balance="[[balance]]" sizeview="{{sizeview}}" ></ac-wallet>
+            <ac-profile name="profile" account="[[account]]" sizeview="{{sizeview}}"></ac-profile>
+            <ac-wallet name="wallet" account="[[account]]" balance="[[balance]]" sizeview="{{sizeview}}"></ac-wallet>
 
-            <ac-settings name="settings" sizeview="{{sizeview}}" ></ac-settings>
+            <ac-settings name="settings" sizeview="{{sizeview}}"></ac-settings>
 
-            <ac-view404 name="view404" sizeview="{{sizeview}}" ></ac-view404>
+            <ac-view404 name="view404" sizeview="{{sizeview}}"></ac-view404>
 
         </iron-pages>
       </app-header-layout>
@@ -188,6 +194,7 @@
     <iron-media-query query="(min-width:0px) and (max-width: 600px)" query-matches="{{phoneview}}"></iron-media-query>
     <iron-media-query query="(min-width:601px) and (max-width: 1200px)" query-matches="{{desktopview}}"></iron-media-query>
     <iron-media-query query="(min-width:1201px)" query-matches="{{xlargeview}}"></iron-media-query>
+
     <ipfs-upload host="ipfs.arcadecity.world" id="ipfsupload" ipfs="{{ipfs}}" hidefileinput></ipfsupload>
 
   </template>
@@ -224,8 +231,8 @@
       ],
 
       attached: function() {
-        if(sessionStorage.getItem("ac-password", this.password)){
-          if(localStorage.getItem("ac-user")){
+        if(localStorage.getItem("ac-user")){
+          if(sessionStorage.getItem("ac-password", this.password)){
             app.set('route.path', '/list/');
           } else {
             app.set('route.path', '/password/');

@@ -165,34 +165,9 @@
               }
             });
           });
-      },
-
-      setPass: function(){
-        sessionStorage.setItem('lopassword', this.passwd);
-        this.$.lsapi.privatekey = this.passwd;
-        this.$.web3wallet.password = this.passwd;
-        Excess.RouteManager.transitionTo('/home');
-      },
-
-      _gotpassword: function(){
-          this.wrongpass = false;
-        this.$.web3wallet.password = this.passwd;
-        console.log('go home');
-        sessionStorage.setItem('lopassword', this.passwd);
-        if (window.location.hash === ''){
-          //Excess.RouteManager.transitionTo('/home');
-        }
-      },
-
-      _wrongpassword: function(){
-          Excess.RouteManager.transitionTo('/enterpass');
-          if(this.$.lsapi.privatekey){
-            console.log("ISSEM FOUT???????", this.wrongpass);
-          this.wrongpass = true;
-
-          }
-
       }
+
+
     });
   </script>
 </dom-module>

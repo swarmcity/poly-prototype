@@ -12,11 +12,19 @@
     </style>
 
     <h1>New view</h1>
+    <p>
+      {{key}}
+    </p>
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>
     Polymer({
-      is: 'ac-detail'
+      is: 'ac-detail',
+      properties: {
+        key: {
+          type: String
+        }
+      }
     });
   </script>
 </dom-module>

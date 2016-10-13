@@ -162,28 +162,6 @@ paper-fab {
   z-index: 1;
 }
 
-
-
-/*  .newoffer {
-width: 100%;
-box-sizing: border-box;
-padding: 20px 8vw 20px 8vw;
-background-color: white;
-@apply(--layout-horizontal);
-@apply(--layout-center);
-@apply(--layout-end-justified);
-
-}
-
-.newoffer p {
-@apply(--montserrat-bold);
-color: var(--ac-pink);
-border: 2px solid var(--ac-pink);
-padding: 8px;
-border-radius: 20px;
-}
-*/
-
 #exitbtn {
 opacity: 0.5;
 }
@@ -191,8 +169,6 @@ opacity: 0.5;
 #md {
 margin: 24px;
 }
-
-
 
 .item {
 box-sizing: border-box;
@@ -210,14 +186,11 @@ min-width: 150px;
 transform: scale(1.05,1.05);
 transform-origin: right;
 cursor: pointer;
-
 }
-
 
 .item p {
 color: var(--ac-white);
 font-size: 14px;
-
 }
 
 .small {
@@ -226,6 +199,7 @@ font-size: 12px;
 margin-left: 6px;
 opacity: 0.5;
 }
+
 .gold {
 background-color: var(--ac-green);
 padding: 12px 14px 10px 14px;
@@ -235,8 +209,6 @@ padding: 12px 14px 10px 14px;
 @apply(--montserrat-reg);
 font-size: 18px;
 }
-
-
 
 .silver {
 background-color: var(--ac-blue);
@@ -256,7 +228,6 @@ border-radius: 2px;
 border: 1px solid var(--ac-blue);
 margin-right: 18px;
 /*background-color: var(--ac-blue);*/
-
 }
 
 .changeview p {
@@ -264,8 +235,6 @@ color: var(--ac-blue);
 font-size: 10px;
 margin: 0px 0px 0px 0px;
 }
-
-
 
 .myoffers {
 @apply(--layout-vertical);
@@ -282,42 +251,26 @@ width: 100%;
 box-sizing: border-box;
 padding-top: 30px;
 width: 100%;
-
 }
 
-
-/*    .currenthashtag {
-width: 50px;
-height: 50px;
-background-color: red;
-}*/
-    </style>
+</style>
 
 <div class="topbar">
   <span class="flex" on-tap="change"></span>
-
   <ac-icon icon="declinenew" on-tap="toHashtags" small iconcolor="turquoise"></ac-icon>
-
 </div>
 
 <div class="main">
   <div class="container">
-
     <div class="alloffers">
       <template is="dom-repeat" items="{{blockdata}}">
-        <ac-listitem key="{{item.ipfshash}}" status="{{item.status}}" sizeview="{{sizeview}}"></ac-listitem>
+        <ac-listitem offerid="{{item.offerid}}" key="{{item.ipfshash}}" status="{{item.status}}" sizeview="{{sizeview}}"></ac-listitem>
       </template>
     </div>
     <div class="downcontrols">
-      <!--       <div class="changeview">
-      <p>MAPVIEW</p>
-    </div> -->
-    <ac-button on-tap="newOffer" icon="ac-plus" bg="white" class="new" txtcolor="red"></ac-button>
+      <ac-button on-tap="newOffer" icon="ac-plus" bg="white" class="new" txtcolor="red"></ac-button>
+    </div>
   </div>
-  <!--   <paper-fab icon="add" on-tap="newOffer"></paper-fab>
--->
-</div>
-
 </div>
 <ac-blockdata name="blockdata" blockdata="{{blockdata}}"></ac-blockdata>
 </template>
@@ -333,19 +286,10 @@ background-color: red;
       },
 
       _blockdata: function() {
-        var blockdata = this.blockdata;
-        console.log(blockdata);
-        for (var i = 0; i < blockdata.length; i++) {
-          blockdata[i];
-        }
       },
 
       newOffer: function() {
         app.set('route.path', '/newoffer/');
-      },
-
-      firetoggle: function(){
-        this.fire('toggle-drawer');
       },
 
       _sizeview: function(){

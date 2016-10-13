@@ -505,8 +505,16 @@ Polymer({
       },
   },
 
+  listeners: {
+    'tap': 'godetail'
+  },
+
   attached: function() {
     this.dataloaded = false;
+  },
+
+  godetail: function() {
+    app.set('route.path', '/detail/'+this.offerid);
   },
 
   _key: function() {
@@ -532,7 +540,7 @@ Polymer({
         .on('end', function() {
           var ipfsData = JSON.parse(buf);
 
-          console.log(ipfsData);
+          //console.log(ipfsData);
           var fromLATLON =  window.decodeGeoHash(ipfsData.from);
           var toLATLON =  window.decodeGeoHash(ipfsData.to);
           var point = {

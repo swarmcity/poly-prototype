@@ -298,7 +298,7 @@
       <div class="total vertic">
         <h1>Choose a password</h1>
         <div class="whitespace"></div>
-        <ac-input color="yellow" label="Password" bind-value="{{password}}" type="password" center></ac-input>
+        <ac-input id="p1" color="yellow" label="Password" bind-value="{{password}}" type="password" center></ac-input>
         <div class="whitespace"></div>
         <ac-button icon="ac-arrowright" on-tap="nextcontrol" bg="base" txtcolor="yellow">Continue</ac-button>
       </div>
@@ -308,7 +308,7 @@
       <div class="total vertic">
         <h1>Retype your password</h1>
         <div class="whitespace"></div>
-        <ac-input color="yellow" label="Password control" bind-value="{{password1}}" type="password" center></ac-input>
+        <ac-input id="p2" color="yellow" label="Password control" bind-value="{{password1}}" type="password" center></ac-input>
         <div class="whitespace"></div>
         <ac-button icon="ac-v" on-tap="savepass" disabled="{{passcheck}}" bg="base" txtcolor="yellow">Continue</ac-button>
       </div>
@@ -339,7 +339,13 @@
       },
 
       attached: function() {
+        this.$.p1.addEventListener('bind-value-changed', function(e) {
+          this.password = e.detail.value;
+        }.bind(this));
 
+        this.$.p2.addEventListener('bind-value-changed', function(e) {
+          this.password1 = e.detail.value;
+        }.bind(this));
       },
 
       savePassword: function() {
@@ -362,13 +368,15 @@
 
       savepass: function() {
         sessionStorage.setItem("ac-password", this.password);
+        localStorage.setItem("ac-user", "1");
+        app.set('route.path', '/');
       },
 
       _passwordcheck: function() {
         console.log(this.password, this.password1);
-        // if(this.password && this.password===this.password1){
-        //   this.passcheck = false;
-        // }
+        if(this.password && this.password===this.password1){
+          this.passcheck = false;
+        }
       }
     });
   </script>
