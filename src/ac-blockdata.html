@@ -20,7 +20,7 @@
   on-iron-localstorage-load="loadblockarray"
   ></iron-localstorage>
 
-  <iron-localstorage
+    <iron-localstorage
     name="ac-lastblock"
     value="{{lastblock}}"
     on-iron-localstorage-load-empty="initlastblock"
@@ -30,12 +30,12 @@
     <web3-wallet
       id="web3wallet"
       walletname="locals-wallet"
-      account="{{account}}"
+      account="[[account]]"
       password="{{password}}"
-      balance="{{balance}}"
-      keystore="{{keystore}}"
+      balance="[[balance]]"
+      keystore="[[keystore]]"
       host="https://eth.arcadecity.world:8545"
-      web3="{{web3}}"></web3-wallet>
+      web3="[[web3]]"></web3-wallet>
 
   </template>
   <!-- Creates the element's prototype and registers it -->
@@ -58,8 +58,18 @@
         this.password = sessionStorage.getItem('ac-password');
       },
 
+      detached: function(){
+        if (this.eventwatcher){
+          try{
+            this.eventwatcher.stopWatching();
+          }catch(e){
+            console.log('ac-blockdata: error stopWatching',e);
+          }
+        }
+      },
+
       _web3: function() {
-        console.log('got web3');
+//        console.log('got web3');
       },
 
       initlastblock: function(){
@@ -100,33 +110,32 @@
 
       getBlockData: function(){
 
-          // if (this.getblockdata === true){
-          //   return;
-          // }
-          //
-          // if (!this.web3 || !this.blockobject || !this.lastblock ){
-          //   return;
-          // }
 
+          // check if all needed data items are in place.          
+          if (!this.web3 || !this.blockobject || !this.lastblock ){
+            return;
+          }
+
+          // if already started - then just skip ( avoid listening twice to BC)
+          if (this.getblockdata === true){
+            return;
+          }
           this.getblockdata = true;
           console.log('Starting getBlockData');
 
 
           var self = this;
-          //self.web3 = self.$.web3wallet.web3;
-
-
 
           app.helpers.getfile('/src/contracts/localsInOut.json', function(err, inoutcontractjson) {
 
             var MyContract = self.web3.eth.contract(inoutcontractjson.abi);
             var myContractInstance = MyContract.at(inoutcontractjson.address);
 
-            var events = myContractInstance.allEvents({
+            self.eventwatcher = myContractInstance.allEvents({
               fromBlock: self.lastblock,
             });
 
-            events.watch(function(error, result) {
+            self.eventwatcher.watch(function(error, result) {
 
               var event = result;
               switch (event.event) {
@@ -169,5 +178,4 @@
 
 
     });
-  </script>
-</dom-module>
+  </script></dom-module>
