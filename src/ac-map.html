@@ -119,12 +119,17 @@
       }
 
       .username {
-        margin: 0px 0px 0px 10px;
-        @apply(--montserrat-light);
-        color:var(--ac-yellow);
+        margin: 0px 0px 0px 15px;
+        @apply(--montserrat-reg);
+        color:var(--ac-blue);
+        font-size: 20px;
       }
 
-      .viewswitch {
+      .leftbtn {
+        margin: 0px 10px 0px 0px;
+      }
+
+/*      .viewswitch {
         border-bottom: 1px dashed var(--ac-yellow);
         margin: 0px 10px 0px 0px;
         box-sizing: border-box;
@@ -140,7 +145,7 @@
         color: var(--ac-yellow);
         font-size: 12px;
       }
-
+*/
 
 
 
@@ -169,9 +174,9 @@
         <p class="username">Mr Myaghi</p>
       </div>
       <span class="flex"></span>
-      <div class="viewswitch" on-tap="toList"><p>listview</p></div>
-      <!-- <ac-button icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button> -->
-      <ac-icon icon="ac-filter" iconcolor="yellow" small></ac-icon>
+      <!-- <div class="viewswitch" on-tap="toList"><p>listview</p></div> -->
+      <ac-button icon="ac-menu" bg="base" txtcolor="yellow" verysmall on-tap="toList"  class="leftbtn"></ac-button>
+      <ac-button icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button>
     </div>
 
     <!-- <div id="spinner" hidden$="{{!locationunknown}}" class="spinnerdiv">

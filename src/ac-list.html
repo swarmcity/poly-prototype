@@ -16,9 +16,9 @@
       display: block;
       height: 100%;
 
-      --toppart-height: 12vh;
+      --toppart-height: 14vh;
       --toppart-padding: 10px 20px 10px 20px;
-      --container-height: 88vh;
+      --container-height: 86vh;
       --container-padding: 5vh 20px 0px 20px;
 
       --avatar-size: 40px;
@@ -128,12 +128,17 @@
       }
 
       .username {
-        margin: 0px 0px 0px 10px;
-        @apply(--montserrat-light);
-        color:var(--ac-yellow);
+        margin: 0px 0px 0px 15px;
+        @apply(--montserrat-reg);
+        color:var(--ac-blue);
+        font-size: 20px;
       }
 
-      .viewswitch {
+      .leftbtn {
+        margin: 0px 10px 0px 0px;
+      }
+
+/*      .viewswitch {
         border-bottom: 1px dashed var(--ac-yellow);
         margin: 0px 10px 0px 0px;
         box-sizing: border-box;
@@ -149,6 +154,9 @@
         color: var(--ac-yellow);
         font-size: 12px;
       }
+*/
+
+
 
 
 
@@ -174,8 +182,10 @@
         <p class="username">Mr Myaghi</p>
       </div>
       <span class="flex"></span>
-      <div class="viewswitch" on-tap="toMap"><p>mapview</p></div>
-      <ac-button icon="menu" bg="base" txtcolor="yellow" small></ac-button>
+      <!-- <div class="viewswitch" on-tap="toList"><p>listview</p></div> -->
+      <ac-button icon="ac-location" bg="base" txtcolor="yellow" verysmall on-tap="toMap" class="leftbtn"></ac-button>
+      <ac-button icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button>
+    </div>
     </div>
 
 
@@ -227,12 +237,12 @@
       _sizeview: function(){
         switch(this.sizeview) {
           case 'phone':
-            this.customStyle['--toppart-height'] = '12vh';
+            this.customStyle['--toppart-height'] = '14vh';
             this.customStyle['--toppart-padding'] = '10px 20px 10px 20px';
-            this.customStyle['--container-height'] = '88vh';
-            this.customStyle['--container-padding'] = '5vh 20px 5vh 20px';
+            this.customStyle['--container-height'] = '86vh';
+            this.customStyle['--container-padding'] = '10px 22px 5vh 22px';
 
-            this.customStyle['--avatar-size'] = '35px';
+            this.customStyle['--avatar-size'] = '45px';
 
             this.updateStyles();
           break;
@@ -240,7 +250,7 @@
             this.customStyle['--toppart-height'] = '10vh';
             this.customStyle['--toppart-padding'] = '10px 20px 10px 26px';
             this.customStyle['--container-height'] = '90vh';
-            this.customStyle['--container-padding'] = '5vh 20px 5vh 20px';
+            this.customStyle['--container-padding'] = '10px 22px 5vh 22px';
 
             this.customStyle['--avatar-size'] = '40px';
 
@@ -250,7 +260,7 @@
             this.customStyle['--toppart-height'] = '10vh';
             this.customStyle['--toppart-padding'] = '10px 40px 10px 40px';
             this.customStyle['--container-height'] = '90vh';
-            this.customStyle['--container-padding'] = '5vh 40px 5vh 40px';
+            this.customStyle['--container-padding'] = '10px 44px 5vh 44px';
 
             this.customStyle['--avatar-size'] = '40px';
 
