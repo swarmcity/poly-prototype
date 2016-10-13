@@ -1,0 +1,124 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
+<link rel="import" href="../bower_components/moment-js/moment-js.html">
+
+<dom-module id="ac-routeplanner">
+  <template>
+ 
+      <div class="overviewtotal">
+
+        <leaflet-map
+        id="mapp"
+        draggable="true"
+        no-Zoom-Control="true"
+        fit-to-markers="true"
+        on-map-ready="doRouting"
+        >
+
+        <leaflet-tilelayer
+        url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
+      </leaflet-tilelayer>
+
+    </leaflet-map>
+
+
+    <div class="overviewinfo">
+      <div  class="overviewinfoitemtotal">
+        <div class="fromto">
+          <p><i18n-msg msgid="From"></i18n-msg></p>
+        </div>
+        <div class="overviewinfoitem">
+          <p>{{fromaddress.display_name}}</p>
+        </div>
+      </div>
+      <div class="overviewinfoitemtotal">
+        <div class="fromto">
+          <p><i18n-msg msgid="to"></i18n-msg></p>
+        </div>
+        <div class="overviewinfoitem">
+          <p>{{toaddress.display_name}}</p>
+        </div>
+      </div>
+
+      <div class="confirmbtns">
+        <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="yellow"></ac-icon>
+        <!-- <template dom-is="if" if="{{!error}}"> -->
+        <ac-button id="commitoffer" on-tap="toPlaceoffer" bg="yellow" txtcolor="base" icon="ac-v"></ac-button>
+        <!-- </template> -->
+      </div>
+ 
+  </template>
+  <script>
+    Polymer({
+      is: 'ac-routeplanner',
+      properties: {
+        fromlatlon: {
+          type: Object,
+          observer: 'doRouting'
+        },
+        tolatlon: {
+          type: String,
+          observer: 'doRouting'
+        }
+      },
+      ready: function() {
+//debugger;
+      },
+      attached: function(){
+//        console.log(this.fromlatlon,this.tolatlon);
+      },
+
+      doRouting: function() {
+        
+        if (!this.fromlatlon || !this.tolatlon ||!this.$.mapp.map ) {
+          return;
+        }
+
+        debugger;
+
+        //var self = this;
+        //var mapelement = this.$.mapp.map; //document.querySelector('#mapp');
+        //console.log(mapelement);
+
+        var routing = L.Routing.control({
+          waypoints: [
+            L.latLng(this.fromlatlon.lat, this.fromlatlon.lng),
+            L.latLng(this.tolatlon.lat, this.tolatlon.lng)
+          ],
+          router: L.Routing.mapbox('pk.eyJ1Ijoia2luZ2ZsdXJrZWwiLCJhIjoiT3VwdHJzNCJ9.BxS8Ogtc7_W8qg3MpS1iNw')
+        }).addTo(this.$.mapp.map);
+
+        routing.on('routesfound', function(e) {
+          var routes = e.routes;
+          console.log(routes);
+          var routedistance = routes[0].summary.totalDistance;
+          var routetime = routes[0].summary.totalTime;
+          this.routetime = new moment.duration({
+            seconds: routetime
+          }).humanize();
+          this.routedistance = routetime / 100;
+          this.routedistance = this.routedistance.toFixed(2);
+          this.costestimate = routetime * 0.02;
+          this.costestimate = this.costestimate.toFixed(2);
+          // var coinsaldo = document.querySelector('locals-wallet').localcoinbalance;
+          // if (coinsaldo < this.costestimate) {
+          //   this.error = true;
+          //   this.errmsg = 'Insert coins first.';
+          // }
+          this.routingprocess = true;
+          this.offeramount = this.costestimate;
+          this.$.mapp.map.fitToMarkers = true;
+          // this.customStyle['--map-shit'] = 'none';
+          // this.updateStyles();
+          // var iti = document.querySelector('#overviewmap');
+          // var cc = iti.querySelector('.leaflet-control-container');
+          // cc.style = "display: none";
+          // this.$.mapp.map.invalidateSize();
+        }.bind(this));
+
+      },
+
+
+    });
+  </script>
+</dom-module>

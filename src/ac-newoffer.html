@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="./ac-locationpicker.html">
+<link rel="import" href="./ac-routeplanner.html">
 <link rel="import" href="../bower_components/ac-button/ac-button.html">
 <link rel="import" href="../bower_components/ac-loader/ac-loader.html">
 <link rel="import" href="../bower_components/ac-icon/ac-icon.html">
@@ -479,7 +480,7 @@
     <template id="zerotemp" is="dom-if" if="{{_is(offerview, 'zero')}}">
     </template>
 
-    <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'first')}}">
+    <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'first')}}" restamp>
 
       <ac-locationpicker locationbound="{{locationbound}}" current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}"></ac-locationpicker>
 
@@ -494,7 +495,7 @@
 
     </template>
 
-    <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'second')}}">
+    <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'second')}}" restamp>
 
       <ac-locationpicker current-geo="{{tolatlon}}" resolved-address="{{toaddress}}"></ac-locationpicker>
 
@@ -509,53 +510,12 @@
 
     </template>
 
-    <template is="dom-if" if="{{_is(offerview, 'third')}}">
+    <template is="dom-if" if="{{_is(offerview, 'third')}}" restamp>
       <!-- <div class="spinner" hidden="{{routingprocess}}">
         <ac-loader small><i18n-msg msgid="Your offer is being prepared">
         </i18n-msg></ac-loader>
       </div> -->
-
-      <div class="overviewtotal">
-
-        <leaflet-map
-        id="mapp"
-        map="{{leafletmap}}"
-        draggable="true"
-        no-Zoom-Control="true"
-        fit-to-markers="true">
-
-        <leaflet-tilelayer
-        url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
-      </leaflet-tilelayer>
-
-    </leaflet-map>
-
-
-    <div class="overviewinfo">
-      <div  class="overviewinfoitemtotal">
-        <div class="fromto">
-          <p><i18n-msg msgid="From"></i18n-msg></p>
-        </div>
-        <div class="overviewinfoitem">
-          <p>{{fromaddress.display_name}}</p>
-        </div>
-      </div>
-      <div class="overviewinfoitemtotal">
-        <div class="fromto">
-          <p><i18n-msg msgid="to"></i18n-msg></p>
-        </div>
-        <div class="overviewinfoitem">
-          <p>{{toaddress.display_name}}</p>
-        </div>
-      </div>
-
-      <div class="confirmbtns">
-        <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="yellow"></ac-icon>
-        <!-- <template dom-is="if" if="{{!error}}"> -->
-        <ac-button id="commitoffer" on-tap="toPlaceoffer" bg="yellow" txtcolor="base" icon="ac-v"></ac-button>
-        <!-- </template> -->
-      </div>
-
+      <ac-routeplanner fromlatlon="{{fromlatlon}}" tolatlon="{{tolatlon}}"></ac-routeplanner>
     </div>
 
 
@@ -609,14 +569,26 @@ Polymer({
     offerview: {
       type: String,
       value: 'zero'
-    }
+    },
+    fromlatlon: {
+      type: Object,
+      observer: 'll'
+    },
+    tolatlon: {
+      type: Object,
+      observer: 'll'
+    },
+  },
+
+  ll: function(){
+    debugger;
   },
 
   attached: function() {
     this.offerview = 'first';
     this.routingprocess = false;
-    var mapelement = document.querySelector('#mapp');
-    console.log(mapelement);
+    // var mapelement = document.querySelector('#mapp');
+    // console.log(mapelement);
   },
 
   toSecond: function() {
@@ -625,51 +597,11 @@ Polymer({
 
   toThird: function() {
     this.offerview = 'third';
-    var self = this;
-    window.setTimeout(function() {
-      self.doRouting(self.fromlatlon, self.tolatlon);
-    }, 2000);
-  },
-
-  doRouting: function(fromlatlon, tolatlon) {
-    var self = this;
-    var mapelement = document.querySelector('#mapp');
-    console.log(mapelement);
-
-    var routing = L.Routing.control({
-      waypoints: [
-        L.latLng(fromlatlon.lat, fromlatlon.lng),
-        L.latLng(tolatlon.lat, tolatlon.lng)
-      ],
-      router: L.Routing.mapbox('pk.eyJ1Ijoia2luZ2ZsdXJrZWwiLCJhIjoiT3VwdHJzNCJ9.BxS8Ogtc7_W8qg3MpS1iNw')
-    }).addTo(mapelement.map);
-
-    routing.on('routesfound', function(e) {
-      var routes = e.routes;
-      console.log(routes);
-      var routedistance = routes[0].summary.totalDistance;
-      var routetime = routes[0].summary.totalTime;
-      this.routetime = new moment.duration({ seconds:routetime}).humanize();
-      this.routedistance = routetime / 100;
-      this.routedistance = this.routedistance.toFixed(2);
-      this.costestimate = routetime * 0.02;
-      this.costestimate = this.costestimate.toFixed(2);
-      var coinsaldo = document.querySelector('locals-wallet').localcoinbalance;
-      if(coinsaldo < this.costestimate){
-        this.error = true;
-        this.errmsg = 'Insert coins first.';
-      }
-      this.routingprocess = true;
-      this.offeramount = this.costestimate;
-      //mapelement.fitToMarkers = true;
-      // this.customStyle['--map-shit'] = 'none';
-      // this.updateStyles();
-      var iti = document.querySelector('#overviewmap');
-      var cc = iti.querySelector('.leaflet-control-container');
-      cc.style = "display: none";
-      mapelement.map.invalidateSize();
-    }.bind(this));
-
+    //var self = this;
+    //this.$.routplanner.fromlatlon = 
+    //window.setTimeout(function() {
+      //self.doRouting(self.fromlatlon, self.tolatlon);
+    //}, 2000);
   },
 
   _is: function(a, b) {
