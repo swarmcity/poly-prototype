@@ -1,0 +1,48 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
+
+<dom-module id="ac-locationtracker">
+  <template>
+
+ <leaflet-map hidden="true">
+    <leaflet-geolocation
+        watch
+        id="geolocator"
+        on-locationfound="_locationchanged"
+        enable-high-accuracy
+        latitude="{{latitude}}"
+        longitude="{{longitude}}"
+        accuracy="3">
+    </leaflet-geolocation>
+  </leaflet-map>
+  </template>
+  <script>
+    Polymer({
+      is: 'ac-locationtracker',
+      properties: {
+        // latitide: {
+        //   type: Number,
+        //   observer: '_locationchanged'
+        // },
+        // longitude: {
+        //   type: Number,
+        //   observer: '_locationchanged'
+        // }
+      },
+      
+      ready: function(){
+        // TODO : add if development then this set - othersie use other set.
+        //debugger;
+      },
+      
+      attached: function(){
+        //debugger;
+      },
+
+      _locationchanged: function(e,data){
+        console.log('ac-locationtracker -> I am now at',data.latitude,data.longitude);
+      }
+
+    });
+  </script>
+</dom-module>
