@@ -203,6 +203,10 @@
           type: String,
           reflectToAttribute: true,
           observer: '_pageChanged'
+        },
+        route: {
+          type: String,
+          observer: '_route'
         }
       },
 
@@ -213,7 +217,7 @@
       attached: function() {
         if(localStorage.getItem("ac-user")){
           if(sessionStorage.getItem("ac-password", this.password)){
-            app.set('route.path', '/map/');
+            app.set('route.path', localStorage.getItem('ac-lastroute'));
           } else {
             app.set('route.path', '/password/');
           }
@@ -245,7 +249,11 @@
            var url = this.$.ipfsupload.url(hash);
            return url;
          }
-        },
+      },
+
+      _route: function() {
+        localStorage.setItem('ac-lastroute', this.route.path);
+      }
     });
   </script>
   <script src="scripts/helpers.js"></script>
