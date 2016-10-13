@@ -59,7 +59,8 @@
       properties: {
         locationbound: {
           type: Boolean,
-          value: false
+          value: false,
+          notify: true
         },
         zoom: {
           type: Number,
@@ -76,7 +77,6 @@
       },
 
       locationfound: function(e) {
-        //console.log('location found');
         this.$.leaflet.map.invalidateSize();
         this.$.leaflet.map.addEventListener('moveend', function() {
           this.$.leaflet.map.invalidateSize();
@@ -85,16 +85,13 @@
         this.currentGeo = { 'lat': e.detail.latitude, 'lng': e.detail.longitude };
         var self = this;
         this.getAddress(this.currentGeo).then(function(response) {
-          //console.log("Success!", JSON.parse(response));
           self.resolvedAddress = JSON.parse(response);
-        }, function(error) {
-          //console.error("Failed!", error);
-        });
+            }, function(error) {
+          });
         this.appendMarker(e.detail.latitude, e.detail.longitude);
       },
 
       appendMarker: function(lat, lng) {
-        //console.log('appending marker: ', lat, lng);
         marker = document.createElement('leaflet-marker');
         marker.latitude = lat;
         marker.longitude = lng;
@@ -102,11 +99,9 @@
         var self = this;
         marker.addEventListener('dragend', function(e) {
           this.getAddress(e.detail.target._latlng).then(function(response) {
-            //console.log("Success!", JSON.parse(response));
             self.resolvedAddress = JSON.parse(response);
             self.fire('dragend', { 'resolvedaddress': response, 'lat': e.detail.target._latlng.lat, 'lng': e.detail.target._latlng.lng});
           }, function(error) {
-            //console.error("Failed!", error);
             self.fire('error', error);
           });
         }.bind(this));
@@ -114,7 +109,6 @@
       },
 
       getAddress: function(latlng) {
-        //console.log('got ', latlng);
         this.$.leaflet.map.setView([latlng.lat, latlng.lng], this.zoom);
         var lat = latlng.lat;
         var lng = latlng.lng;

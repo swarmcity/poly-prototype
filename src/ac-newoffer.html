@@ -1,17 +1,129 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="./ac-locationpicker.html">
+<link rel="import" href="../bower_components/ac-button/ac-button.html">
+<link rel="import" href="../bower_components/ac-loader/ac-loader.html">
+<link rel="import" href="../bower_components/ac-icon/ac-icon.html">
+<link rel="import" href="../bower_components/ac-style/ac-style.html">
+<link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
+<script src="../bower_components/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
 
 <dom-module id="ac-newoffer">
   <!-- Defines the element's style and local DOM -->
   <template>
-  <style>
+
+<style>
   :host {
     display: block;
+    height: 100%;
+    @apply(--base-structure);
+    --map-shit: none;
+    --map-height:60vh;
+    --overviewinfo-height:40vh;
+    --overviewinfo-margins: 2vh 30px 2vh 30px;
+  }
+
+  h1 {
+    @apply(--ac-font-h1);
+/*    background-color: white;*/
+  }
+
+  ac-input {
+    @apply(--ac-font-h1);
+/*    background-color: white;*/
+  }
+
+  h3 {
+    @apply(--ac-font-h3);
+  }
+
+  p {
+    @apply(--ac-font-body1);
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  .topbar {
+    width: 100%;
+    height: var(--topbar-height);
+    @apply(--layout-horizontal);
+    @apply(--layout-center);
+    box-sizing: border-box;
+    padding: 10px 20px 10px 10px;
+  }
+
+  .container {
+    width: 100%;
+    @apply(--layout-vertical);
+    @apply(--layout-center);
+    @apply(--layout-start-justified);
+    background-color: white;
+
+  }
+
+  .main {
+    width: 100%;
+    max-width: 90vw;
+    @apply(--layout-vertical);
+    @apply(--layout-left);
+  }
+
+  .tussenschot {
+    width: 100%;
+    height: 1px;
+    background-color: rgba(0,0,0,0.05);
+  }
+
+  #therest {
+    width: 100%;
+    @apply(--layout-vertical);
+    @apply(--layout-left);
+    line-height: normal;
+  }
+
+  .whitespace {
+    width: 100%;
+    height: 2vh;
+    min-height: 20px;
+  }
+
+  .absolutepos {
+    position: absolute;
+  }
+
+  .flex {
+    @apply(--layout-horizontal);
+    @apply(--layout-flex);
+  }
+
+  ac-locationpicker {
+    display: block;
+    height: 100vh;
+    width: 100vw;
+    z-index: 0;
   }
 
   leaflet-map {
+    display: block;
     height: 100vh;
+    width: 100vw;
+    z-index: 0;
   }
+
+  .confirmbtns {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    z-index: 3;
+    @apply(--layout-horizontal);
+    @apply(--layout-center-center);
+  }
+
+  .confirmbtn {
+    margin: 0px 2px 0px 2px;
+  }
+
   .fixedplace {
     position: fixed;
     top: 70px;
@@ -107,7 +219,261 @@
   }
 
 
-  </style>
+
+  .spinner {
+    width: 100vw;
+    height: 100vh;
+    @apply(--base-structure);
+    /*background-color: var(--ac-yellow);*/
+    @apply(--layout-horizontal);
+    @apply(--layout-center-center);
+    box-sizing: border-box;
+    padding: 20vw;
+  }
+
+  .spinner h1 {
+    color: var(--ac-yellow);
+/*    font-size: 22px;
+    line-height: 28px;*/
+    text-align: center;
+
+  }
+
+  .spinnerdiv {
+    width: 100vw;
+    height: 100vh;
+    @apply(--layout-vertical);
+    @apply(--layout-center-center);
+    background-color: var(--ac-darkgrey);
+  }
+
+  .overviewtotal {
+    height: 100vh;
+    width: 100%;
+    @apply(--layout-vertical);
+    @apply(--layout-center);
+    @apply(--base-structure);
+
+  }
+
+
+ #overviewmap {
+    height: var(--map-height);
+  }
+
+  .overviewinfo {
+    height: var(--overviewinfo-height);
+    box-sizing: border-box;
+    padding: var(--overviewinfo-margins);
+    @apply(--layout-vertical);
+    @apply(--layout-start);
+    @apply(--layout-start-justified);
+    @apply(--base-structure);
+  }
+
+  .overviewinfoitemtotal {
+    width: 100%;
+    @apply(--layout-horizontal);
+    @apply(--layout-start);
+    @apply(--layout-start-justified);
+    box-sizing: border-box;
+    padding: 0px;
+    overflow-y: scroll;
+  }
+
+  .fromto {
+    width: 70px;
+    min-width: 70px;
+    box-sizing: border-box;
+    padding: 0px 10px 0px 0px;
+  }
+
+  .fromto p {
+    text-align: right;
+    color: var(--ac-yellow);
+    opacity: 0.7;
+  }
+
+  .overviewinfoitem {
+    box-sizing: border-box;
+    padding: 0px 0px 0px 10px;
+    max-height: 15vh;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+  }
+  .overviewinfoitem p {
+    color: var(--ac-yellow);
+
+  }
+
+  .price {
+    @apply(--layout-horizontal);
+    @apply(--layout-end);
+    @apply(--layout-start-justified);
+    margin-top: 20px;
+  }
+
+  .price p {
+    color: var(--ac-red);
+
+    @apply(--montserrat-ultralight);
+    margin: 0px;
+    font-size: 46px;
+    line-height: 58px;
+  }
+
+  .ARC {
+    font-size: 20px;
+    line-height: 34px;
+    margin: 0px;
+  }*/
+
+/*
+  .summary {
+    position: absolute;
+    z-index: 1;
+    width: 90%;
+    @apply(--layout-vertical);
+    @apply(--layout-start);
+    @apply(--layout-start-justified);
+    bottom: 90px;
+    box-sizing: border-box;
+    padding: 15px 15px 15px 0px;
+
+  }
+
+  .summaryitem {
+    width: 100%;
+    @apply(--layout-horizontal);
+    @apply(--layout-center);
+  }
+  .summaryitem p {
+    width: 120px;
+    color: var(--ac-yellow);
+    font-size: 18px;
+    line-height: 24px;
+    @apply(--montserrat-light);
+    opacity: 0.5;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 0px 14px 2px 0px;
+    text-align: right;
+  }
+
+  .fromto {
+    color: var(--ac-yellow);
+    font-size: 18px;
+    line-height: 24px;
+    margin: 0px;
+    width: 100%;
+    text-align: left;
+    @apply(--ac-font-nowrap)
+    @apply(--montserrat-reg);
+    opacity: 1;
+
+  }
+
+
+  .price h1 {
+    box-sizing: border-box;
+    padding: 4px 0px 4px 0px;
+    color: var(--ac-red);
+    @apply(--montserrat-reg);
+  }
+
+  .price p {
+    width: 120px;
+    color: var(--ac-red);
+    font-size: 18px;
+    line-height: 24px;
+    @apply(--montserrat-light);
+    opacity: 0.5;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 4px 14px 4px 0px;
+    text-align: right;
+  }
+*/
+  .leaflet-container {
+    width: 100vw;
+    height: 100vw;
+  }
+.refresher {
+       -webkit-animation-name: rotate;
+      -webkit-animation-duration: 1s;
+      -webkit-animation-iteration-count: infinite;
+      -webkit-animation-timing-function: linear;
+      -moz-animation-name: rotate;
+      -moz-animation-duration: 1s;
+      -moz-animation-iteration-count: infinite;
+      -moz-animation-timing-function: linear;
+      animation-name: rotate;
+      animation-duration: 1s;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+      opacity: 0.5;
+     }
+
+      @-webkit-keyframes rotate {
+          from {-webkit-transform: rotate(0deg);}
+          to {-webkit-transform: rotate(360deg);}
+      }
+
+      @-moz-keyframes rotate {
+          from {-moz-transform: rotate(0deg);}
+          to {-moz-transform: rotate(360deg);}
+      }
+
+      @keyframes rotate {
+          from {transform: rotate(0deg);}
+          to {transform: rotate(360deg);}
+      }
+
+      .offerview {
+        width: 100vw;
+        height: 100vh;
+        @apply(--layout-vertical);
+        @apply(--layout-center-center);
+        color: var(--ac-yellow);
+        @apply(--base-structure);
+        text-align: center;
+
+      }
+
+
+      .offerview h1 {
+        text-align: center;
+        width: 75%;
+      }
+
+
+
+      .logger {
+        width: 100%;
+        @apply(--layout-vertical);
+        @apply(--layout-center-center);
+      }
+
+      .loggercollapse {
+        @apply(--ac-font-body1);
+        color:var(--ac-blue);
+        text-decoration: none;
+        outline: none;
+        font-size: 12px;
+        border-bottom: 1px dashed var(--ac-blue);
+      }
+
+      .log {
+        height: 30vh;
+        background-color: base;
+        overflow-y: scroll;
+        width: 100%;
+      }
+
+
+
+</style>
   <div class="container">
 
     <template id="zerotemp" is="dom-if" if="{{_is(offerview, 'zero')}}">
@@ -115,72 +481,85 @@
 
     <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'first')}}">
 
-    <ac-locationpicker current-geo="{{fromgeo}}" resolved-address="{{fromaddress}}"></ac-locationpicker>
+      <ac-locationpicker locationbound="{{locationbound}}" current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}"></ac-locationpicker>
 
-<div class="fixedplace" hidden="{{!locationbound}}">
-  <p><i18n-msg msgid="From">
-  </i18n-msg></p>
-  <h1>{{fromaddress.display_name}}</h1>
-</div>
-<div class="confirmbtns" hidden="{{!locationbound}}">
-  <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="base"></ac-icon>
-  <ac-button on-tap="toSecond" bg="yellow" txtcolor="big" icon="ac-arrowright"></ac-button>
-</div>
+      <div class="fixedplace">
+        <p>From</p>
+        <h1>{{fromaddress.display_name}}</h1>
+      </div>
+      <div class="confirmbtns">
+        <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="base"></ac-icon>
+        <ac-button on-tap="toSecond" bg="yellow" txtcolor="big" icon="ac-arrowright"></ac-button>
+      </div>
 
-</template>
+    </template>
 
-<template is="dom-if" if="{{_is(offerview, 'third')}}">
-  <div class="spinner" hidden="{{routingprocess}}">
-    <ac-loader small><i18n-msg msgid="Your offer is being prepared">
-    </i18n-msg></ac-loader>
-  </div>
+    <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'second')}}">
 
-  <div class="overviewtotal" hidden="{{!routingprocess}}">
-    <leaflet-map
-    id="overviewmap"
-    map="{{leafletmap}}"
-    draggable="true"
-    latitude="[[latitude]]"
-    longitude="[[longitude]]"
-    no-Zoom-Control="true"
-    fit-to-markers="true">
+      <ac-locationpicker current-geo="{{tolatlon}}" resolved-address="{{toaddress}}"></ac-locationpicker>
 
-    <leaflet-tilelayer
-    url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
-  </leaflet-tilelayer>
+      <div class="fixedplace">
+        <p>To</p>
+        <h1>{{toaddress.display_name}}</h1>
+      </div>
+      <div class="confirmbtns">
+        <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="base"></ac-icon>
+        <ac-button on-tap="toThird" bg="yellow" txtcolor="big" icon="ac-arrowright"></ac-button>
+      </div>
 
-</leaflet-map>
+    </template>
+
+    <template is="dom-if" if="{{_is(offerview, 'third')}}">
+      <!-- <div class="spinner" hidden="{{routingprocess}}">
+        <ac-loader small><i18n-msg msgid="Your offer is being prepared">
+        </i18n-msg></ac-loader>
+      </div> -->
+
+      <div class="overviewtotal">
+
+        <leaflet-map
+        id="mapp"
+        map="{{leafletmap}}"
+        draggable="true"
+        no-Zoom-Control="true"
+        fit-to-markers="true">
+
+        <leaflet-tilelayer
+        url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
+      </leaflet-tilelayer>
+
+    </leaflet-map>
 
 
-<div class="overviewinfo">
-  <div  class="overviewinfoitemtotal">
-    <div class="fromto">
-      <p><i18n-msg msgid="From"></i18n-msg></p>
+    <div class="overviewinfo">
+      <div  class="overviewinfoitemtotal">
+        <div class="fromto">
+          <p><i18n-msg msgid="From"></i18n-msg></p>
+        </div>
+        <div class="overviewinfoitem">
+          <p>{{fromaddress.display_name}}</p>
+        </div>
+      </div>
+      <div class="overviewinfoitemtotal">
+        <div class="fromto">
+          <p><i18n-msg msgid="to"></i18n-msg></p>
+        </div>
+        <div class="overviewinfoitem">
+          <p>{{toaddress.display_name}}</p>
+        </div>
+      </div>
+
+      <div class="confirmbtns">
+        <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="yellow"></ac-icon>
+        <!-- <template dom-is="if" if="{{!error}}"> -->
+        <ac-button id="commitoffer" on-tap="toPlaceoffer" bg="yellow" txtcolor="base" icon="ac-v"></ac-button>
+        <!-- </template> -->
+      </div>
+
     </div>
-    <div class="overviewinfoitem">
-      <p>{{fromaddress.display_name}}</p>
-    </div>
+
+
   </div>
-  <div class="overviewinfoitemtotal">
-    <div class="fromto">
-      <p><i18n-msg msgid="to"></i18n-msg></p>
-    </div>
-    <div class="overviewinfoitem">
-      <p>{{toaddress.display_name}}</p>
-    </div>
-  </div>
-
-  <div class="confirmbtns">
-    <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="yellow"></ac-icon>
-    <!-- <template dom-is="if" if="{{!error}}"> -->
-    <ac-button id="commitoffer" on-tap="toPlaceoffer" bg="yellow" txtcolor="base" icon="ac-v"></ac-button>
-    <!-- </template> -->
-  </div>
-
-</div>
-
-
-</div>
 </template>
 
 
@@ -235,140 +614,27 @@ Polymer({
 
   attached: function() {
     this.offerview = 'first';
+    this.routingprocess = false;
+    var mapelement = document.querySelector('#mapp');
+    console.log(mapelement);
   },
 
-  locationfound: function(e) {
-    this.locationbound = true;
-    // this.tolocationbound = true;
-    this.mylatitude = e.detail.latitude;
-    this.mylongitude = e.detail.longitude;
-    this.fromlatlon.lat= e.detail.latitude;
-    this.fromlatlon.lng= e.detail.longitude;
-    // this.tolatlon.lat= e.detail.latitude;
-    // this.tolatlon.lng= e.detail.longitude;
-    // this.destlatitude = e.detail.latitude;
-    // this.destlongitude = e.detail.longitude;
-    var fromgeo = { 'detail':
-                    { 'target':
-                      { '_latlng':
-                        {'lat': this.fromlatlon.lat ,
-                        'lng': this.fromlatlon.lng }
-                      }
-                    }
-                  };
-    this.setfrom(fromgeo);
-    var leaflet = document.querySelector('#newleafletmapfrom');
-    leaflet.longitude = e.detail.longitude;
-    leaflet.latitude = e.detail.latitude;
-    this.$.newleafletmapfrom.map.invalidateSize();
+  toSecond: function() {
+    this.offerview = 'second';
   },
 
-  setfrom: function(e) {
-    //var marker = this.$.frommarker;
+  toThird: function() {
+    this.offerview = 'third';
     var self = this;
-    console.log(e.detail.target._latlng);
-    this.fromlatlon = e.detail.target._latlng;
-    console.log(this.fromlatlon);
-    var lat = this.fromlatlon.lat;
-    var lon = this.fromlatlon.lng;
-    this.getaddress(lat, lon).then(function(response) {
-      console.log("Success!", JSON.parse(response));
-      var r = JSON.parse(response);
-      self.fromaddress = r;
-      //self.fromaddress = r.address.house_number + ' ' + r.address.road + '/ ' + r.address.postcode + ' ' + r.address.city;
-    }, function(error) {
-      console.error("Failed!", error);
-    });
-  },
-
-  setto: function(e) {
-    //var marker = this.$.frommarker;
-    var self = this;
-    console.log(e.detail.target._latlng);
-    this.tolatlon = e.detail.target._latlng;
-    var lat = this.tolatlon.lat;
-    var lon = this.tolatlon.lng;
-    //this.$.newleafletmapto.map.invalidateSize();
-    this.getaddress(lat, lon).then(function(response) {
-      console.log("Success!", JSON.parse(response));
-      self.toaddress = JSON.parse(response);
-    }, function(error) {
-      console.error("Failed!", error);
-    });
-  },
-
-  getaddress: function(lat, lon) {
-
-    var options = 'format=json&lat='+lat+'&lon='+lon+'&zoom=18&addressdetails=1';
-    var url = '//nominatim.openstreetmap.org/reverse?' + options;
-
-    // Return a new promise.
-    return new Promise(function(resolve, reject) {
-      // Do the usual XHR stuff
-      var req = new XMLHttpRequest();
-      req.open('GET', url);
-
-      req.onload = function() {
-        // This is called even on 404 etc
-        // so check the status
-        if (req.status == 200) {
-          // Resolve the promise with the response text
-          resolve(req.response);
-        }
-        else {
-          // Otherwise reject with the status text
-          // which will hopefully be a meaningful error
-          reject(Error(req.statusText));
-        }
-      };
-
-      // Handle network errors
-      req.onerror = function() {
-        reject(Error("Network Error"));
-      };
-
-      // Make the request
-      req.send();
-    });
-  },
-
-  getdestination: function(destination) {
-
-    var options = destination+'&format=json&polygon=1&addressdetails=1';
-    var url = '//nominatim.openstreetmap.org/search?q=' + options;
-    // Return a new promise.
-    return new Promise(function(resolve, reject) {
-      // Do the usual XHR stuff
-      var req = new XMLHttpRequest();
-      req.open('GET', url);
-
-      req.onload = function() {
-        // This is called even on 404 etc
-        // so check the status
-        if (req.status == 200) {
-          // Resolve the promise with the response text
-          resolve(req.response);
-        }
-        else {
-          // Otherwise reject with the status text
-          // which will hopefully be a meaningful error
-          reject(Error(req.statusText));
-        }
-      };
-
-      // Handle network errors
-      req.onerror = function() {
-        reject(Error("Network Error"));
-      };
-
-      // Make the request
-      req.send();
-    });
+    window.setTimeout(function() {
+      self.doRouting(self.fromlatlon, self.tolatlon);
+    }, 2000);
   },
 
   doRouting: function(fromlatlon, tolatlon) {
     var self = this;
-    var mapelement = document.querySelector('#overviewmap');
+    var mapelement = document.querySelector('#mapp');
+    console.log(mapelement);
 
     var routing = L.Routing.control({
       waypoints: [
