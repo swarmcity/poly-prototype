@@ -1,5 +1,8 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
+<link rel="import" href="../bower_components/ac-style/ac-style.html">
+
 <link rel="import" href="./ac-blockdata.html">
 
 <dom-module id="ac-map">
@@ -12,13 +15,58 @@
         display: block;
       }
 
+      h1 {
+        @apply(--ac-font-h1);
+      }
+
+      h2 {
+        @apply(--ac-font-h2);
+      }
+
+      h3 {
+        @apply(--ac-font-h3);
+      }
+
+      p {
+        @apply(--ac-font-body1);
+      }
+
+      li {
+        @apply(--ac-font-body1);
+      }
+
+      .flex {
+        @apply(--layout-flex);
+      }
+
+      .absolutepos {
+        position: absolute;
+      }
+
+
+      .toppart {
+        height: 13vh;
+        z-index: 2;
+        @apply(--base-structure);
+      }
+
+      .bottompart {
+        height: 15vh;
+      }
+
+
+
       leaflet-map {
         width: 100vw;
         height: 87vh;
         z-index: 1;
       }
 
+
+
+
     </style>
+    <div class="toppart"></div>
 
     <leaflet-map
       id="leafletmap"
