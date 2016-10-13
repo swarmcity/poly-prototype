@@ -1,8 +1,8 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
+<link rel="import" href="../bower_components/ac-icon/ac-icon.html">
 
 <script src="../bower_components/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js"></script>
 
 <dom-module id="ac-locationpicker">
   <!-- Defines the element's style and local DOM -->
@@ -15,6 +15,10 @@
       leaflet-map {
         height: 100vh;
       }
+
+      .spinnerdiv {
+        height: 100vw;
+      }
     </style>
 
     <div hidden="{{locationbound}}" class="spinnerdiv">
@@ -22,9 +26,9 @@
     </div>
 
     <leaflet-map
-      id="newleafletmapfrom"
+      id="leaflet"
       draggable="true"
-      zoom="17"
+      zoom="{{zoom}}"
       latitude="{{latitude}}"
       longitude="{{longitude}}"
       no-Zoom-Control="true"
@@ -44,14 +48,6 @@
         url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
       </leaflet-tilelayer>
 
-      <!-- <leaflet-marker
-        id="frommarker"
-        on-dragend="setfrom"
-        draggable="true"
-        latitude="{{mylatitude}}"
-        longitude="{{mylongitude}}">
-      </leaflet-marker> -->
-
     </leaflet-map>
 
   </template>
@@ -64,13 +60,92 @@
         locationbound: {
           type: Boolean,
           value: false
+        },
+        zoom: {
+          type: Number,
+          value: 17
+        },
+        resolvedAddress: {
+          type: Object,
+          notify: true
+        },
+        currentGeo: {
+          type: Object,
+          notify: true
         }
       },
 
-      locationfound: function() {
-        console.log('location found');
+      locationfound: function(e) {
+        //console.log('location found');
+        this.$.leaflet.map.invalidateSize();
+        this.$.leaflet.map.addEventListener('moveend', function() {
+          this.$.leaflet.map.invalidateSize();
+        }.bind(this));
         this.locationbound = true;
+        this.currentGeo = { 'lat': e.detail.latitude, 'lng': e.detail.longitude };
+        this.appendMarker(e.detail.latitude, e.detail.longitude);
+      },
+
+      appendMarker: function(lat, lng) {
+        //console.log('appending marker: ', lat, lng);
+        marker = document.createElement('leaflet-marker');
+        marker.latitude = lat;
+        marker.longitude = lng;
+        marker.draggable = "true";
+        var self = this;
+        marker.addEventListener('dragend', function(e) {
+          this.getAddress(e.detail.target._latlng).then(function(response) {
+            //console.log("Success!", JSON.parse(response));
+            self.resolvedAddress = JSON.parse(response);
+            self.fire('dragend', { 'resolvedaddress': response, 'lat': e.detail.target._latlng.lat, 'lng': e.detail.target._latlng.lng});
+          }, function(error) {
+            //console.error("Failed!", error);
+            self.fire('error', error);
+          });
+        }.bind(this));
+        this.$.leaflet.appendChild(marker);
+      },
+
+      getAddress: function(latlng) {
+        //console.log('got ', latlng);
+        this.$.leaflet.map.setView([latlng.lat, latlng.lng], this.zoom);
+        var lat = latlng.lat;
+        var lng = latlng.lng;
+        var options = 'format=json&lat='+lat+'&lon='+lng+'&zoom=18&addressdetails=1';
+        var url = '//nominatim.openstreetmap.org/reverse?' + options;
+
+        // Return a new promise.
+        return new Promise(function(resolve, reject) {
+          // Do the usual XHR stuff
+          var req = new XMLHttpRequest();
+          req.open('GET', url);
+
+          req.onload = function() {
+            // This is called even on 404 etc
+            // so check the status
+            if (req.status == 200) {
+              // Resolve the promise with the response text
+              resolve(req.response);
+            }
+            else {
+              // Otherwise reject with the status text
+              // which will hopefully be a meaningful error
+              reject(Error(req.statusText));
+            }
+          };
+
+          // Handle network errors
+          req.onerror = function() {
+            reject(Error("Network Error"));
+          };
+
+          // Make the request
+          req.send();
+        });
       }
+
+
     });
   </script>
+
 </dom-module>
