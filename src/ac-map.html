@@ -95,7 +95,7 @@
       }
 
 
-      /*  avatar and username  */
+      /*  toppart  */
 
       .userinfo {
         width: 100%;
@@ -125,7 +125,6 @@
       }
 
       .viewswitch {
-        background-color: var(--ac-base);
         border-bottom: 1px dashed var(--ac-yellow);
         margin: 0px 10px 0px 0px;
         box-sizing: border-box;
@@ -171,7 +170,8 @@
       </div>
       <span class="flex"></span>
       <div class="viewswitch" on-tap="toList"><p>listview</p></div>
-      <ac-button icon="menu" bg="base" txtcolor="yellow" small></ac-button>
+      <!-- <ac-button icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button> -->
+      <ac-icon icon="ac-filter" iconcolor="yellow" small></ac-icon>
     </div>
 
     <!-- <div id="spinner" hidden$="{{!locationunknown}}" class="spinnerdiv">
@@ -287,9 +287,9 @@
             this.updateStyles();
           break;
           case 'xlarge':
-            this.customStyle['--toppart-height'] = '8vh';
-            this.customStyle['--toppart-padding'] = '10px 20px 10px 20px';
-            this.customStyle['--container-height'] = '92vh';
+            this.customStyle['--toppart-height'] = '10vh';
+            this.customStyle['--toppart-padding'] = '10px 40px 10px 40px';
+            this.customStyle['--container-height'] = '90vh';
 
             this.customStyle['--avatar-size'] = '40px';
 
