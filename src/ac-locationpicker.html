@@ -1,0 +1,76 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
+
+<script src="../bower_components/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js"></script>
+
+<dom-module id="ac-locationpicker">
+  <!-- Defines the element's style and local DOM -->
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      leaflet-map {
+        height: 100vh;
+      }
+    </style>
+
+    <div hidden="{{locationbound}}" class="spinnerdiv">
+      <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
+    </div>
+
+    <leaflet-map
+      id="newleafletmapfrom"
+      draggable="true"
+      zoom="17"
+      latitude="{{latitude}}"
+      longitude="{{longitude}}"
+      no-Zoom-Control="true"
+      min-zoom="8"
+      max-zoom="19"
+      hidden="{{!locationbound}}">
+
+      <leaflet-geolocation
+        on-locationfound="locationfound"
+        enable-high-accuracy
+        latitude="{{latitude}}"
+        longitude="{{longitude}}"
+        accuracy="3">
+      </leaflet-geolocation>
+
+      <leaflet-tilelayer
+        url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
+      </leaflet-tilelayer>
+
+      <!-- <leaflet-marker
+        id="frommarker"
+        on-dragend="setfrom"
+        draggable="true"
+        latitude="{{mylatitude}}"
+        longitude="{{mylongitude}}">
+      </leaflet-marker> -->
+
+    </leaflet-map>
+
+  </template>
+  <!-- Creates the element's prototype and registers it -->
+  <script>
+    Polymer({
+      is: 'ac-locationpicker',
+
+      properties: {
+        locationbound: {
+          type: Boolean,
+          value: false
+        }
+      },
+
+      locationfound: function() {
+        console.log('location found');
+        this.locationbound = true;
+      }
+    });
+  </script>
+</dom-module>
