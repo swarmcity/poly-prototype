@@ -19,9 +19,9 @@
       display: block;
       height: 100%;
 
-      --toppart-height: 12vh;
+      --toppart-height: 15vh;
       --toppart-padding: 10px 20px 10px 20px;
-      --container-height: 88vh;
+      --container-height: 85vh;
 
       --avatar-size: 40px;
 
@@ -65,6 +65,7 @@
         @apply(--layout-center-center);
         box-sizing: border-box;
         padding: var(--toppart-padding);
+        border-bottom: 1px solid var(--ac-base);
       }
 
       .bottompart {
@@ -175,7 +176,7 @@
       </div>
       <span class="flex"></span>
       <!-- <div class="viewswitch" on-tap="toList"><p>listview</p></div> -->
-      <ac-button icon="ac-menu" bg="base" txtcolor="yellow" verysmall on-tap="toList"  class="leftbtn"></ac-button>
+      <ac-button icon="ac-menu" bg="base" txtcolor="yellow" on-tap="toList"  class="leftbtn" small></ac-button>
       <ac-button icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button>
     </div>
 
@@ -274,29 +275,29 @@
       _sizeview: function(){
         switch(this.sizeview) {
           case 'phone':
-            this.customStyle['--toppart-height'] = '12vh';
+            this.customStyle['--toppart-height'] = '15vh';
             this.customStyle['--toppart-padding'] = '10px 20px 10px 20px';
-            this.customStyle['--container-height'] = '88vh';
+            this.customStyle['--container-height'] = '85vh';
 
-            this.customStyle['--avatar-size'] = '35px';
+            this.customStyle['--avatar-size'] = '45px';
 
             this.updateStyles();
           break;
           case 'desktop':
-            this.customStyle['--toppart-height'] = '10vh';
+            this.customStyle['--toppart-height'] = '15vh';
             this.customStyle['--toppart-padding'] = '10px 20px 10px 26px';
-            this.customStyle['--container-height'] = '90vh';
+            this.customStyle['--container-height'] = '85vh';
 
-            this.customStyle['--avatar-size'] = '40px';
+            this.customStyle['--avatar-size'] = '50px';
 
             this.updateStyles();
           break;
           case 'xlarge':
-            this.customStyle['--toppart-height'] = '10vh';
+            this.customStyle['--toppart-height'] = '15vh';
             this.customStyle['--toppart-padding'] = '10px 40px 10px 40px';
-            this.customStyle['--container-height'] = '90vh';
+            this.customStyle['--container-height'] = '85vh';
 
-            this.customStyle['--avatar-size'] = '40px';
+            this.customStyle['--avatar-size'] = '60px';
 
             this.updateStyles();
           break;
