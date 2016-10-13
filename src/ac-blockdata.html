@@ -29,7 +29,7 @@
 
     <web3-wallet
       id="web3wallet"
-      walletname="locals-wallet"
+      walletname="ac-wallet"
       account="{{account}}"
       password="{{password}}"
       balance="{{balance}}"
@@ -100,22 +100,10 @@
 
       getBlockData: function(){
 
-          // if (this.getblockdata === true){
-          //   return;
-          // }
-          //
-          // if (!this.web3 || !this.blockobject || !this.lastblock ){
-          //   return;
-          // }
-
           this.getblockdata = true;
           console.log('Starting getBlockData');
 
-
           var self = this;
-          //self.web3 = self.$.web3wallet.web3;
-
-
 
           app.helpers.getfile('/src/contracts/localsInOut.json', function(err, inoutcontractjson) {
 
