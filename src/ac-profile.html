@@ -1,4 +1,10 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/ac-button/ac-button.html">
+<link rel="import" href="../bower_components/ac-input/ac-input.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-request.html">
+<link rel="import" href="../bower_components/ac-style/ac-style.html">
+
+<link rel="import" href="./ac-ipfs.html">
 
 <dom-module id="ac-profile">
   <!-- Defines the element's style and local DOM -->
@@ -6,16 +12,115 @@
     <style>
       :host {
         display: block;
+        --toppart-height: 15vh;
+        --toppart-padding: 10px 20px 10px 20px;
+        --container-height: 85vh;
+        --avatar-size: 40px;
       }
+
+      .avatar {
+        width:140px;
+        height: 140px;
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: transparent;
+      }
+
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+
+      .userinfosmall {
+        width: 100%;
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        box-sizing: border-box;
+      }
+
+      .avatarsmall {
+        width: var(--avatar-size);
+        height: var(--avatar-size);
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: transparent;
+        z-index: 3;
+
+      }
+
+      .avatarsmall img {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+
+      .usernamesmall {
+        margin: 0px 0px 0px -5px;
+        padding: 5px 8px 6px 18px;
+        @apply(--montserrat-reg);
+        color:#4CACF5;
+        font-size: 20px;
+        background-color: white;
+        z-index: 1;
+        /*background-color: rgba(31,23,66,0.05);*/
+        /*text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);*/
+      }
+
     </style>
 
     <template is="dom-if" if="{{accountlocked}}">
-      <h1>Profile: Account locked</h1>
+      <p>Account locked</p>
     </template>
 
     <template is="dom-if" if="{{!accountlocked}}">
-      <h1>Profile: Account open</h1>
+
+      <!-- small profile view -->
+      <template is="dom-if" if="{{_is(viewstate, 'smallview')}}">
+
+        <div class="userinfosmall"  on-tap="toProfile">
+           <div class="avatarsmall" id="avatar">
+            <img src="http://media.hotbirthdays.com/files/1932/06/28/pat-morita-1.jpg">
+          </div>
+          <p class="usernamesmall">{{username}}</p>
+        </div>
+
+      </template>
+
+      <!-- View profile view -->
+      <template is="dom-if" if="{{_is(viewstate, 'overview')}}">
+        <div>
+          <h1>User logged in</h1>
+          <h2>{{username}}</h2>
+          <div class="avatar">
+            <img src="{{avatarurl}}" alt="" />
+          </div>
+          <ac-button on-tap="toEdit" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button>
+        </div>
+      </template>
+
+      <!-- Edit profile view -->
+      <template is="dom-if" if="{{_is(viewstate, 'edit')}}">
+        <div>
+          <ac-input on-bind-value-changed="inputchanged" id="newusername" bind-value="{{newusername}}" value="{{username}}" placeholder="{{username}}"></ac-input>
+          <div class="avatar">
+            <img on-tap="uploadavatar" id="avataredit" src="{{newavatarurl}}" alt="" />
+          </div>
+          <ac-button on-tap="toCancel" icon="ac-decline" bg="yellow" txtcolor="base" small></ac-button>
+          <ac-button on-tap="toSave" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button>
+        </div>
+      </template>
+
     </template>
+
+    <iron-localstorage
+      name="ac-profile"
+      value="{{userdata}}"
+      on-iron-localstorage-load-empty="initprofile"
+      on-iron-localstorage-load="loadprofile">
+    </iron-localstorage>
+
+    <ac-ipfs id="ipfs" ipfs="{{ipfs}}"></ac-ipfs>
 
   </template>
   <!-- Creates the element's prototype and registers it -->
@@ -27,12 +132,85 @@
           type: Boolean,
           value: true,
           notify: true
+        },
+        password: {
+          type: String,
+          observer: '_password'
+        },
+        currentavatar: {
+          type: String
+        },
+        ipfs: {
+          type: Object
+        },
+        viewstate: {
+          type: String,
+          value: 'overview'
         }
       },
 
       attached: function() {
         this.accountlocked = true;
+        this.password = sessionStorage.getItem('ac-password');
       },
+
+      _password: function() {
+        if(this.password) {
+          this.accountlocked = false;
+        }
+      },
+
+      initprofile: function() {
+        var userobject = {avatar: 'QmPh72SvymjpgSiYhguSbWi4hDLSuq9xuAfyys5eFjb8P6', aka: 'Mr. AC'};
+        localStorage.setItem('ac-profile', JSON.stringify(userobject));
+      },
+
+      loadprofile: function() {
+        var userobject = localStorage.getItem('ac-profile');
+        this.userdata = JSON.parse(userobject);
+        this.currentavatar = this.userdata.avatar;
+        this.avatarurl = this.$.ipfs.geturl(this.userdata.avatar);
+        this.username = this.userdata.aka;
+      },
+
+      toSave: function() {
+        var userobject = {avatar: 'QmPh72SvymjpgSiYhguSbWi4hDLSuq9xuAfyys5eFjb8P6', aka: this.newusername };
+        console.log('old:', this.username, ' new: ', this.newusername);
+        localStorage.setItem('ac-profile', JSON.stringify(userobject));
+        this.loadprofile();
+        this.viewstate = 'overview';
+      },
+
+      toProfile: function() {
+        app.set('route.path', '/profile/');
+      },
+
+      toCancel: function() {
+        this.viewstate = 'overview';
+      },
+
+      toEdit: function() {
+        this.newavatar = this.userdata.avatar;
+        this.newavatarurl = this.$.ipfs.geturl(this.userdata.avatar);
+        this.viewstate = 'edit';
+      },
+
+      inputchanged: function(e) {
+        this.newusername = e.detail.value;
+      },
+
+      uploadavatar: function() {
+        console.log('start avatar upload');
+      },
+
+      _is: function(a, b) {
+        if (b === undefined){
+          b = true;
+        }
+        //console.log(a ,'(',typeof a,') is',b,'(',typeof b,') they are equal for ==',a == b,', they are equal for ===',a === b);
+        return a === b;
+      }
+
     });
   </script>
 </dom-module>

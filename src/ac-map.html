@@ -6,7 +6,7 @@
 <link rel="import" href="../bower_components/ac-button/ac-button.html">
 
 <link rel="import" href="./ac-blockdata.html">
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js"></script>
+<link rel="import" href="./ac-profile.html">
 
 <dom-module id="ac-map">
   <!-- Defines the element's style and local DOM -->
@@ -17,13 +17,7 @@
     :host {
       display: block;
       height: 100%;
-
-      --toppart-height: 15vh;
-      --toppart-padding: 10px 20px 10px 20px;
       --container-height: 85vh;
-
-      --avatar-size: 40px;
-
     }
 
       h1 {
@@ -108,34 +102,6 @@
         box-sizing: border-box;
       }
 
-      .avatar {
-        width: var(--avatar-size);
-        height: var(--avatar-size);
-        border-radius: 50%;
-        overflow: hidden;
-        background-color: transparent;
-        z-index: 3;
-
-      }
-
-      .avatar img {
-        width: 100%;
-        height: 100%;
-        border: none;
-      }
-
-      .username {
-        margin: 0px 0px 0px -5px;
-        padding: 5px 8px 6px 18px;
-        @apply(--montserrat-reg);
-        color:#4CACF5;
-        font-size: 20px;
-        background-color: white;
-        z-index: 1;
-        /*background-color: rgba(31,23,66,0.05);*/
-        /*text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);*/
-      }
-
       .leftbtn {
         margin: 0px 10px 0px 0px;
       }
@@ -178,12 +144,7 @@
     </style>
 
     <div class="toppart">
-      <div class="userinfo"  on-tap="toProfile">
-         <div class="avatar" id="avatar">
-          <img src="http://media.hotbirthdays.com/files/1932/06/28/pat-morita-1.jpg">
-        </div>
-        <p class="username">Mr Myaghi</p>
-      </div>
+      <ac-profile viewstate="smallview"></ac-profile>
       <span class="flex"></span>
       <!-- <div class="viewswitch" on-tap="toList"><p>listview</p></div> -->
       <ac-button icon="ac-menu" bg="base" txtcolor="yellow" on-tap="toList"  class="leftbtn" small></ac-button>
@@ -216,17 +177,6 @@
       <leaflet-tilelayer
         url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
       </leaflet-tilelayer>
-
-      <template is="dom-repeat" items="{{blockdata}}">
-        <!-- <leaflet-marker
-          on-tap="selectoffer"
-          ipfshash="{{item.ipfshash}}"
-          title="{{item.ipfshash}}"
-          icon="car"
-          latitude="{{item.latitude}}"
-          longitude="{{item.longitude}}">
-        </leaflet-marker> -->
-      </template>
 
     </leaflet-map>
 
@@ -272,11 +222,31 @@
       },
 
       _blockdata: function() {
-        var blockdata = this.blockdata;
-        console.log(blockdata);
-        for (var i = 0; i < blockdata.length; i++) {
-          blockdata[i];
+        //console.log(this.blockdata);
+        for (var i = 0; i < this.blockdata.length; i++) {
+          var o = this.blockdata[i];
+          if(o.status == 'added'){
+            this.appendMarker(o.ipfsdata.fromaddress.lat, o.ipfsdata.fromaddress.lon, o.ipfshash, o.offerid);
+          }
         }
+      },
+
+      appendMarker: function(lat, lng, title, key) {
+        var acIcon = L.icon({
+          iconUrl: '/images/manifest/icon-96x96.png',
+          iconSize:     [38, 38], // size of the icon
+          iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+        });
+        marker = document.createElement('leaflet-marker');
+        marker.latitude = lat;
+        marker.longitude = lng;
+        marker.title = key;
+        marker.id = key;
+        marker.icon = acIcon;
+        marker.addEventListener('click', function(e) {
+          app.set('route.path', '/detail/' + e.target.id);
+        });
+        this.$.leafletmap.appendChild(marker);
       },
 
       toList: function() {
@@ -286,7 +256,7 @@
       locationfound: function() {
         this.locationunknown = false;
         // this.$.spinner.hidden = true;
-         console.log('location found: ', this.locationunknown);
+         //console.log('location found: ', this.locationunknown);
         // this.$.leafletmap.hidden = false;
         this.$.leafletmap.map.invalidateSize();
       },
@@ -327,6 +297,11 @@
 
       newOffer: function() {
         app.set('route.path', '/newoffer/');
+      },
+
+      godetail: function(e) {
+        console.log(e.detail);
+        //app.set('route.path', '/detail/'+this.offerid);
       },
 
       toFilter: function() {
