@@ -271,9 +271,12 @@
         marker = document.createElement('leaflet-marker');
         marker.latitude = lat;
         marker.longitude = lng;
-        marker.title = title;
+        marker.title = key;
         marker.id = key;
         marker.draggable = "false";
+        marker.addEventListener('click', function(e) {
+          app.set('route.path', '/detail/' + e.target.id);
+        });
         this.$.leafletmap.appendChild(marker);
       },
 
@@ -329,7 +332,7 @@
 
       godetail: function(e) {
         console.log(e.detail);
-        app.set('route.path', '/detail/'+this.offerid);
+        //app.set('route.path', '/detail/'+this.offerid);
       },
 
       toFilter: function() {
