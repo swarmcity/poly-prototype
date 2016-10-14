@@ -260,7 +260,7 @@
       },
 
       _blockdata: function() {
-        console.log(this.blockdata);
+        //console.log(this.blockdata);
         for (var i = 0; i < this.blockdata.length; i++) {
           var o = this.blockdata[i];
           this.appendMarker(o.ipfsdata.fromaddress.lat, o.ipfsdata.fromaddress.lon, o.ipfshash, o.offerid);
@@ -268,12 +268,17 @@
       },
 
       appendMarker: function(lat, lng, title, key) {
+        var acIcon = L.icon({
+          iconUrl: '/images/manifest/icon-96x96.png',
+          iconSize:     [38, 38], // size of the icon
+          iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+        });
         marker = document.createElement('leaflet-marker');
         marker.latitude = lat;
         marker.longitude = lng;
         marker.title = key;
         marker.id = key;
-        marker.draggable = "false";
+        marker.icon = acIcon;
         marker.addEventListener('click', function(e) {
           app.set('route.path', '/detail/' + e.target.id);
         });
@@ -287,7 +292,7 @@
       locationfound: function() {
         this.locationunknown = false;
         // this.$.spinner.hidden = true;
-         console.log('location found: ', this.locationunknown);
+         //console.log('location found: ', this.locationunknown);
         // this.$.leafletmap.hidden = false;
         this.$.leafletmap.map.invalidateSize();
       },
