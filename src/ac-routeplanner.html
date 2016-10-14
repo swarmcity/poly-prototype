@@ -469,7 +469,7 @@
 
 </style>
       <div class="overviewtotal">
-     
+
         <leaflet-map
         id="mapp"
         draggable="true"
@@ -483,7 +483,7 @@
       </leaflet-tilelayer>
 
     </leaflet-map>
- 
+
 
     <div class="overviewinfo">
       <div  class="overviewinfoitemtotal">
@@ -505,7 +505,7 @@
 
     </div>
   </div>
- 
+
   </template>
   <script>
     Polymer({
@@ -532,21 +532,14 @@
       },
 
       doRouting: function() {
-        
+
         if (!this.fromlatlon || !this.tolatlon ||!this.$.mapp.map ) {
           return;
         }
 
         if (this.fromlatlon.lat == this.tolatlon.lat ){
-          debugger;
           return;
         }
-
-       // debugger;
-
-        //var self = this;
-        //var mapelement = this.$.mapp.map; //document.querySelector('#mapp');
-        //console.log(mapelement);
 
         var routing = L.Routing.control({
           waypoints: [
@@ -558,8 +551,6 @@
 
         routing.on('routesfound', function(e) {
           var routes = e.routes;
-          //console.log(routes);
-        
           var routedistance = routes[0].summary.totalDistance;
           var routetime = routes[0].summary.totalTime;
           this.routetime = new moment.duration({
@@ -578,7 +569,7 @@
               routedistance: this.routedistance,
               costestimate: this.costestimate
           };
-  
+
           // fit map to bounds
           var line = L.Routing.line(routes[0]);
           var bounds = line.getBounds();
