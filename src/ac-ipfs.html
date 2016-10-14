@@ -36,7 +36,7 @@
       },
       
       ready: function(){
-        this.cacheLoaded = deferred();
+        //this.cacheLoaded = deferred();
       },
 
       // initcache: function(){
@@ -79,13 +79,17 @@
         //debugger;
       },
 
+      // usage : <ac-ipfs id="ipfs"></ac-ipfs>
+      //         this.$.ipfs.add(new this.$.ipfs.ipfs.Buffer(JSON.stringify(myJSONdata)), function(err, result) { console.log(result[0].hash); });
       add: function(data, cb) {
-        var b = new this.ipfs.Buffer(data);
-        this.ipfs.add(b, function(err, res) {
+        //var b = new this.ipfs.Buffer(data);
+        this.ipfs.add(data, function(err, res) {
           if (cb) cb(err, res);
         });
       },
 
+      // usage : <ac-ipfs id="ipfs"></ac-ipfs>
+      //         self.$.ipfs.cat(ipfshash, function(err, data) { ... });
       cat: function(hash, cb) {
         // this.cacheLoaded.then(function(){
         //   var cached = this.cache_get(hash);

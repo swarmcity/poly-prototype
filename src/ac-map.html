@@ -256,7 +256,16 @@
         sizeview: {
           type: String,
           observer: '_sizeview'
+        },
+        latitude: {
+          type: Number,
+          notify: true
+        },
+        longitude: {
+          type: Number,
+          notify: true
         }
+
       },
 
       attached: function() {

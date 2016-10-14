@@ -3,31 +3,22 @@
 
 <dom-module id="ac-locationtracker">
   <template>
-
- <leaflet-map hidden="true">
-    <leaflet-geolocation
-        watch
-        id="geolocator"
-        on-locationfound="_locationchanged"
-        enable-high-accuracy
-        latitude="{{latitude}}"
-        longitude="{{longitude}}"
-        accuracy="3">
-    </leaflet-geolocation>
-  </leaflet-map>
+    <leaflet-map hidden="true">
+      <leaflet-geolocation
+      watch
+      id="geolocator"
+      on-locationfound="_locationchanged"
+      enable-high-accuracy
+      latitude="{{latitude}}"
+      longitude="{{longitude}}"
+      maximumAge=100
+      accuracy="3"></leaflet-geolocation>
+    </leaflet-map>
   </template>
   <script>
     Polymer({
       is: 'ac-locationtracker',
       properties: {
-        // latitide: {
-        //   type: Number,
-        //   observer: '_locationchanged'
-        // },
-        // longitude: {
-        //   type: Number,
-        //   observer: '_locationchanged'
-        // }
       },
       
       ready: function(){
@@ -36,11 +27,18 @@
       },
       
       attached: function(){
+        console.log('ac-locationtracker attached.');
         //debugger;
+      },
+      detached: function(){
+        //debugger;
+        this.$.geolocator.container.stopLocate();
+        console.log('ac-locationtracker ending. Bye.');
       },
 
       _locationchanged: function(e,data){
         console.log('ac-locationtracker -> I am now at',data.latitude,data.longitude);
+        this.fire('locationChanged',data);
       }
 
     });

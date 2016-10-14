@@ -1,19 +1,11 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="./ac-locationpicker.html">
-<link rel="import" href="./ac-routeplanner.html">
-<link rel="import" href="./ac-transact.html">
-<link rel="import" href="../bower_components/ac-button/ac-button.html">
-<link rel="import" href="../bower_components/ac-loader/ac-loader.html">
-<link rel="import" href="../bower_components/ac-icon/ac-icon.html">
-<link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
-<script src="../bower_components/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
+<link rel="import" href="../bower_components/moment-js/moment-js.html">
 
-<dom-module id="ac-newoffer">
-  <!-- Defines the element's style and local DOM -->
+<dom-module id="ac-routeplanner">
   <template>
-
-    <style>
+    <!-- TODO : BAN : deze CSS mag grondig opgekuist weunne -->
+<style>
   :host {
     display: block;
     height: 100%;
@@ -476,193 +468,139 @@
 
 
 </style>
-    <div class="container">
+      <div class="overviewtotal">
+     
+        <leaflet-map
+        id="mapp"
+        draggable="true"
+        no-Zoom-Control="true"
+        fit-to-markers="true"
+        on-map-ready="doRouting"
+        >
 
-    <ac-transact on-txhash="" on-mined="" on-error="" id="transact"></ac-transact>
+        <leaflet-tilelayer
+        url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
+      </leaflet-tilelayer>
 
-
-      <template id="zerotemp" is="dom-if" if="{{_is(offerview, 'zero')}}"></template>
-
-      <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'first')}}" restamp>
-
-        <ac-locationpicker latitude="{{latitude}}" longitude="{{longitude}}" locationbound="{{locationbound}}" current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}"></ac-locationpicker>
-
-        <div class="fixedplace">
-          <p>From</p>
-          <h1>{{fromaddress.display_name}}</h1>
-        </div>
-        <div class="confirmbtns">
-          <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="base"></ac-icon>
-          <ac-button on-tap="toSecond" bg="yellow" txtcolor="big" icon="ac-arrowright"></ac-button>
-        </div>
-
-      </template>
-
-      <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'second')}}" restamp>
-
-        <ac-locationpicker latitude="{{latitude}}" longitude="{{longitude}}" current-geo="{{tolatlon}}" resolved-address="{{toaddress}}"></ac-locationpicker>
-
-        <div class="fixedplace">
-          <p>To</p>
-          <h1>{{toaddress.display_name}}</h1>
-        </div>
-        <div class="confirmbtns">
-          <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="base"></ac-icon>
-          <ac-button on-tap="toThird" bg="yellow" txtcolor="big" icon="ac-arrowright"></ac-button>
-        </div>
-
-      </template>
-
-      <template is="dom-if" if="{{_is(offerview, 'third')}}" restamp>
-        <!-- <div class="spinner" hidden="{{routingprocess}}">
-        <ac-loader small>
-          <i18n-msg msgid="Your offer is being prepared"></i18n-msg>
-        </ac-loader>
-      </div>
-      -->
-      <ac-routeplanner routedetails="{{routedetails}}" on-route-available="routeAvailable" fromlatlon="{{fromlatlon}}" tolatlon="{{tolatlon}}"></ac-routeplanner>
-
-      <div class="confirmbtns">
-        <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="yellow"></ac-icon>
-        <!-- <template dom-is="if" if="{{!error}}">
-        -->
-        <ac-button id="commitoffer" on-tap="toFourth" bg="yellow" txtcolor="base" icon="ac-v"></ac-button>
-        <!-- </template>--></div>
-
-    </div>
-</template>
-
-<template is="dom-if" if="{{_is(offerview, 'fourth')}}" restamp>
-  <div class="offerview">
-    <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
-
-<!--     <ac-transact on-txhash="" on-mined="" on-error="" id="transact" id="transact"></ac-transact>
- -->
-    <h1>Publishing offer</h1>
-    <div class="logger" on-tap="logCollapse">
-      <template is="dom-if" if="{{!logshown}}">
-        <p class="loggercollapse">show log</p>
-      </template>
-      <template is="dom-if" if="{{logshown}}">
-        <p class="loggercollapse">hide log</p>
-      </template>
-
-      <iron-collapse id="logcollapser">
-        <div class="log">
-          <template is="dom-repeat" items="{{statuslog}}" restamp>
-            <p>{{item.msg}}</p>
-          </template>
-        </div>
-      </iron-collapse>
-    </div>
-
-  </div>
-</template>
-
-<template is="dom-if" if="{{_is(offerview, 'fifth')}}">
-  <div class="offerview">
-
-    <ac-icon icon="ac-v" iconcolor="yellow"></ac-icon>
-    <h1>Your offer is published.</h1>
-    <div class="whitespace"></div>
-    <ac-button on-tap="backtohashtag" small txtbtn txtcolor="base" bg="blue">Back to hashtag</ac-button>
-  </div>
-</template>
-
-</template>
-<!-- Creates the element's prototype and registers it -->
-<script>
-Polymer({
-  is: 'ac-newoffer',
-
-  properties: {
-    offerview: {
-      type: String,
-      value: 'zero'
-    },
-    fromlatlon: {
-      type: Object,
-    },
-    tolatlon: {
-      type: Object,
-    },
-    /* if latitide is given - start new offer from this location */
-    latitude: {
-      type: Number
-    },
-    /* if longitude is given - start new offer from this location */
-    longitude: {
-      type: Number
-    }
-  },
-
+    </leaflet-map>
  
 
-  toPlaceoffer: function(){
-//    this.rit = this.routedetails;
-  },
+    <div class="overviewinfo">
+      <div  class="overviewinfoitemtotal">
+        <div class="fromto">
+          <p><i18n-msg msgid="From"></i18n-msg></p>
+        </div>
+        <div class="overviewinfoitem">
+          <p>{{fromaddress.display_name}}</p>
+        </div>
+      </div>
+      <div class="overviewinfoitemtotal">
+        <div class="fromto">
+          <p><i18n-msg msgid="to"></i18n-msg></p>
+        </div>
+        <div class="overviewinfoitem">
+          <p>{{toaddress.display_name}}</p>
+        </div>
+      </div>
 
-  attached: function() {
-    console.log('given lat',this.latitude);
-    console.log('given lon',this.longitude);
-    this.offerview = 'first';
-    this.routingprocess = false;
-
-//debugger;
-
-
-var from = {location:'hier'};
-var to = {location:'daar'};
-
-  var offer = {
-          rider: {'avatar':'QmIPFSHASHHIER'},
-          status: 1,
-          from: from,
-          to: to,
-          offeramount: 4,
-          userdata: {'userdata':'data'},
-          fromaddress: 'blah',
-          toaddress: 'blah',
-          //pubkey: wallet.account
+    </div>
+  </div>
+ 
+  </template>
+  <script>
+    Polymer({
+      is: 'ac-routeplanner',
+      properties: {
+        fromlatlon: {
+          type: Object,
+          observer: 'doRouting'
+        },
+        tolatlon: {
+          type: String,
+          observer: 'doRouting'
+        },
+        routedetails: {
+          type: Object,
+          notify: true
         }
-    // TEST
-    this.$.transact.newOffer(offer,function(){
-      console.log('new offer saved.');
-    })
+      },
+      ready: function() {
+//debugger;
+      },
+      attached: function(){
+//        console.log(this.fromlatlon,this.tolatlon);
+      },
+
+      doRouting: function() {
+        
+        if (!this.fromlatlon || !this.tolatlon ||!this.$.mapp.map ) {
+          return;
+        }
+
+        if (this.fromlatlon.lat == this.tolatlon.lat ){
+          debugger;
+          return;
+        }
+
+       // debugger;
+
+        //var self = this;
+        //var mapelement = this.$.mapp.map; //document.querySelector('#mapp');
+        //console.log(mapelement);
+
+        var routing = L.Routing.control({
+          waypoints: [
+            L.latLng(this.fromlatlon.lat, this.fromlatlon.lng),
+            L.latLng(this.tolatlon.lat, this.tolatlon.lng)
+          ],
+          router: L.Routing.mapbox('pk.eyJ1Ijoia2luZ2ZsdXJrZWwiLCJhIjoiT3VwdHJzNCJ9.BxS8Ogtc7_W8qg3MpS1iNw')
+        }).addTo(this.$.mapp.map);
+
+        routing.on('routesfound', function(e) {
+          var routes = e.routes;
+          //console.log(routes);
+        
+          var routedistance = routes[0].summary.totalDistance;
+          var routetime = routes[0].summary.totalTime;
+          this.routetime = new moment.duration({
+            seconds: routetime
+          }).humanize();
+          this.routedistance = routetime / 100;
+          this.routedistance = this.routedistance.toFixed(2);
+          this.costestimate = routetime * 0.02;
+          this.costestimate = this.costestimate.toFixed(2);
+          // var coinsaldo = document.querySelector('locals-wallet').localcoinbalance;
+          // if (coinsaldo < this.costestimate) {
+          //   this.error = true;
+          //   this.errmsg = 'Insert coins first.';
+          // }
+          this.routedetails = {
+              routedistance: this.routedistance,
+              costestimate: this.costestimate
+          };
+  
+          // fit map to bounds
+          var line = L.Routing.line(routes[0]);
+          var bounds = line.getBounds();
+          this.$.mapp.map.fitBounds(bounds);
+
+          this.routefound = true;
+
+          this.fire('route-available');
+//          this.routingprocess = true;
+//          this.offeramount = this.costestimate;
+          //this.$.mapp.map.fitToMarkers = true;
+          //this.customStyle['--map-shit'] = 'none';
+          //this.updateStyles();
+          //var iti = document.querySelector('#overviewmap');
+          //var cc = iti.querySelector('.leaflet-control-container');
+          //cc.style = "display: none";
+          //this.$.mapp.map.invalidateSize();
+        }.bind(this));
+
+      },
 
 
-  },
-
-  toSecond: function() {
-    this.offerview = 'second';
-  },
-
-  toThird: function() {
-    this.offerview = 'third';
-    //var self = this;
-    //this.$.routplanner.fromlatlon = 
-    //window.setTimeout(function() {
-      //self.doRouting(self.fromlatlon, self.tolatlon);
-    //}, 2000);
-  },
-  toFourth: function(){
-    // this.routedetails omvormen tot this.rit
-    this.$.transact.rit = {
-      ///
-    };
-  },
-  routeAvailable: function(){
-    console.log('ac-newoffer says: route is avaible',this.routedetails);
-  },
-
-  _is: function(a, b) {
-    if (b === undefined){
-      b = true;
-    }
-    //console.log(a ,'(',typeof a,') is',b,'(',typeof b,') they are equal for ==',a == b,', they are equal for ===',a === b);
-    return a === b;
-  },
-
-});
-</script>
+    });
+  </script>
 </dom-module>

@@ -144,31 +144,30 @@
             <ac-newuser name="newuser"></ac-newuser>
             <ac-password name="password"></ac-password>
 
-            <ac-map name="map"></ac-map>
-            <ac-list name="list"></ac-list>
+            <ac-map name="map" latitude="{{latitude}}" longitude="{{longitude}}" restamp></ac-map>
+            <ac-list name="list" restamp></ac-list>
 
-            <ac-detail name="detail" key="[[subrouteData.key]]"></ac-detail>
+            <ac-detail name="detail" key="[[subrouteData.key]]" restamp></ac-detail>
 
-            <ac-myitems name="myitems"></ac-myitems>
-            <ac-myitem name="myitem" key="[[key]]"></ac-myitem>
+            <ac-myitems name="myitems" restamp></ac-myitems>
+            <ac-myitem name="myitem" key="[[key]]" restamp></ac-myitem>
 
-            <ac-newoffer name="newoffer"></ac-newoffer>
+            <ac-newoffer latitude="{{latitude}}" longitude="{{longitude}}" name="newoffer" restamp></ac-newoffer>
 
-            <ac-profile name="profile" account="[[account]]"></ac-profile>
-            <ac-wallet name="wallet" account="[[account]]" balance="[[balance]]"></ac-wallet>
+            <ac-profile name="profile" account="[[account]]" restamp></ac-profile>
+            <ac-wallet name="wallet" account="[[account]]" balance="[[balance]]" restamp></ac-wallet>
 
-            <ac-settings name="settings"></ac-settings>
+            <ac-settings name="settings" restamp></ac-settings>
 
-            <ac-view404 name="view404"></ac-view404>
+            <ac-view404 name="view404" restamp></ac-view404>
 
-            <ac-locationpicker name="locationpicker" sizeview="{{sizeview}}"></ac-locationpicker>
-
+<!--             <ac-locationpicker name="locationpicker" sizeview="{{sizeview}}" restamp></ac-locationpicker>
+ -->
         </iron-pages>
 
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
-<!-- 
-    <ipfs-upload host="ipfs.arcadecity.world" id="ipfsupload" ipfs="{{ipfs}}" hidefileinput></ipfsupload> -->
 
+<<<<<<< HEAD
     <!-- this is just a demo / test -->
     <ac-locationtracker
       id="locationtracker"
@@ -176,6 +175,18 @@
       on-location-changed="locationchanged"
     ></ac-locationtracker>
 </app-drawer-layout>
+=======
+    <!-- location tracker -->
+    <template is="dom-if" if="{{online}}" restamp>
+      <ac-locationtracker
+        id="locationtracker"
+        online="{{online}}"
+        on-location-changed="locationchanged"
+      ></ac-locationtracker>
+    </template>
+
+
+>>>>>>> 0063f70155c935b1440f955add36e0d2ed356d76
   </template>
 
   <script>
@@ -191,6 +202,9 @@
         route: {
           type: String,
           observer: '_route'
+        },
+        online:{
+          type: Boolean
         }
       },
 
@@ -208,6 +222,14 @@
         } else {
           app.set('route.path', '/newuser/');
         }
+
+        // debug code - remove me..
+        var self= this;
+        setInterval(function(){
+          console.log('setting online to true');
+          self.online = !self.online;
+        },15*1000);
+
       },
 
       _routePageChanged: function(page) {

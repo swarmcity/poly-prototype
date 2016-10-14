@@ -30,7 +30,8 @@
     "ac-style": "https://github.com/ArcadeCity/ac-style.git",
     "ac-button": "https://github.com/ArcadeCity/ac-button.git",
     "ac-loader": "https://github.com/ArcadeCity/ac-loader.git",
-    "ac-input": "https://github.com/ArcadeCity/ac-input.git"
+    "ac-input": "https://github.com/ArcadeCity/ac-input.git",
+    "moment-js": "^0.4.1"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
