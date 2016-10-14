@@ -20,6 +20,11 @@
   on-iron-localstorage-load="loadblockarray"
   ></iron-localstorage>
 
+  <iron-localstorage
+name="ac-blockobject"
+value="{{blockobject}}"
+></iron-localstorage>
+
     <iron-localstorage
     name="ac-lastblock"
     value="{{lastblock}}"
@@ -30,7 +35,7 @@
     <web3-wallet
       id="web3wallet"
       account="{{account}}"
-      password="1234"
+      password="{{password}}"
       balance="{{balance}}"
       keystore="{{keystore}}"
       walletname="ac-wallet"
@@ -130,16 +135,16 @@
       getBlockData: function(){
           console.log('getting block data');
           //check if all needed data items are in place.
-          if (!this.web3 || !this.blockobject || !this.lastblock ){
-            console.log('something wrong with blockdata');
-            return;
-          }
-
-          // if already started - then just skip ( avoid listening twice to BC)
-          if (this.getblockdata === true){
-            console.log('already trye');
-            return;
-          }
+          // if (!this.web3 || !this.blockobject || !this.lastblock ){
+          //   console.log('something wrong with blockdata');
+          //   return;
+          // }
+          //
+          // // if already started - then just skip ( avoid listening twice to BC)
+          // if (this.getblockdata === true){
+          //   console.log('already trye');
+          //   return;
+          // }
 
           //this.getblockdata = true;
           console.log('Starting getBlockData at block',this.lastblock);
@@ -161,10 +166,7 @@
             self.eventwatcher.watch(function(error, result) {
               var event = result;
 
-              switch (event.event) {
-
-                case 'OfferAdded':
-                console.log('offer added in ', event.blockNumber);
+                console.log('offer in ', event.blockNumber);
                 var offerid = event.args.offerID.toNumber();
 
                 //var offerid = event.args.offerID.toNumber();
@@ -174,90 +176,23 @@
                   ipfshash: event.args.ipfsdescr,
                   repaddress: event.args.repaddress,
                   creator: event.args.creator,
-                  status: 'added'
+                  status: event.event
                 };
 
                 // resolve IPFS data
                 self.$.ipfs.cat(event.args.ipfsdescr, function(err, data) {
                   point.ipfsdata = JSON.parse(data);
-
-                  self.lastblock = event.blockNumber + 1;
-
-                  if (!self.blockobject[event.args.offerID.toNumber()]) {
-                    self.blockobject[event.args.offerID.toNumber()] = self.blockdata.length;
-                    self.push('blockdata', point);
-                  }
-                });
+                  //self.lastblock = event.blockNumber + 1;
+                  this.blockobject[event.args.offerID.toNumber()] = point;
+                  console.log(this.blockobject);
+                }.bind(this));
 
                 // claim events from (too) old are ignored
                 // if (!self.blockdata[self.blockobject[offerid]]){
                 //   return;
                 // }
-                  self.blockdata[self.blockobject[offerid]].status = 'added';
+                  //self.blockdata[self.blockobject[offerid]].status = 'added';
                   self.lastblock = event.blockNumber+1;
-                  break;
-
-                case 'OfferClaimed':
-                console.log('offer claimed in ', event.blockNumber);
-                var offerid = event.args.offerID.toNumber();
-
-                //var offerid = event.args.offerID.toNumber();
-                var point = {
-                  escrowaddress: event.args.escrowaddress,
-                  offerid: event.args.offerID.toNumber(),
-                  ipfshash: event.args.ipfsdescr,
-                  repaddress: event.args.repaddress,
-                  creator: event.args.creator,
-                  status: 'claimed'
-                };
-
-                // resolve IPFS data
-                self.$.ipfs.cat(event.args.ipfsdescr, function(err, data) {
-                  point.ipfsdata = JSON.parse(data);
-
-                  self.lastblock = event.blockNumber + 1;
-
-                  if (!self.blockobject[event.args.offerID.toNumber()]) {
-                    self.blockobject[event.args.offerID.toNumber()] = self.blockdata.length;
-                    self.push('blockdata', point);
-                  }
-                });
-
-                  break;
-
-                case 'OfferReleased':
-                console.log('offer released in ', event.blockNumber);
-                var offerid = event.args.offerID.toNumber();
-
-                //var offerid = event.args.offerID.toNumber();
-                var point = {
-                  escrowaddress: event.args.escrowaddress,
-                  offerid: event.args.offerID.toNumber(),
-                  ipfshash: event.args.ipfsdescr,
-                  repaddress: event.args.repaddress,
-                  creator: event.args.creator,
-                  status: 'released'
-                };
-
-                // resolve IPFS data
-                self.$.ipfs.cat(event.args.ipfsdescr, function(err, data) {
-                  point.ipfsdata = JSON.parse(data);
-
-                  self.lastblock = event.blockNumber + 1;
-
-                  if (!self.blockobject[event.args.offerID.toNumber()]) {
-                    self.blockobject[event.args.offerID.toNumber()] = self.blockdata.length;
-                    self.push('blockdata', point);
-                  }
-                });
-
-                  break;
-
-                case 'OfferConflict':
-                  break;
-                default:
-                  console.log('unknown event', event.event);
-              }
             });
           // });
       }
