@@ -478,6 +478,9 @@
 </style>
     <div class="container">
 
+    <ac-transact on-txhash="" on-mined="" on-error="" id="transact"></ac-transact>
+
+
       <template id="zerotemp" is="dom-if" if="{{_is(offerview, 'zero')}}"></template>
 
       <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'first')}}" restamp>
@@ -533,8 +536,8 @@
   <div class="offerview">
     <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
 
-    <ac-transact on-txhash="" on-mined="" on-error="" id="transact" id="transact"></ac-transact>
-
+<!--     <ac-transact on-txhash="" on-mined="" on-error="" id="transact" id="transact"></ac-transact>
+ -->
     <h1>Publishing offer</h1>
     <div class="logger" on-tap="logCollapse">
       <template is="dom-if" if="{{!logshown}}">
@@ -604,6 +607,30 @@ Polymer({
     console.log('given lon',this.longitude);
     this.offerview = 'first';
     this.routingprocess = false;
+
+//debugger;
+
+
+var from = {location:'hier'};
+var to = {location:'daar'};
+
+  var offer = {
+          rider: {'avatar':'QmIPFSHASHHIER'},
+          status: 1,
+          from: from,
+          to: to,
+          offeramount: 4,
+          userdata: {'userdata':'data'},
+          fromaddress: 'blah',
+          toaddress: 'blah',
+          //pubkey: wallet.account
+        }
+    // TEST
+    this.$.transact.newOffer(offer,function(){
+      console.log('new offer saved.');
+    })
+
+
   },
 
   toSecond: function() {

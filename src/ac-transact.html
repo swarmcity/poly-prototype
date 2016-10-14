@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/web3-wallet/web3-wallet.html">
 <link rel="import" href="./ac-config.html">
+<link rel="import" href="./ac-ipfs.html">
 
 <dom-module id="ac-transact">
 
@@ -16,6 +17,7 @@
       web3="{{web3}}"></web3-wallet>
 
       <ac-config web3host="{{web3host}}"></ac-config>
+    <ac-ipfs id="ipfs"></ac-ipfs>
 
 </template>
   <script>
@@ -26,25 +28,27 @@
       attached: function(){
         console.log('ac-transact -> attached');
         console.log('ac-transact -> web3host=',this.web3host);
-        //debugger;
+      },
+
+
+      newOffer: function(offer, cb) {
+        self = this;
+        this.$.ipfs.add(new this.$.ipfs.ipfs.Buffer(JSON.stringify(offer)), function(err, result) {
+          var offer_ipfshash = result[0].hash;
+          debugger;
+          self.ipfshash = offer_ipfshash;
+          console.log('Offer saved in IPFS', offer_ipfshash);
+          self.publishOffer();
+        });
       },
 
 
   publishOffer: function() {
 
-
-
         var self = this;
 
-        self.wallet = document.querySelector('#web3wallet');
-        self.web3 = self.wallet.web3;
-
-        self.push('statuslog', {
-          'msg': 'Sending transaction'
-        });
-
-        app.helpers.getfile('../../contracts/localsInOut.json', function(err, localsinoutcontractjson) {
-          app.helpers.getfile('../../contracts/ARCToken.json', function(err, arccontractjson) {
+        app.helpers.getfile('./contracts/localsInOut.json', function(err, localsinoutcontractjson) {
+          app.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
 
 
             //var allowance = _ARCCoin.allowance('0xe4d11ca64f35a909ccfd9076ac4f700133eb8cfb', _localsInOut.address).then(function(a) {
@@ -52,14 +56,14 @@
             //console.log(err, contractjson);
             self.web3.eth.getGasPrice(function(err, result) {
               var gasPrice = result.toNumber(10);
-              self.push('statuslog', {
-                'msg': 'Got gasprice'
+              self.fire('statusupdate', {                
+                message: 'creating allowance'
               });
               var MyContract = self.web3.eth.contract(arccontractjson.abi);
               var myContractInstance = MyContract.at(arccontractjson.address);
-              var account = app.helpers.fixaddress(app.helpers.fixaddress(self.wallet.account));
-              result = myContractInstance.allowance.sendTransaction(app.helpers.fixaddress(self.wallet.account), localsinoutcontractjson.address, {
-                  from: app.helpers.fixaddress(self.wallet.account),
+              var account = app.helpers.fixaddress(app.helpers.fixaddress(self.account));
+              result = myContractInstance.approve.sendTransaction(localsinoutcontractjson.address,10e18, {
+                  from: app.helpers.fixaddress(self.account),
                   gasPrice: gasPrice,
                   gasLimit: 600000,
                   gas: 600000,
@@ -68,41 +72,24 @@
                 function(err, result) {
                   if (err !== null) {
                     console.log(err);
-                    self.push('statuslog', {
-                      'msg': 'Error.'
+                    self.fire('statusupdate', {                
+                      message: 'Error creating allowance',
+                      error: err
                     });
-                    console.log('ERROR: Transaction didnt go through. See console.');
+                    console.log('Create Allowance');
                   } else {
                     console.log('Create Allowance');
                     console.log('allowance Transaction Successful!');
-                    self.push('statuslog', {
-                      'msg': 'Transaction success.'
+                    self.fire('statusupdate', {                
+                      message: 'done creating allowance. TxHash=' + result,
+                      error: err
                     });
 
-                    // BENNY: HIER
-                  self.offerview = 'fifth';
-
-                  // HIER ALVAST IN LOCALSTORAGE CACHEN ZODAT HET AL WEERGEGEVEN WORDT MET STATUS "PENDING"
-
-
-                    //self.progress = 'addedtoindex';
-                    console.log('Tx hash=', result);
-                    self.push('statuslog', {
-                      'msg': result
-                    });
-
-                    self.waitTx(result,function(){
-
-                      console.log('allowance created. Next step...');
-                      self.mkoffer();
-                    })
-                    // set vote status to TxHash received
-                    //self.votestatus = 2;
-                    //self.transactionHash = result;
+                    // self.waitTx(result,function(){
+                    //   console.log('allowance created. Next step...');
+                    //   self.mkoffer();
+                    // })
                   }
-                  //fn(err,result);
-                  // TODO : actually wait for completion...
-
                 });
             });
           });
