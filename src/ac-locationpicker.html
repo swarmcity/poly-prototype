@@ -34,16 +34,17 @@
       no-Zoom-Control="true"
       min-zoom="8"
       max-zoom="19"
-      on-map-ready="initmap"
+      on-map-ready="mapready"
       hidden="{{!locationbound}}">
-
-      <leaflet-geolocation
-        on-locationfound="locationfound"
-        enable-high-accuracy
-        latitude="{{latitude}}"
-        longitude="{{longitude}}"
-        accuracy="3">
-      </leaflet-geolocation>
+      <template is="dom-if" if="{{dogeolocation}}">
+        <leaflet-geolocation
+          on-locationfound="locationfound"
+          enable-high-accuracy
+          latitude="{{latitude}}"
+          longitude="{{longitude}}"
+          accuracy="3">
+        </leaflet-geolocation>
+      </template>
 
       <leaflet-tilelayer
         url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
@@ -83,22 +84,36 @@
           type: Number,
           observer: 'initmap'
         },
+        dogeolocation: {
+          type: Boolean,
+          value: false
+        }
       },
 
-      attached: function(){        
-       
+      mapready: function(){   
+        // try to init the map with given lat/lon
+        // when we arrive here, the attach event is passed already.
+        this.initmap();    
+        // if nothing was inited now - the lat/lng were not given.
+        // so enable our own geolocation component
+        if (!this.inited){
+          console.log('ac-locationpicker -> no lat/lng given - DIY');
+          this.dogeolocation = true;
+        }
       },
 
-      // this is executed when lat/lng is provided to this component
+      
       initmap: function(){
         // only execute once
         if (this.inited){
           return;
         }
+        // check of lat/lng were given as attributes to this component
+        // and if so - set the map to this location & add the marker etc.
         if (this.latitude && this.longitude && this.$.leaflet.map) {
           console.log('ac-locationpicker -> starting on location',this.latitude, this.longitude);
           this.setmapgeo(this.latitude,this.longitude);
-          // mark the component as started
+          // and mark the component as started
           this.inited = true;
         }
       },
@@ -110,12 +125,12 @@
         };
       },
 
-      // this triggers when geolocation is done
+      // this triggers when DIY geolocation is done
       locationfound: function(e) {
         // if lat/lng was supplied , ignore own geolocation...
-        if (this.latitude && this.longitude){
-          return;
-        }
+        // if (this.latitude && this.longitude){
+        //   return;
+        // }
         this.setmapgeo(e.detail.latitude,e.detail.longitude);
       },
 
