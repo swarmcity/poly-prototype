@@ -7,8 +7,8 @@
 <dom-module id="ac-ipfs">
   <template>
     <ac-config ipfs="{{config}}"></ac-config>
-    
-<!-- 
+
+<!--
     <iron-localstorage
   name="ac-ipfscache"
   value="{{ipfscache}}"
@@ -34,7 +34,7 @@
         //   type: Object
         // }
       },
-      
+
       ready: function(){
         //this.cacheLoaded = deferred();
       },
@@ -49,7 +49,7 @@
       //   }
       //   this.cacheLoaded.resolve();
       // },
-      
+
       // cache_put: function(hash,data){
       //   if (!this.ipfscache){
       //     this.ipfscache = {};
@@ -71,7 +71,7 @@
           this.ipfs = window.IpfsApi(this.config);
           this.baseurl = 'https://' + this.config.host + ':8080/ipfs/';
           //this.ipfs._add = this.ipfs.add;
-          //this.add = this.add; 
+          //this.add = this.add;
         }
       },
 
@@ -118,7 +118,7 @@
       },
 
       geturl: function(hash) {
-        return this.baseurl + url;
+        return this.baseurl + hash;
       },
 
       detached: function() {},

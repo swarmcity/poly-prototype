@@ -1,4 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/ac-button/ac-button.html">
+<link rel="import" href="../bower_components/ac-input/ac-input.html">
+
 <link rel="import" href="./ac-ipfs.html">
 
 <dom-module id="ac-profile">
@@ -8,6 +11,21 @@
       :host {
         display: block;
       }
+
+      .avatar {
+        width:140px;
+        height: 140px;
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: transparent;
+      }
+
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+
     </style>
 
     <template is="dom-if" if="{{accountlocked}}">
@@ -15,12 +33,25 @@
     </template>
 
     <template is="dom-if" if="{{!accountlocked}}">
-      <div>
-        <h1>User logged in</h1>
-        <!-- here's the avatar -->
-        <img src="{{avatarurl}}" alt="" />
-        <!-- and the username. -->
-      </div>
+      <template is="dom-if" if="{{_is(pview, 'overview')}}">
+        <div>
+          <h1>User logged in</h1>
+          <h2>{{username}}</h2>
+          <div class="avatar">
+            <img src="{{avatarurl}}" alt="" />
+          </div>
+          <ac-button on-tap="toEdit" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button>
+        </div>
+      </template>
+      <template is="dom-if" if="{{_is(pview, 'edit')}}">
+        <div>
+          <ac-input id="newusername" bind-value="{{newusername}}" value="{{username}}" placeholder="{{username}}"></ac-input>
+          <div class="avatar">
+            <img id="avataredit" src="{{avatarurl}}" alt="" />
+          </div>
+          <ac-button on-tap="toSave" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button>
+        </div>
+      </template>
     </template>
 
     <iron-localstorage
@@ -55,6 +86,7 @@
       attached: function() {
         this.accountlocked = true;
         this.password = sessionStorage.getItem('ac-password');
+        this.pview = 'overview';
       },
 
       _password: function() {
@@ -64,20 +96,39 @@
       },
 
       initprofile: function() {
-        localStorage.setItem('ac-profile', {'avatar': 'QmPh72SvymjpgSiYhguSbWi4hDLSuq9xuAfyys5eFjb8P6', 'aka': 'New Profile'});
+        var userobject = {avatar: 'QmPh72SvymjpgSiYhguSbWi4hDLSuq9xuAfyys5eFjb8P6', aka: 'Mr. AC'};
+        localStorage.setItem('ac-profile', JSON.stringify(userobject));
       },
 
       loadprofile: function() {
-        this.userdata = localStorage.getItem('ac-profile');
+        var userobject = localStorage.getItem('ac-profile');
+        this.userdata = JSON.parse(userobject);
         this.avatarurl = this.$.ipfs.geturl(this.userdata.avatar);
+        this.username = this.userdata.aka;
       },
 
-      saveprofile: function() {
-        this.userdata = {'avatar': this.newavatar, 'aka': this.newusername };
+      toSave: function() {
+        var userobject = {avatar: 'QmPh72SvymjpgSiYhguSbWi4hDLSuq9xuAfyys5eFjb8P6', aka: this.$.newusername.value };
+        console.log('old:', this.username, ' new: ', this.$.newusername.value);
+        localStorage.setItem('ac-profile', JSON.stringify(userobject));
+        this.loadprofile();
+        this.pview = 'overview';
       },
 
       canceledit: function() {
 
+      },
+
+      toEdit: function() {
+        this.pview = 'edit';
+      },
+
+      _is: function(a, b) {
+        if (b === undefined){
+          b = true;
+        }
+        //console.log(a ,'(',typeof a,') is',b,'(',typeof b,') they are equal for ==',a == b,', they are equal for ===',a === b);
+        return a === b;
       }
 
 
