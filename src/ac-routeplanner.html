@@ -465,9 +465,7 @@
         width: 100%;
       }
 
-
-
-</style>
+      </style>
       <div class="overviewtotal">
 
         <leaflet-map
@@ -476,7 +474,7 @@
         no-Zoom-Control="true"
         fit-to-markers="true"
         on-map-ready="doRouting"
-        >
+        zoom="16">
 
         <leaflet-tilelayer
         url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
@@ -525,6 +523,7 @@
         }
       },
       ready: function() {
+
 //debugger;
       },
       attached: function(){
@@ -574,6 +573,11 @@
           var line = L.Routing.line(routes[0]);
           var bounds = line.getBounds();
           this.$.mapp.map.fitBounds(bounds);
+
+          var x = window.setTimeout(function() {
+            this.$.mapp.map.querySelector('.leaflet-control-container').style = "display: none";
+          }, 5000);
+
 
           this.routefound = true;
 
