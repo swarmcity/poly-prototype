@@ -91,13 +91,12 @@
       donate: function() {
         var self = this;
 
-
         this.contracturl = this.resolveUrl('../contracts/ARCToken.json');
         this.importHref(this.contracturl, function(e) {
           var contractjson = JSON.parse(e.target.import.body.innerText);
 
-          console.log('send some ARC to ', this.fixaddress(this.account));
-          var url = 'https://eth.arcadecity.world:3000/donate/' + this.fixaddress(this.account + '/' + contractjson.address);
+          console.log('send some ARC to ', app.helpers.fixaddress((self.account));
+          var url = 'https://eth.arcadecity.world:3000/donate/' + app.helpers.fixaddress((self.account + '/' + contractjson.address);
           console.log('tapping into the faucet',url);
           this.$.donaterequest.send({
             url: url
