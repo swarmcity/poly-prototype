@@ -30,7 +30,7 @@
     </style>
 
     <template is="dom-if" if="{{accountlocked}}">
-      <h1>Your account is locked.</h1>
+      <p>Account locked</p>
     </template>
 
     <template is="dom-if" if="{{!accountlocked}}">
@@ -64,6 +64,7 @@
           <div class="avatar">
             <img on-tap="uploadavatar" id="avataredit" src="{{newavatarurl}}" alt="" />
           </div>
+          <ac-button on-tap="toCancel" icon="ac-decline" bg="yellow" txtcolor="base" small></ac-button>
           <ac-button on-tap="toSave" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button>
         </div>
       </template>
@@ -135,8 +136,8 @@
         this.viewstate = 'overview';
       },
 
-      canceledit: function() {
-
+      toCancel: function() {
+        this.viewstate = 'overview';
       },
 
       toEdit: function() {
