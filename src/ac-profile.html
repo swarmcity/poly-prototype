@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-request.html">
 
 <dom-module id="ac-profile">
   <!-- Defines the element's style and local DOM -->
@@ -8,6 +9,8 @@
         display: block;
       }
     </style>
+    <iron-request id="donaterequest"></iron-request>
+    <h1 on-tap="donate">GEEF HIER DIE TOKENS</h1>
 
     <template is="dom-if" if="{{accountlocked}}">
       <h1>Profile: Account locked</h1>
@@ -33,6 +36,28 @@
       attached: function() {
         this.accountlocked = true;
       },
+      donate: function() {
+        var self = this;
+
+
+        this.contracturl = this.resolveUrl('../../contracts/ARCToken.json');
+        this.importHref(this.contracturl, function(e) {
+          var contractjson = JSON.parse(e.target.import.body.innerText);
+
+
+
+          console.log('send some ARC to ', this.fixaddress(this.account));
+          var url = 'https://eth.arcadecity.world:3000/donate/' + this.fixaddress(this.account + '/' + contractjson.address);
+          this.$.donaterequest.send({
+            url: url
+          }).then(function(a, b, c) {
+            console.log('donation requested', a, b, c);
+            var btn = document.querySelector('#donatebtn');
+            btn.hidden = true;
+          });
+        });
+      },
+
     });
   </script>
 </dom-module>
