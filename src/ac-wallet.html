@@ -1,4 +1,11 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-request.html">
+<link rel="import" href="../bower_components/web3-wallet/web3-wallet.html">
+
+<link rel="import" href="./ac-ipfs.html">
+<link rel="import" href="./ac-password.html">
+<link rel="import" href="./ac-ipfsupload.html">
+
 
 <dom-module id="ac-wallet">
   <!-- Defines the element's style and local DOM -->
@@ -11,12 +18,57 @@
       }
     </style>
 
-    <h1>New view</h1>
+     <!-- faucet stuff -->
+    <iron-request id="donaterequest"></iron-request>
+    <web3-wallet
+      id="web3wallet"
+      account="{{account}}"
+      password="{{password}}"
+      balance="{{balance}}"
+      keystore="{{keystore}}"
+      walletname="ac-wallet"
+      host="{{web3host}}"
+      web3="{{web3}}"></web3-wallet>
+    
+    <ac-config web3host="{{web3host}}"></ac-config>
+    <ac-password password="{{password}}"></ac-password>    
+    <h1 on-tap="donate">GEEF HIER DIE TOKENS</h1>
+
+    <ac-ipfsupload on-ipfs-hash-received="setImage" hash="{{hash}}" id="ipfsupload"></ac-ipfsupload>
+    <ac-ipfs id="ipfs"></ac-ipfs>
+
+    <img src="{{imgurl}}">
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>
     Polymer({
-      is: 'ac-wallet'
+      is: 'ac-wallet',
+      donate: function() {
+        var self = this;
+
+        this.contracturl = this.resolveUrl('../contracts/ARCToken.json');
+        this.importHref(this.contracturl, function(e) {
+          var contractjson = JSON.parse(e.target.import.body.innerText);
+
+          console.log('send some ARC to ', app.helpers.fixaddress(self.account));
+          var url = 'https://eth.arcadecity.world:3000/donate/' + app.helpers.fixaddress(self.account) + '/' + contractjson.address;
+          console.log('tapping into the faucet', url);
+          this.$.donaterequest.send({
+            url: url
+          }).then(function(a, b, c) {
+            console.log('donation requested', a, b, c);
+            //var btn = document.querySelector('#donatebtn');
+            //btn.hidden = true;
+          });
+        });
+      },
+
+      setImage:function(){
+        this.imgurl = this.$.ipfs.geturl(this.hash);
+      }
+
+
+
     });
   </script>
 </dom-module>
