@@ -2,6 +2,7 @@
 <link rel="import" href="../bower_components/web3-wallet/web3-wallet.html">
 <link rel="import" href="./ac-config.html">
 <link rel="import" href="./ac-ipfs.html">
+<link rel="import" href="./ac-password.html">
 
 <dom-module id="ac-transact">
 
@@ -17,7 +18,8 @@
       web3="{{web3}}"></web3-wallet>
 
       <ac-config web3host="{{web3host}}"></ac-config>
-    <ac-ipfs id="ipfs"></ac-ipfs>
+      <ac-password password="{{password}}"></ac-password>
+      <ac-ipfs id="ipfs"></ac-ipfs>
 
 </template>
   <script>
@@ -28,6 +30,7 @@
       attached: function(){
         console.log('ac-transact -> attached');
         console.log('ac-transact -> web3host=',this.web3host);
+        console.log('ac-transact -> web3host=',this.password);
       },
 
 
@@ -35,7 +38,7 @@
         self = this;
         this.$.ipfs.add(new this.$.ipfs.ipfs.Buffer(JSON.stringify(offer)), function(err, result) {
           var offer_ipfshash = result[0].hash;
-          debugger;
+          
           self.ipfshash = offer_ipfshash;
           console.log('Offer saved in IPFS', offer_ipfshash);
           self.publishOffer();
