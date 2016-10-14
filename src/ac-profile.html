@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="./ac-ipfs.html">
 
 <dom-module id="ac-profile">
   <!-- Defines the element's style and local DOM -->
@@ -10,12 +11,26 @@
     </style>
 
     <template is="dom-if" if="{{accountlocked}}">
-      <h1>Profile: Account locked</h1>
+      <h1>Your account is locked.</h1>
     </template>
 
     <template is="dom-if" if="{{!accountlocked}}">
-      <h1>Profile: Account open</h1>
+      <div>
+        <h1>User logged in</h1>
+        <!-- here's the avatar -->
+        <img src="{{avatarurl}}" alt="" />
+        <!-- and the username. -->
+      </div>
     </template>
+
+    <iron-localstorage
+      name="ac-profile"
+      value="{{userdata}}"
+      on-iron-localstorage-load-empty="initprofile"
+      on-iron-localstorage-load="loadprofile">
+    </iron-localstorage>
+
+    <ac-ipfs id="ipfs"></ac-ipfs>
 
   </template>
   <!-- Creates the element's prototype and registers it -->
@@ -27,12 +42,46 @@
           type: Boolean,
           value: true,
           notify: true
+        },
+        password: {
+          type: String,
+          observer: '_password'
+        },
+        currentavatar: {
+          type: String
         }
       },
 
       attached: function() {
         this.accountlocked = true;
+        this.password = sessionStorage.getItem('ac-password');
       },
+
+      _password: function() {
+        if(this.password) {
+          this.accountlocked = false;
+        }
+      },
+
+      initprofile: function() {
+        localStorage.setItem('ac-profile', {'avatar': 'QmPh72SvymjpgSiYhguSbWi4hDLSuq9xuAfyys5eFjb8P6', 'aka': 'New Profile'});
+      },
+
+      loadprofile: function() {
+        this.userdata = localStorage.getItem('ac-profile');
+        this.avatarurl = this.$.ipfs.geturl(this.userdata.avatar);
+      },
+
+      saveprofile: function() {
+        this.userdata = {'avatar': this.newavatar, 'aka': this.newusername };
+      },
+
+      canceledit: function() {
+
+      }
+
+
+
     });
   </script>
 </dom-module>
