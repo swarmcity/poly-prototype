@@ -24,6 +24,8 @@
   <template>
     <style>
       :host {
+    --app-drawer-width: 280px;
+
 /*        --app-primary-color: #4285f4;
         --app-secondary-color: black;
 
@@ -114,7 +116,23 @@
   @apply(--layout-center-center);
 }*/
 
+  #drawer {
+    z-index: 99;
+  }
+
+  .drawercontent {
+    height: 100%;
+    background-color: var(--ac-yellow)
+
+  }
+
+
     </style>
+<app-drawer-layout force-narrow>
+  <app-drawer align="right" id="drawer">
+    <div class="drawercontent">
+    </div>
+  </app-drawer>
 
     <app-location route="{{route}}"></app-location>
 
@@ -129,6 +147,8 @@
         data="{{subrouteData}}"
         pattern="/:key"></app-route>
 
+
+
         <iron-pages
             selected="[[page]]"
             attr-for-selected="name"
@@ -138,7 +158,7 @@
             <ac-newuser name="newuser"></ac-newuser>
             <ac-password name="password"></ac-password>
 
-            <ac-map name="map" latitude="{{latitude}}" longitude="{{longitude}}" restamp></ac-map>
+            <ac-map name="map" latitude="{{latitude}}" longitude="{{longitude}}" restamp on-to-filter="firetoggle"></ac-map>
             <ac-list name="list" restamp></ac-list>
 
             <ac-detail name="detail" key="[[subrouteData.key]]" restamp></ac-detail>
@@ -161,6 +181,7 @@
 
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
 
+</app-drawer-layout>
     <!-- location tracker -->
     <template is="dom-if" if="{{online}}" restamp>
       <ac-locationtracker

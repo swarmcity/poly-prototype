@@ -92,7 +92,7 @@
       @apply(--layout-flex);
       box-sizing: border-box;
       padding: 20px 20px 20px 20px;
-      border-right:2px dotted var(--ac-base);
+      border-right:3px dotted #181233;
       width: 70%;
       color: white;
     }
@@ -440,7 +440,8 @@
             <img src="{{_getipfsurl(data.userdata.avatar)}}">
           </div>
           <div class="offerername">
-            <p><span>{{data.userdata.username}}</span> •
+            <p><span>{{data.userdata.username}}</span>
+             •
             <span class="currentkarma">8</span></p>
           </div>
         </div>
@@ -460,8 +461,7 @@
 
 
         </div>
-      <p class="drivers">Viewed by {{views}} drivers</p>
-            <small>{{status}}</small>
+      <p class="drivers">{{status}}</p>
       </div>
 
 
