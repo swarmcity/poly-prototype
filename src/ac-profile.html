@@ -28,28 +28,25 @@
       }
 
     </style>
-    <!-- faucet stuff -->
-    <iron-request id="donaterequest"></iron-request>
-    <web3-wallet
-      id="web3wallet"
-      account="{{account}}"
-      password="{{password}}"
-      balance="{{balance}}"
-      keystore="{{keystore}}"
-      walletname="ac-wallet"
-      host="{{web3host}}"
-      web3="{{web3}}"></web3-wallet>
-    
-    <ac-config web3host="{{web3host}}"></ac-config>
-    <ac-password password="{{password}}"></ac-password>    
-    <h1 on-tap="donate">GEEF HIER DIE TOKENS</h1>
 
     <template is="dom-if" if="{{accountlocked}}">
-      <h1>Your account is locked.</h1>
+      <p>Account locked</p>
     </template>
 
     <template is="dom-if" if="{{!accountlocked}}">
-      <template is="dom-if" if="{{_is(pview, 'overview')}}">
+
+      <!-- small profile view -->
+      <template is="dom-if" if="{{_is(viewstate, 'smallview')}}">
+        <div>
+          <h2>{{username}}</h2>
+          <div class="avatar">
+            <img src="{{avatarurl}}" alt="" />
+          </div>
+        </div>
+      </template>
+
+      <!-- View profile view -->
+      <template is="dom-if" if="{{_is(viewstate, 'overview')}}">
         <div>
           <h1>User logged in</h1>
           <h2>{{username}}</h2>
@@ -59,15 +56,19 @@
           <ac-button on-tap="toEdit" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button>
         </div>
       </template>
-      <template is="dom-if" if="{{_is(pview, 'edit')}}">
+
+      <!-- Edit profile view -->
+      <template is="dom-if" if="{{_is(viewstate, 'edit')}}">
         <div>
-          <ac-input id="newusername" bind-value="{{newusername}}" value="{{username}}" placeholder="{{username}}"></ac-input>
+          <ac-input on-bind-value-changed="inputchanged" id="newusername" bind-value="{{newusername}}" value="{{username}}" placeholder="{{username}}"></ac-input>
           <div class="avatar">
-            <img id="avataredit" src="{{avatarurl}}" alt="" />
+            <img on-tap="uploadavatar" id="avataredit" src="{{newavatarurl}}" alt="" />
           </div>
+          <ac-button on-tap="toCancel" icon="ac-decline" bg="yellow" txtcolor="base" small></ac-button>
           <ac-button on-tap="toSave" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button>
         </div>
       </template>
+
     </template>
 
     <iron-localstorage
@@ -77,7 +78,7 @@
       on-iron-localstorage-load="loadprofile">
     </iron-localstorage>
 
-    <ac-ipfs id="ipfs"></ac-ipfs>
+    <ac-ipfs id="ipfs" ipfs="{{ipfs}}"></ac-ipfs>
 
   </template>
   <!-- Creates the element's prototype and registers it -->
@@ -96,13 +97,16 @@
         },
         currentavatar: {
           type: String
+        },
+        ipfs: {
+          type: Object
         }
       },
 
       attached: function() {
         this.accountlocked = true;
         this.password = sessionStorage.getItem('ac-password');
-        this.pview = 'overview';
+        this.viewstate = 'overview';
       },
 
       _password: function() {
@@ -119,45 +123,35 @@
       loadprofile: function() {
         var userobject = localStorage.getItem('ac-profile');
         this.userdata = JSON.parse(userobject);
+        this.currentavatar = this.userdata.avatar;
         this.avatarurl = this.$.ipfs.geturl(this.userdata.avatar);
         this.username = this.userdata.aka;
       },
 
-      donate: function() {
-        var self = this;
-
-        this.contracturl = this.resolveUrl('../contracts/ARCToken.json');
-        this.importHref(this.contracturl, function(e) {
-          var contractjson = JSON.parse(e.target.import.body.innerText);
-
-          console.log('send some ARC to ', app.helpers.fixaddress((self.account));
-          var url = 'https://eth.arcadecity.world:3000/donate/' + app.helpers.fixaddress((self.account + '/' + contractjson.address);
-          console.log('tapping into the faucet',url);
-          this.$.donaterequest.send({
-            url: url
-          }).then(function(a, b, c) {
-            console.log('donation requested', a, b, c);
-            //var btn = document.querySelector('#donatebtn');
-            //btn.hidden = true;
-          });
-        });
-      },
-
       toSave: function() {
-        var userobject = {avatar: 'QmPh72SvymjpgSiYhguSbWi4hDLSuq9xuAfyys5eFjb8P6', aka: this.$.newusername.value };
-        console.log('old:', this.username, ' new: ', this.$.newusername.value);
+        var userobject = {avatar: 'QmPh72SvymjpgSiYhguSbWi4hDLSuq9xuAfyys5eFjb8P6', aka: this.newusername };
+        console.log('old:', this.username, ' new: ', this.newusername);
         localStorage.setItem('ac-profile', JSON.stringify(userobject));
         this.loadprofile();
-        this.pview = 'overview';
-        this.userdata = {'avatar': this.newavatar, 'aka': this.newusername };
+        this.viewstate = 'overview';
       },
 
-      canceledit: function() {
-
+      toCancel: function() {
+        this.viewstate = 'overview';
       },
 
       toEdit: function() {
-        this.pview = 'edit';
+        this.newavatar = this.userdata.avatar;
+        this.newavatarurl = this.$.ipfs.geturl(this.userdata.avatar);
+        this.viewstate = 'edit';
+      },
+
+      inputchanged: function(e) {
+        this.newusername = e.detail.value;
+      },
+
+      uploadavatar: function() {
+        console.log('start avatar upload');
       },
 
       _is: function(a, b) {
@@ -167,7 +161,6 @@
         //console.log(a ,'(',typeof a,') is',b,'(',typeof b,') they are equal for ==',a == b,', they are equal for ===',a === b);
         return a === b;
       }
-
 
     });
   </script>

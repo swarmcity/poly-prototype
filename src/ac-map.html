@@ -6,7 +6,6 @@
 <link rel="import" href="../bower_components/ac-button/ac-button.html">
 
 <link rel="import" href="./ac-blockdata.html">
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js"></script>
 
 <dom-module id="ac-map">
   <!-- Defines the element's style and local DOM -->
@@ -217,17 +216,6 @@
         url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
       </leaflet-tilelayer>
 
-      <template is="dom-repeat" items="{{blockdata}}">
-        <!-- <leaflet-marker
-          on-tap="selectoffer"
-          ipfshash="{{item.ipfshash}}"
-          title="{{item.ipfshash}}"
-          icon="car"
-          latitude="{{item.latitude}}"
-          longitude="{{item.longitude}}">
-        </leaflet-marker> -->
-      </template>
-
     </leaflet-map>
 
     <div class="bottompart">
@@ -272,11 +260,24 @@
       },
 
       _blockdata: function() {
-        var blockdata = this.blockdata;
-        console.log(blockdata);
-        for (var i = 0; i < blockdata.length; i++) {
-          blockdata[i];
+        console.log(this.blockdata);
+        for (var i = 0; i < this.blockdata.length; i++) {
+          var o = this.blockdata[i];
+          this.appendMarker(o.ipfsdata.fromaddress.lat, o.ipfsdata.fromaddress.lon, o.ipfshash, o.offerid);
         }
+      },
+
+      appendMarker: function(lat, lng, title, key) {
+        marker = document.createElement('leaflet-marker');
+        marker.latitude = lat;
+        marker.longitude = lng;
+        marker.title = key;
+        marker.id = key;
+        marker.draggable = "false";
+        marker.addEventListener('click', function(e) {
+          app.set('route.path', '/detail/' + e.target.id);
+        });
+        this.$.leafletmap.appendChild(marker);
       },
 
       toList: function() {
@@ -329,9 +330,14 @@
         app.set('route.path', '/newoffer/');
       },
 
+      godetail: function(e) {
+        console.log(e.detail);
+        //app.set('route.path', '/detail/'+this.offerid);
+      },
+
       toFilter: function() {
         // app.set('route.path', '/filter/');
-        
+
         // var drawer = document.querySelector('#drawer');
         // console.log("jooo",drawer);
         this.fire('to-filter');
