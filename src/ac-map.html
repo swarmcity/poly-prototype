@@ -6,6 +6,7 @@
 <link rel="import" href="../bower_components/ac-button/ac-button.html">
 
 <link rel="import" href="./ac-blockdata.html">
+<link rel="import" href="./ac-profile.html">
 
 <dom-module id="ac-map">
   <!-- Defines the element's style and local DOM -->
@@ -16,13 +17,7 @@
     :host {
       display: block;
       height: 100%;
-
-      --toppart-height: 15vh;
-      --toppart-padding: 10px 20px 10px 20px;
       --container-height: 85vh;
-
-      --avatar-size: 40px;
-
     }
 
       h1 {
@@ -107,34 +102,6 @@
         box-sizing: border-box;
       }
 
-      .avatar {
-        width: var(--avatar-size);
-        height: var(--avatar-size);
-        border-radius: 50%;
-        overflow: hidden;
-        background-color: transparent;
-        z-index: 3;
-
-      }
-
-      .avatar img {
-        width: 100%;
-        height: 100%;
-        border: none;
-      }
-
-      .username {
-        margin: 0px 0px 0px -5px;
-        padding: 5px 8px 6px 18px;
-        @apply(--montserrat-reg);
-        color:#4CACF5;
-        font-size: 20px;
-        background-color: white;
-        z-index: 1;
-        /*background-color: rgba(31,23,66,0.05);*/
-        /*text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);*/
-      }
-
       .leftbtn {
         margin: 0px 10px 0px 0px;
       }
@@ -177,12 +144,7 @@
     </style>
 
     <div class="toppart">
-      <div class="userinfo"  on-tap="toProfile">
-         <div class="avatar" id="avatar">
-          <img src="http://media.hotbirthdays.com/files/1932/06/28/pat-morita-1.jpg">
-        </div>
-        <p class="username">Mr Myaghi</p>
-      </div>
+      <ac-profile viewstate="smallview"></ac-profile>
       <span class="flex"></span>
       <!-- <div class="viewswitch" on-tap="toList"><p>listview</p></div> -->
       <ac-button icon="ac-menu" bg="base" txtcolor="yellow" on-tap="toList"  class="leftbtn" small></ac-button>
@@ -263,7 +225,9 @@
         //console.log(this.blockdata);
         for (var i = 0; i < this.blockdata.length; i++) {
           var o = this.blockdata[i];
-          this.appendMarker(o.ipfsdata.fromaddress.lat, o.ipfsdata.fromaddress.lon, o.ipfshash, o.offerid);
+          if(o.status == 'added'){
+            this.appendMarker(o.ipfsdata.fromaddress.lat, o.ipfsdata.fromaddress.lon, o.ipfshash, o.offerid);
+          }
         }
       },
 
