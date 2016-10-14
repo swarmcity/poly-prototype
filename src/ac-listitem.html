@@ -471,14 +471,14 @@
       <!-- <template is="dom-if" if="{{_is(status,'toclaim')}}"> -->
       <template is="dom-if" if="{{!_is(sizeview,'phone')}}">
         <div class="offeramount">
-          <h1>{{data.amount}}</h1><template is="dom-if" if="{{_is(sizeview,'phone')}}"><br></template>
+          <h1>{{data.ipfsdata.offeramount}}</h1><template is="dom-if" if="{{_is(sizeview,'phone')}}"><br></template>
           <p>ARC</p>
         </div>
       </template>
 
       <template is="dom-if" if="{{_is(sizeview,'phone')}}">
         <div class="offeramountmobile">
-          <h1>{{data.amount}}</h1>
+          <h1>{{data.ipfsdata.offeramount}}</h1>
           <p>ARC</p>
           <span class="flex"></span>
         </div>

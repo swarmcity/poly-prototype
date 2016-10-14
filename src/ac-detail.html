@@ -1,5 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="./ac-blockdata.html">
+<link rel="import" href="./ac-button.html">
+<link rel="import" href="../bower_components/ac-style/ac-style.html">
 
 <dom-module id="ac-detail">
   <!-- Defines the element's style and local DOM -->
@@ -20,6 +22,11 @@
     <p>
       {{data.status}}
     </p>
+
+    <ac-button class="claimer" txtbtn on-tap="claimOffer" bg="white" txtcolor="red">Claim this offer</ac-button>
+
+    <ac-button class="claimer" txtbtn on-tap="releaseOffer" bg="red" txtcolor="white">Release this offer</ac-button>
+
 
     <ac-blockdata name="blockdata" blockdata="{{blockdata}}"></ac-blockdata>
 
@@ -44,7 +51,21 @@
 
       _blockdata: function() {
         this.data = this.blockdata[this.key];
+      },
+
+      claimOffer: function() {
+        app.$.transact.claimOffer(this.key, function(e){
+          console.log('offer claimed.', e);
+        });
+      },
+
+      releaseOffer: function() {
+        app.$.transact.releaseContract(this.key, function(e){
+          console.log('offer released.', e);
+        });
       }
+
+
     });
   </script>
 </dom-module>

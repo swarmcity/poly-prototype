@@ -56,6 +56,10 @@
           type: Array,
           notify: true,
           observer: '_blockdata'
+        },
+        blockobject: {
+          type: Object,
+          observer: '_blockobject'
         }
       },
 
@@ -79,8 +83,12 @@
       },
 
       _web3: function() {
-//        console.log('got web3');
+        console.log('got web3');
         this.getBlockData();
+      },
+
+      _blockobject: function() {
+        console.log(this.blockobject);
       },
 
       initlastblock: function(){
@@ -89,7 +97,7 @@
       },
 
       loadlastblock: function(){
-        //console.log('CACHE: found lastblock in localstorage',this.lastblock);
+        console.log('CACHE: found lastblock in localstorage',this.lastblock);
         this.getBlockData();
       },
 
@@ -104,7 +112,7 @@
         for (var i = 0, len = this.blockdata.length; i < len; i++) {
           tmpblockobject[this.blockdata[i].offerid] = i;
         }
-        //console.log('CACHE: found blockdata in localstorage',this.blockdata.length,'items');
+        console.log('CACHE: found blockdata in localstorage',this.blockdata.length,'items');
         this.blockobject = tmpblockobject;
         this.getBlockData();
       },
@@ -120,78 +128,138 @@
       },
 
       getBlockData: function(){
-
-          // check if all needed data items are in place.
+          console.log('getting block data');
+          //check if all needed data items are in place.
           if (!this.web3 || !this.blockobject || !this.lastblock ){
+            console.log('something wrong with blockdata');
             return;
           }
 
           // if already started - then just skip ( avoid listening twice to BC)
           if (this.getblockdata === true){
+            console.log('already trye');
             return;
           }
 
-          this.getblockdata = true;
+          //this.getblockdata = true;
           console.log('Starting getBlockData at block',this.lastblock);
 
           var self = this;
+          //debugger;
+          //app.helpers.getfile('./contracts/localsInOut.json', function(err, inoutcontractjson) {
 
-          app.helpers.getfile('/src/contracts/localsInOut.json', function(err, inoutcontractjson) {
+            // var MyContract = self.web3.eth.contract(inoutcontractjson.abi);
+            // var myContractInstance = MyContract.at(inoutcontractjson.address);
 
-            var MyContract = self.web3.eth.contract(inoutcontractjson.abi);
-            var myContractInstance = MyContract.at(inoutcontractjson.address);
+            var MyContract = self.web3.eth.contract([{"constant":true,"inputs":[],"name":"REPcontract","outputs":[{"name":"","type":"address"}],"type":"function"},{"constant":true,"inputs":[],"name":"ARCTokencontractAddress","outputs":[{"name":"","type":"address"}],"type":"function"},{"constant":false,"inputs":[{"name":"offerid","type":"uint256"}],"name":"claim","outputs":[],"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"offers","outputs":[{"name":"creator","type":"address"},{"name":"amount","type":"uint256"},{"name":"descriptionipfs","type":"string"},{"name":"status","type":"uint256"},{"name":"tagcontract","type":"address"},{"name":"escrowaddress","type":"address"}],"type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"type":"function"},{"constant":false,"inputs":[{"name":"ipfshash","type":"string"}],"name":"ipfstoid","outputs":[{"name":"offerid","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"offerid","type":"uint256"}],"name":"confirm","outputs":[],"type":"function"},{"constant":true,"inputs":[],"name":"numOffers","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"_repcoinaddress","type":"address"},{"name":"_amount","type":"uint256"},{"name":"_descriptionipfs","type":"string"}],"name":"newOffer","outputs":[],"type":"function"},{"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"type":"function"},{"inputs":[{"name":"_ARCTokencontract","type":"address"}],"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"offerID","type":"uint256"},{"indexed":false,"name":"creator","type":"address"},{"indexed":false,"name":"ipfsdescr","type":"string"},{"indexed":false,"name":"escrowaddress","type":"address"},{"indexed":false,"name":"repaddress","type":"address"}],"name":"OfferAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"offerID","type":"uint256"},{"indexed":false,"name":"creator","type":"address"},{"indexed":false,"name":"ipfsdescr","type":"string"},{"indexed":false,"name":"claimer","type":"address"},{"indexed":false,"name":"escrowaddress","type":"address"},{"indexed":false,"name":"repaddress","type":"address"}],"name":"OfferClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"offerID","type":"uint256"},{"indexed":false,"name":"creator","type":"address"},{"indexed":false,"name":"ipfsdescr","type":"string"}],"name":"OfferReleased","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"offerID","type":"uint256"},{"indexed":false,"name":"creator","type":"address"},{"indexed":false,"name":"ipfsdescr","type":"string"},{"indexed":false,"name":"claimer","type":"address"},{"indexed":false,"name":"escrowaddress","type":"address"},{"indexed":false,"name":"repaddress","type":"address"}],"name":"OfferConflict","type":"event"}]);
+            var myContractInstance = MyContract.at("0xeb6c58765c03d862efb3c6bd49550122267b469d");
 
             self.eventwatcher = myContractInstance.allEvents({
               fromBlock: self.lastblock,
             });
 
             self.eventwatcher.watch(function(error, result) {
-
               var event = result;
+
               switch (event.event) {
+
                 case 'OfferAdded':
+                console.log('offer added in ', event.blockNumber);
+                var offerid = event.args.offerID.toNumber();
 
-                  //var offerid = event.args.offerID.toNumber();
-                  var point = {
-                    escrowaddress: event.args.escrowaddress,
-                    offerid: event.args.offerID.toNumber(),
-                    ipfshash: event.args.ipfsdescr,
-                    repaddress: event.args.repaddress,
-                    creator: event.args.creator,
-                    status: 'added'
-                  };
+                //var offerid = event.args.offerID.toNumber();
+                var point = {
+                  escrowaddress: event.args.escrowaddress,
+                  offerid: event.args.offerID.toNumber(),
+                  ipfshash: event.args.ipfsdescr,
+                  repaddress: event.args.repaddress,
+                  creator: event.args.creator,
+                  status: 'added'
+                };
 
-                  // resolve IPFS data
-                  self.$.ipfs.cat(event.args.ipfsdescr, function(err, data) {
-                    point.ipfsdata = JSON.parse(data);
+                // resolve IPFS data
+                self.$.ipfs.cat(event.args.ipfsdescr, function(err, data) {
+                  point.ipfsdata = JSON.parse(data);
 
-                    self.lastblock = event.blockNumber + 1;
+                  self.lastblock = event.blockNumber + 1;
 
-                    if (!self.blockobject[event.args.offerID.toNumber()]) {
-                      self.blockobject[event.args.offerID.toNumber()] = self.blockdata.length;
-                      self.push('blockdata', point);
-                    }
-                  });
-
-                  break;
-                case 'OfferClaimed':
-                  var offerid = event.args.offerID.toNumber();
-                  // claim events from (too) old are ignored
-                  if (!self.blockdata[self.blockobject[offerid]]){
-                    return;
+                  if (!self.blockobject[event.args.offerID.toNumber()]) {
+                    self.blockobject[event.args.offerID.toNumber()] = self.blockdata.length;
+                    self.push('blockdata', point);
                   }
-                  self.blockdata[self.blockobject[offerid]].status = 'claimed';
+                });
+
+                // claim events from (too) old are ignored
+                // if (!self.blockdata[self.blockobject[offerid]]){
+                //   return;
+                // }
+                  self.blockdata[self.blockobject[offerid]].status = 'added';
                   self.lastblock = event.blockNumber+1;
                   break;
 
+                case 'OfferClaimed':
+                console.log('offer claimed in ', event.blockNumber);
+                var offerid = event.args.offerID.toNumber();
+
+                //var offerid = event.args.offerID.toNumber();
+                var point = {
+                  escrowaddress: event.args.escrowaddress,
+                  offerid: event.args.offerID.toNumber(),
+                  ipfshash: event.args.ipfsdescr,
+                  repaddress: event.args.repaddress,
+                  creator: event.args.creator,
+                  status: 'claimed'
+                };
+
+                // resolve IPFS data
+                self.$.ipfs.cat(event.args.ipfsdescr, function(err, data) {
+                  point.ipfsdata = JSON.parse(data);
+
+                  self.lastblock = event.blockNumber + 1;
+
+                  if (!self.blockobject[event.args.offerID.toNumber()]) {
+                    self.blockobject[event.args.offerID.toNumber()] = self.blockdata.length;
+                    self.push('blockdata', point);
+                  }
+                });
+
+                  break;
+
                 case 'OfferReleased':
+                console.log('offer released in ', event.blockNumber);
+                var offerid = event.args.offerID.toNumber();
+
+                //var offerid = event.args.offerID.toNumber();
+                var point = {
+                  escrowaddress: event.args.escrowaddress,
+                  offerid: event.args.offerID.toNumber(),
+                  ipfshash: event.args.ipfsdescr,
+                  repaddress: event.args.repaddress,
+                  creator: event.args.creator,
+                  status: 'released'
+                };
+
+                // resolve IPFS data
+                self.$.ipfs.cat(event.args.ipfsdescr, function(err, data) {
+                  point.ipfsdata = JSON.parse(data);
+
+                  self.lastblock = event.blockNumber + 1;
+
+                  if (!self.blockobject[event.args.offerID.toNumber()]) {
+                    self.blockobject[event.args.offerID.toNumber()] = self.blockdata.length;
+                    self.push('blockdata', point);
+                  }
+                });
+
+                  break;
+
                 case 'OfferConflict':
+                  break;
                 default:
                   console.log('unknown event', event.event);
-                  break;
               }
             });
-          });
+          // });
       }
 
 

@@ -28,25 +28,28 @@
       properties: {
       },
       attached: function(){
-        console.log('ac-transact -> attached');
-        console.log('ac-transact -> web3host=',this.web3host);
-        console.log('ac-transact -> web3host=',this.password);
+        // console.log('ac-transact -> attached');
+        // console.log('ac-transact -> web3host=',this.web3host);
+        // console.log('ac-transact -> web3host=',this.password);
       },
 
 
       newOffer: function(offer, cb) {
         self = this;
+        self.offeramount = offer.offeramount;
         this.$.ipfs.add(new this.$.ipfs.ipfs.Buffer(JSON.stringify(offer)), function(err, result) {
           var offer_ipfshash = result[0].hash;
 
           self.ipfshash = offer_ipfshash;
           console.log('Offer saved in IPFS', offer_ipfshash);
-          self.publishOffer();
+          self.createAllowance(function() {
+            self.mkoffer();
+          });
         });
       },
 
 
-  publishOffer: function() {
+  createAllowance: function(cb) {
 
         var self = this;
 
@@ -81,7 +84,7 @@
                     console.log('Create Allowance');
                   } else {
                     console.log('Create Allowance');
-                    console.log('allowance Transaction Successful!');
+                    console.log('allowance Transaction Successful! ', result);
                     self.fire('statusupdate', {
                       message: 'done creating allowance. TxHash=' + result,
                       error: err
@@ -89,7 +92,7 @@
 
                     self.waitTx(result,function(){
                       console.log('allowance created. Next step...');
-                      self.mkoffer();
+                      cb();
                     });
                   }
                 });
@@ -103,7 +106,7 @@
       mkoffer: function() {
 
         var self = this;
-        app.helpers.getfile('../../contracts/localsInOut.json', function(err, contractjson) {
+        app.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
           console.log(err, contractjson);
           self.web3.eth.getGasPrice(function(err, result) {
             var gasPrice = result.toNumber(10);
@@ -111,7 +114,6 @@
             //   'msg': 'Got gasprice'
             // });
             self.hashtag = "0x88c80a97cc95015662124a2069e51c706cbf3e80";
-            self.offeramount = 1;
             var MyContract = self.web3.eth.contract(contractjson.abi);
             var myContractInstance = MyContract.at(contractjson.address);
             var account = app.helpers.fixaddress(self.account);
@@ -219,6 +221,109 @@
           }
         }.bind(this));
       },
+
+      claimOffer: function(offerid) {
+        var self = this;
+        this.createAllowance(function() {
+          console.log('Claim Offer: allowance created.');
+          console.log('Staring claim process.');
+          self.claimContract(offerid);
+        });
+      },
+
+      claimContract: function(offerid) {
+        var self = this;
+        app.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
+          console.log(err, contractjson);
+          self.web3.eth.getGasPrice(function(err, result) {
+            var gasPrice = result.toNumber(10);
+            // self.push('statuslog', {
+            //   'msg': 'Got gasprice'
+            // });
+            var MyContract = self.web3.eth.contract(contractjson.abi);
+            var myContractInstance = MyContract.at(contractjson.address);
+            var account = app.helpers.fixaddress(self.account);
+
+            result = myContractInstance.claim.sendTransaction(offerid, {
+                from: account,
+                gasPrice: gasPrice,
+                gasLimit: 600000,
+                gas: 600000,
+                data: contractjson.bytecode
+              },
+              function(err, result) {
+                if (err !== null) {
+                  console.log(err);
+
+                  console.log('ERROR: Transaction didnt go through. See console.');
+                } else {
+                  console.log('Transaction Successful!');
+
+                  console.log('Tx hash=', result);
+
+                  // set vote status to TxHash received
+                  //self.votestatus = 2;
+                  //self.transactionHash = result;
+                }
+                //fn(err,result);
+                // TODO : actually wait for completion...
+
+                self.waitTx(result,function(){
+                  console.log('escrow claimed. Next step...');
+                });
+
+
+              });
+          });
+        });
+      },
+
+      releaseContract: function(offerid) {
+        var self = this;
+        app.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
+          console.log(err, contractjson);
+          self.web3.eth.getGasPrice(function(err, result) {
+            var gasPrice = result.toNumber(10);
+            // self.push('statuslog', {
+            //   'msg': 'Got gasprice'
+            // });
+            var MyContract = self.web3.eth.contract(contractjson.abi);
+            var myContractInstance = MyContract.at(contractjson.address);
+            var account = app.helpers.fixaddress(self.account);
+
+            result = myContractInstance.confirm(offerid, {
+                from: account,
+                gasPrice: gasPrice,
+                gasLimit: 600000,
+                gas: 600000,
+                data: contractjson.bytecode
+              },
+              function(err, result) {
+                if (err !== null) {
+                  console.log(err);
+
+                  console.log('ERROR: Transaction didnt go through. See console.');
+                } else {
+                  console.log('Transaction Successful!');
+
+                  console.log('Tx hash=', result);
+
+                  // set vote status to TxHash received
+                  //self.votestatus = 2;
+                  //self.transactionHash = result;
+                }
+                //fn(err,result);
+                // TODO : actually wait for completion...
+
+                self.waitTx(result,function(){
+                  console.log('Confirm/ contract released. Next step...');
+                });
+
+
+              });
+          });
+        });
+      }
 
 
 
