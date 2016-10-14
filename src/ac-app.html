@@ -24,113 +24,26 @@
   <template>
     <style>
       :host {
-    --app-drawer-width: 280px;
-
-/*        --app-primary-color: #4285f4;
-        --app-secondary-color: black;
-
-        display: block;*/
-      }
-/*
-      app-header {
-        color: #fff;
-        background-color: var(--app-primary-color);
-      }
-      app-header paper-icon-button {
-        --paper-icon-button-ink-color: white;
+      --app-drawer-width: 290px;
       }
 
-      .drawer-list {
+      #drawer {
+        z-index: 99;
       }
 
-      .drawer-list a {
+      .drawercontent {
+        height: 100%;
+        background-color: var(--ac-yellow);
+        @apply(--layout-vertical);
+        @apply(--layout-center-center);   
       }
-
-      .drawer-list a.iron-selected {
-        color: black;
-        font-weight: bold;
-      }
-
-      .topbar {
-    width: 100%;
-    @apply(--base-structure);
-    height: var(--topbar-height);
-    @apply(--layout-horizontal);
-    @apply(--layout-center);
-    box-sizing: border-box;
-    padding: 10px 20px 10px 20px;
-  }
-
-
-  .container {
-    width: 100%;
-    @apply(--layout-vertical);
-    @apply(--layout-center);
-    @apply(--layout-start-justified);
-    background-color: white;
-  }
-
-  .main {
-    width: 100%;
-    max-width: 90vw;
-    @apply(--layout-horizontal);
-    @apply(--layout-wrap);
-    display: var(--main-display);
-
-  }
-
-  .avatararea {
-  width: var(--avatararea-width);
-  @apply(--layout-horizontal);
-  @apply(--layout-start);
-  @apply(--layout-center-justified);
-  box-sizing: border-box;
-  padding: 0px;
-  margin: 0px 0px 10px 0px;
-}
-
-.totalinfo {
-  width: var(--totalinfo-width);
-  @apply(--layout-flex);
-  @apply(--layout-vertical);
-  @apply(--layout-start);
-  @apply(--layout-center-justified);
-}
-
-.avatarbg {
-  width: var(--avatarbg-size);
-  height: var(--avatarbg-size);
-  margin: var(--avatararea-margin);
-  border-radius: 50%;
-  background-position: center;
-  background: url(../../images/locals-bg3.png);
-  background-size: var(--bg-size);
-}
-
-
-.menuicon {
-  cursor: pointer;
-  height: 60px;
-  width: 60px;
-  @apply(--layout-horizontal);
-  @apply(--layout-center-center);
-}*/
-
-  #drawer {
-    z-index: 99;
-  }
-
-  .drawercontent {
-    height: 100%;
-    background-color: var(--ac-yellow)
-
-  }
 
 
     </style>
 <app-drawer-layout force-narrow>
   <app-drawer align="right" id="drawer">
     <div class="drawercontent">
+    <h1>here be filters</h1>
     </div>
   </app-drawer>
 
@@ -159,7 +72,7 @@
             <ac-password name="password"></ac-password>
 
             <ac-map name="map" latitude="{{latitude}}" longitude="{{longitude}}" restamp on-to-filter="firetoggle"></ac-map>
-            <ac-list name="list" restamp></ac-list>
+            <ac-list name="list" restamp on-to-filter="firetoggle"></ac-list>
 
             <ac-detail name="detail" key="[[subrouteData.key]]" restamp></ac-detail>
 

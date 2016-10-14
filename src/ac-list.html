@@ -185,7 +185,7 @@
       <span class="flex"></span>
       <!-- <div class="viewswitch" on-tap="toList"><p>listview</p></div> -->
       <ac-button icon="ac-location" bg="base" txtcolor="yellow" on-tap="toMap" class="leftbtn" small></ac-button>
-      <ac-button icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button>
+      <ac-button icon="ac-filter" bg="yellow" txtcolor="base" on-tap="toFilter" small></ac-button>
     </div>
     </div>
 
@@ -234,6 +234,11 @@
       toMap: function() {
         app.set('route.path', '/map/');
       },
+
+      toFilter: function() {
+        this.fire('to-filter');
+      },
+
 
       _sizeview: function(){
         switch(this.sizeview) {

@@ -5,6 +5,7 @@
 <link rel="import" href="../bower_components/ac-button/ac-button.html">
 <link rel="import" href="../bower_components/ac-loader/ac-loader.html">
 <link rel="import" href="../bower_components/ac-icon/ac-icon.html">
+<link rel="import" href="../bower_components/ac-input/ac-input.html">
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
 <script src="../bower_components/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
@@ -14,7 +15,7 @@
   <template>
 
     <style>
-  :host {
+/*  :host {
     display: block;
     height: 100%;
     @apply(--base-structure);
@@ -26,12 +27,10 @@
 
   h1 {
     @apply(--ac-font-h1);
-/*    background-color: white;*/
   }
 
   ac-input {
     @apply(--ac-font-h1);
-/*    background-color: white;*/
   }
 
   h3 {
@@ -149,10 +148,6 @@
     @apply(--montserrat-light);
   }
 
-  /*.acinputdiv {
-    background-color: var(--ac-yellow);
-    height: 24px;
-  }*/
 
   .fixedplace p {
     color: var(--ac-base);
@@ -226,7 +221,6 @@
     width: 100vw;
     height: 100vh;
     @apply(--base-structure);
-    /*background-color: var(--ac-yellow);*/
     @apply(--layout-horizontal);
     @apply(--layout-center-center);
     box-sizing: border-box;
@@ -235,8 +229,6 @@
 
   .spinner h1 {
     color: var(--ac-yellow);
-/*    font-size: 22px;
-    line-height: 28px;*/
     text-align: center;
 
   }
@@ -396,7 +388,7 @@
     padding: 4px 14px 4px 0px;
     text-align: right;
   }
-*/
+
   .leaflet-container {
     width: 100vw;
     height: 100vw;
@@ -474,27 +466,223 @@
       }
 
 
+*/
+   :host {
+      display: block;
+      height: 100%;
+      width: 100vw;
+      --toppart-height: 15vh;
+      --toppart-padding: 10px 20px 10px 20px;
+      --container-padding: 10px 22px 5vh 22px;
+    }
+
+      h1 {
+        @apply(--ac-font-h1);
+      }
+
+      h2 {
+        @apply(--ac-font-h2);
+      }
+
+      h3 {
+        @apply(--ac-font-h3);
+      }
+
+      p {
+        @apply(--ac-font-body1);
+      }
+
+      li {
+        @apply(--ac-font-body1);
+      }
+
+      .flex {
+        @apply(--layout-flex);
+      }
+
+      .absolutepos {
+        position: absolute;
+      }
+
+      .whitespace {
+        width: 100%;
+        height: 20px;
+      }
+
+
+      .toppart {
+        width: 100%;
+        height: var(--toppart-height);
+        z-index: 2;
+        @apply(--base-structure);
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+        position: fixed;
+
+        box-sizing: border-box;
+        padding: var(--toppart-padding);
+        /*border-bottom: 1px solid var(--ac-base);*/
+      }
+
+      .bottompart {
+        width: 100%;
+        height: 120px;
+        z-index: 4;
+        background-color: transparent;
+        @apply(--layout-horizontal);
+        @apply(--layout-start);
+        @apply(--layout-end-justified);
+        position: fixed;
+        bottom: 0px;
+        right: 0px;
+        box-sizing: border-box;
+        padding: 0px 40px 0px 0px;
+      }
+
+
+
+      .main {
+        width: 100%;
+        height: 100vh;
+        background-color: var(--ac-base);
+        overflow-y: scroll;
+      }
+
+      .container {
+        width: 100%;
+        box-sizing: border-box;
+        /*padding: var(--container-padding);*/
+        padding-top: var(--toppart-height);
+      }
+
+      .grey {
+        background-color: var(--ac-grey1);
+      }
+
+      .yellow {
+        background-color: var(--ac-yellow);
+      }
+
+
+      .verticalstart {
+        @apply(--layout-vertical);
+        @apply(--layout-start);
+        @apply(--layout-start-justified);
+      }
+
+      .item {
+        width: 100%;
+        @apply(--layout-horizontal);
+        @apply(--layout-end);
+        @apply(--layout-start-justified);
+        box-sizing: border-box;
+        padding: 25px 0px 25px 8vw;
+      }
+
+      .centering {
+        width: 100%;
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        @apply(--layout-start-justified);        
+      }
+
+      .completed {
+        @apply(--base-structure);
+      }
+
+      .item p {
+        color: var(--ac-yellow);
+        opacity: 0.7;
+      }
+
+      .rightmargin {
+        margin-right: 10px;
+      }
+
+      .item ac-input {
+        margin: 0px 0px 10px 0px;
+        width: 80%;
+        max-width: 500px;
+      }
+
+      .itemdivider {
+        width: 100%;
+        height: 1px;
+        background-color: rgba(0,0,0,0.7);
+        opacity: 0.5;
+      }
+
+      .locationicon {
+        margin: 10px;
+      }
+
+
+      .addbtn {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);       
+      }
+
+      .inbtn {
+        height: 30px;
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);  
+
+      }
+
+
 
 </style>
-    <div class="container">
 
+  <div class="main">
+    <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
     <ac-transact on-txhash="" on-mined="" on-error="" id="transact"></ac-transact>
+    <template id="zerotemp" is="dom-if" if="{{_is(offerview, 'zero')}}"></template>
+    
+    <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'first')}}" restamp>
+      <div class="toppart">
+        <span class="flex"></span>
+        <ac-icon icon="ac-decline" iconcolor="turquoise" on-tap="toHome" small></ac-icon>
+      </div>
+      <div class="container verticalstart">
 
+          <div class="item completed">
+            <ac-input color="yellow" label="From" bind-value="{{fromlocation}}"></ac-input>
+            <ac-icon small icon="ac-location" iconcolor="yellow" class="locationicon"></ac-icon>
+          </div>
+          
+          <div class="itemdivider"></div>
 
-      <template id="zerotemp" is="dom-if" if="{{_is(offerview, 'zero')}}"></template>
+          <div class="item">
+            <ac-input color="yellow" label="To"></ac-input>
+            <ac-icon small icon="ac-location" iconcolor="yellow" class="locationicon"></ac-icon>
+          </div>
 
-      <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'first')}}" restamp>
+          <div class="itemdivider"></div>
 
-        <ac-locationpicker latitude="{{latitude}}" longitude="{{longitude}}" locationbound="{{locationbound}}" current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}"></ac-locationpicker>
+          <div class="item centering">
+            <ac-button class="rightmargin" small class="addbtn" txtcolor="base" bg="yellow" on-tap="addHashtag" icon="ac-hashtagbolder"></ac-button>
+            <ac-button small class="addbtn" txtcolor="base" bg="yellow" on-tap="addHashtag" icon="ac-hashtagbolder"></ac-button>
+          </div>
+<!--
+          <div class="item">
+            <ac-input color="yellow" label="Reference"></ac-input>
+            <ac-icon small icon="ac-hashtag" iconcolor="yellow" class="locationicon"></ac-icon>
+          </div>
+
+          <div class="itemdivider"></div> -->
+
+      </div>
+
+<!--         <ac-locationpicker latitude="{{latitude}}" longitude="{{longitude}}" locationbound="{{locationbound}}" current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}"></ac-locationpicker>
 
         <div class="fixedplace">
           <p>From</p>
           <h1>{{fromaddress.display_name}}</h1>
         </div>
         <div class="confirmbtns">
-          <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="base"></ac-icon>
+          <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="yellow"></ac-icon>
           <ac-button on-tap="toSecond" bg="yellow" txtcolor="big" icon="ac-arrowright"></ac-button>
-        </div>
+        </div> -->
 
       </template>
 
@@ -529,7 +717,6 @@
         <ac-button id="commitoffer" on-tap="toFourth" bg="yellow" txtcolor="base" icon="ac-v"></ac-button>
         <!-- </template>--></div>
 
-    </div>
 </template>
 
 <template is="dom-if" if="{{_is(offerview, 'fourth')}}" restamp>
@@ -568,6 +755,7 @@
     <ac-button on-tap="backtohashtag" small txtbtn txtcolor="base" bg="blue">Back to hashtag</ac-button>
   </div>
 </template>
+  </div>
 
 </template>
 <!-- Creates the element's prototype and registers it -->
@@ -593,6 +781,15 @@ Polymer({
     /* if longitude is given - start new offer from this location */
     longitude: {
       type: Number
+    },
+    sizeview: {
+      type: String,
+      observer: '_sizeview'
+    },
+
+    fromlocation: {
+      type: String,
+      value: 'Your current location'
     }
   },
 
@@ -626,9 +823,9 @@ var to = {location:'daar'};
           //pubkey: wallet.account
         }
     // TEST
-    this.$.transact.newOffer(offer,function(){
-      console.log('new offer saved.');
-    })
+    // this.$.transact.newOffer(offer,function(){
+    //   console.log('new offer saved.');
+    // })
 
 
   },
@@ -651,6 +848,10 @@ var to = {location:'daar'};
       ///
     };
   },
+  toHome: function(){
+    window.history.back();
+  },
+
   routeAvailable: function(){
     console.log('ac-newoffer says: route is avaible',this.routedetails);
   },
@@ -662,6 +863,32 @@ var to = {location:'daar'};
     //console.log(a ,'(',typeof a,') is',b,'(',typeof b,') they are equal for ==',a == b,', they are equal for ===',a === b);
     return a === b;
   },
+
+  _sizeview: function(){
+        switch(this.sizeview) {
+          case 'phone':
+            this.customStyle['--toppart-height'] = '12vh';
+            this.customStyle['--toppart-padding'] = '10px 20px 10px 20px';
+            this.customStyle['--container-padding'] = '10px 22px 5vh 22px';
+            this.updateStyles();
+          break;
+          case 'desktop':
+            this.customStyle['--toppart-height'] = '10vh';
+            this.customStyle['--toppart-padding'] = '10px 20px 10px 26px';
+            this.customStyle['--container-padding'] = '5vh 22px 5vh 22px';
+            this.updateStyles();
+          break;
+          case 'xlarge':
+            this.customStyle['--toppart-height'] = '10vh';
+            this.customStyle['--toppart-padding'] = '10px 40px 10px 40px';
+            this.customStyle['--container-padding'] = '5vh 44px 5vh 44px';
+            this.updateStyles();
+          break;
+          default:
+          console.log('!!! ** Niks');
+        }
+      }
+
 
 });
 </script>
