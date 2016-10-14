@@ -50,13 +50,13 @@
       },
 
       attached: function(){
-        //console.log('ac-locationtracker attached.');
+        console.log('ac-locationtracker attached.');
         //debugger;
       },
       detached: function(){
         //debugger;
         this.$.geolocator.container.stopLocate();
-        //console.log('ac-locationtracker ending. Bye.');
+        console.log('ac-locationtracker ending. Bye.');
       },
 
       _locationchanged: function(e, data) {
