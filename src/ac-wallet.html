@@ -8,8 +8,6 @@
 
 <link rel="import" href="./ac-locationtracker.html">
 
-
-
 <dom-module id="ac-wallet">
   <!-- Defines the element's style and local DOM -->
   <template>
@@ -23,6 +21,7 @@
 
      <!-- faucet stuff -->
     <iron-request id="donaterequest"></iron-request>
+
     <web3-wallet
       id="web3wallet"
       account="{{account}}"
@@ -32,15 +31,14 @@
       walletname="ac-wallet"
       host="{{web3host}}"
       web3="{{web3}}"></web3-wallet>
-    
+
     <ac-config web3host="{{web3host}}"></ac-config>
-    <ac-password password="{{password}}"></ac-password>    
+    <ac-password password="{{password}}"></ac-password>
     <h1 on-tap="donate">GEEF HIER DIE TOKENS</h1>
 
-    <ac-ipfsupload hidefileinput hash="{{hash}}" url="{{imgurl}}" id="ipfsupload">      
+    <ac-ipfsupload hidefileinput hash="{{hash}}" url="{{imgurl}}" id="ipfsupload">
       <img src="{{imgurl}}">
     </ac-ipfsupload>
-    
 
       <ac-locationtracker
         latitude="{{latitude}}"
@@ -58,6 +56,13 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
   <script>
     Polymer({
       is: 'ac-wallet',
+      properties: {
+        account: {
+          type: String,
+          notify: true
+        }
+      },
+
       donate: function() {
         var self = this;
 

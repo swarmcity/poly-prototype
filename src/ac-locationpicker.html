@@ -90,10 +90,10 @@
         }
       },
 
-      mapready: function(){   
+      mapready: function(){
         // try to init the map with given lat/lon
         // when we arrive here, the attach event is passed already.
-        this.initmap();    
+        this.initmap();
         // if nothing was inited now - the lat/lng were not given.
         // so enable our own geolocation component
         if (!this.inited){
@@ -102,7 +102,7 @@
         }
       },
 
-      
+
       initmap: function(){
         // only execute once
         if (this.inited){
@@ -154,6 +154,7 @@
         marker.longitude = lng;
         marker.draggable = "true";
         var self = this;
+        //this.setmapgeo(lat, lng);
         marker.addEventListener('dragend', function(e) {
           this.getAddress(e.detail.target._latlng).then(function(response) {
             self.resolvedAddress = JSON.parse(response);

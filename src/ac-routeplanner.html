@@ -100,7 +100,7 @@
 
   leaflet-map {
     display: block;
-    height: 100vh;
+    height: 60vh;
     width: 100vw;
     z-index: 0;
   }
@@ -524,10 +524,8 @@
       },
       ready: function() {
 
-//debugger;
       },
       attached: function(){
-//        console.log(this.fromlatlon,this.tolatlon);
       },
 
       doRouting: function() {
@@ -573,11 +571,6 @@
           var line = L.Routing.line(routes[0]);
           var bounds = line.getBounds();
           this.$.mapp.map.fitBounds(bounds);
-
-          var x = window.setTimeout(function() {
-            this.$.mapp.map.querySelector('.leaflet-control-container').style = "display: none";
-          }, 5000);
-
 
           this.routefound = true;
 

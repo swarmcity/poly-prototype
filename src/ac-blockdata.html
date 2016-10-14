@@ -36,10 +36,10 @@
       walletname="ac-wallet"
       host="{{web3host}}"
       web3="{{web3}}"></web3-wallet>
-    
+
     <ac-config web3host="{{web3host}}"></ac-config>
     <ac-password password="{{password}}"></ac-password>
-    
+
     <ac-ipfs id="ipfs"></ac-ipfs>
 
   </template>
@@ -54,13 +54,18 @@
         },
         blockdata: {
           type: Array,
-          notify: true
+          notify: true,
+          observer: '_blockdata'
         }
       },
 
       attached: function() {
         console.log('blockdata attached');
 //        this.password = sessionStorage.getItem('ac-password');
+      },
+
+      _blockdata: function() {
+        console.log(this.blockdata);
       },
 
       detached: function(){

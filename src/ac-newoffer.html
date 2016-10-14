@@ -1,7 +1,8 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="./ac-locationpicker.html">
 <link rel="import" href="./ac-routeplanner.html">
-<link rel="import" href="./ac-transact.html">
+<link rel="import" href="./ac-profile.html">
+
 <link rel="import" href="../bower_components/ac-button/ac-button.html">
 <link rel="import" href="../bower_components/ac-loader/ac-loader.html">
 <link rel="import" href="../bower_components/ac-icon/ac-icon.html">
@@ -98,12 +99,12 @@
     @apply(--layout-flex);
   }
 
-  ac-locationpicker {
+  /*ac-locationpicker {
     display: block;
     height: 100vh;
     width: 100vw;
     z-index: 0;
-  }
+  }*/
 
   leaflet-map {
     display: block;
@@ -251,7 +252,7 @@
   }
 
 
- #overviewmap {
+ ac-routeplanner {
     height: var(--map-height);
   }
 
@@ -581,7 +582,7 @@
         width: 100%;
         @apply(--layout-horizontal);
         @apply(--layout-center);
-        @apply(--layout-start-justified);        
+        @apply(--layout-start-justified);
       }
 
       .completed {
@@ -617,13 +618,13 @@
 
       .addbtn {
         @apply(--layout-horizontal);
-        @apply(--layout-center-center);       
+        @apply(--layout-center-center);
       }
 
       .inbtn {
         height: 30px;
         @apply(--layout-horizontal);
-        @apply(--layout-center-center);  
+        @apply(--layout-center-center);
 
       }*/
 
@@ -632,8 +633,10 @@
 </style>
 
   <div class="main">
+    <ac-profile id="profile" account="{{account}}" userdata="{{userdata}}" viewstate="none"></ac-profile>
+
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
-    <ac-transact on-txhash="" on-mined="" on-error="" id="transact"></ac-transact>
+
     <template id="zerotemp" is="dom-if" if="{{_is(offerview, 'zero')}}"></template>
 
     <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'bentry')}}" restamp>
@@ -647,7 +650,7 @@
             <ac-input color="yellow" label="From" bind-value="{{fromlocation}}"></ac-input>
             <ac-icon small icon="ac-location" iconcolor="yellow" class="locationicon"></ac-icon>
           </div>
-          
+
           <div class="itemdivider"></div>
 
           <div class="item">
@@ -665,7 +668,7 @@
       </template>
 
 
-    
+
     <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'first')}}" restamp>
 
 
@@ -704,14 +707,12 @@
         </ac-loader>
       </div>
       -->
-      <ac-routeplanner routedetails="{{routedetails}}" on-route-available="routeAvailable" fromlatlon="{{fromlatlon}}" tolatlon="{{tolatlon}}"></ac-routeplanner>
+      <ac-routeplanner id="routeplanner" routedetails="{{routedetails}}" on-route-available="routeAvailable" fromlatlon="{{fromlatlon}}" tolatlon="{{tolatlon}}"></ac-routeplanner>
 
       <div class="confirmbtns">
         <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="yellow"></ac-icon>
-        <!-- <template dom-is="if" if="{{!error}}">
-        -->
         <ac-button id="commitoffer" on-tap="toFourth" bg="yellow" txtcolor="base" icon="ac-v"></ac-button>
-        <!-- </template>--></div>
+      </div>
 
 </template>
 
@@ -719,8 +720,6 @@
   <div class="offerview">
     <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
 
-<!--     <ac-transact on-txhash="" on-mined="" on-error="" id="transact" id="transact"></ac-transact>
- -->
     <h1>Publishing offer</h1>
     <div class="logger" on-tap="logCollapse">
       <template is="dom-if" if="{{!logshown}}">
@@ -789,8 +788,6 @@ Polymer({
     }
   },
 
- 
-
   toPlaceoffer: function(){
 //    this.rit = this.routedetails;
   },
@@ -800,6 +797,7 @@ Polymer({
     console.log('given lon',this.longitude);
     this.offerview = 'first';
     this.routingprocess = false;
+
 
 //debugger;
 
@@ -828,22 +826,47 @@ var to = {location:'daar'};
 
   toSecond: function() {
     this.offerview = 'second';
+    this.username = this.$.profile.userdata.username;
+
   },
 
   toThird: function() {
     this.offerview = 'third';
     //var self = this;
-    //this.$.routplanner.fromlatlon = 
+    //this.$.routplanner.fromlatlon =
     //window.setTimeout(function() {
       //self.doRouting(self.fromlatlon, self.tolatlon);
     //}, 2000);
   },
   toFourth: function(){
+    this.commitoffer();
     // this.routedetails omvormen tot this.rit
-    this.$.transact.rit = {
-      ///
-    };
+    // this.$.transact.rit = {
+    //   ///
+    // };
   },
+
+  commitoffer: function() {
+
+    var account = app.helpers.fixaddress(app.$.acwallet.account);
+    var offer = {
+        from: this.fromlatlon,
+        to: this.tolatlon,
+        fromaddress: this.fromaddress,
+        toaddress: this.toaddress,
+        offeramount: this.routedetails.costestimate,
+        distance: this.routedetails.routedistance,
+        pubkey: account,
+        rider: this.userdata,
+        status: 1,
+        userdata: this.userdata
+    };
+
+    app.$.transact.newOffer(offer, function(e){
+      console.log('new offer saved.', e);
+    });
+  },
+
   toHome: function(){
     window.history.back();
   },

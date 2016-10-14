@@ -38,7 +38,7 @@
         self = this;
         this.$.ipfs.add(new this.$.ipfs.ipfs.Buffer(JSON.stringify(offer)), function(err, result) {
           var offer_ipfshash = result[0].hash;
-          
+
           self.ipfshash = offer_ipfshash;
           console.log('Offer saved in IPFS', offer_ipfshash);
           self.publishOffer();
@@ -59,7 +59,7 @@
             //console.log(err, contractjson);
             self.web3.eth.getGasPrice(function(err, result) {
               var gasPrice = result.toNumber(10);
-              self.fire('statusupdate', {                
+              self.fire('statusupdate', {
                 message: 'creating allowance'
               });
               var MyContract = self.web3.eth.contract(arccontractjson.abi);
@@ -75,7 +75,7 @@
                 function(err, result) {
                   if (err !== null) {
                     console.log(err);
-                    self.fire('statusupdate', {                
+                    self.fire('statusupdate', {
                       message: 'Error creating allowance',
                       error: err
                     });
@@ -83,7 +83,7 @@
                   } else {
                     console.log('Create Allowance');
                     console.log('allowance Transaction Successful!');
-                    self.fire('statusupdate', {                
+                    self.fire('statusupdate', {
                       message: 'done creating allowance. TxHash=' + result,
                       error: err
                     });

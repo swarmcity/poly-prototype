@@ -16,6 +16,18 @@
 <link rel="import" href="./ac-sizeview.html">
 <link rel="import" href="./ac-locationpicker.html">
 <link rel="import" href="./ac-locationtracker.html">
+<link rel="import" href="./ac-profile.html">
+<link rel="import" href="./ac-list.html">
+<link rel="import" href="./ac-myitem.html">
+<link rel="import" href="./ac-myitems.html">
+<link rel="import" href="./ac-newuser.html">
+<link rel="import" href="./ac-map.html">
+<link rel="import" href="./ac-detail.html">
+<link rel="import" href="./ac-ipfsupload.html">
+<link rel="import" href="./ac-wallet.html">
+<link rel="import" href="./ac-settings.html">
+<link rel="import" href="./ac-view404.html">
+<link rel="import" href="./ac-transact.html">
 
 
 <link rel="import" href="my-icons.html">
@@ -35,7 +47,7 @@
         height: 100%;
         background-color: var(--ac-yellow);
         @apply(--layout-vertical);
-        @apply(--layout-center-center);   
+        @apply(--layout-center-center);
       }
 
 
@@ -48,6 +60,7 @@
   </app-drawer>
 
     <app-location route="{{route}}"></app-location>
+
 
     <app-route
         route="{{route}}"
@@ -82,7 +95,7 @@
             <ac-newoffer latitude="{{latitude}}" longitude="{{longitude}}" name="newoffer" restamp></ac-newoffer>
 
             <ac-profile name="profile" account="[[account]]" restamp></ac-profile>
-            <ac-wallet name="wallet" account="{{account}}" balance="{{balance}}" restamp></ac-wallet>
+            <ac-wallet id="acwallet" name="wallet" account="{{account}}" balance="{{balance}}" restamp></ac-wallet>
 
             <ac-settings name="settings" restamp></ac-settings>
 
@@ -93,6 +106,9 @@
         </iron-pages>
 
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
+
+    <!-- <ac-transact on-txhash="" on-mined="" on-error="" id="transact"></ac-transact> -->
+
 
 </app-drawer-layout>
     <!-- location tracker -->

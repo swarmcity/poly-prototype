@@ -3,6 +3,7 @@
 <link rel="import" href="../bower_components/ac-input/ac-input.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-request.html">
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
+<link rel="import" href="../bower_components/ac-wallet/ac-wallet.html">
 
 <link rel="import" href="./ac-ipfs.html">
 
@@ -75,6 +76,10 @@
 
     <template is="dom-if" if="{{!accountlocked}}">
 
+      <!-- no profile view -->
+      <template is="dom-if" if="{{_is(viewstate, 'none')}}">
+      </template>
+
       <!-- small profile view -->
       <template is="dom-if" if="{{_is(viewstate, 'smallview')}}">
 
@@ -94,6 +99,8 @@
         <div>
           <h1>User logged in</h1>
           <h2>{{username}}</h2>
+          <p>{{account}}</p>
+
           <div class="avatar">
             <img src="{{avatarurl}}" alt="" />
           </div>
@@ -148,12 +155,24 @@
         viewstate: {
           type: String,
           value: 'overview'
+        },
+        userdata: {
+          type: Object,
+          notify: true
+        },
+        account: {
+          type: String,
+          notify: true
         }
       },
 
       attached: function() {
         this.accountlocked = true;
         this.password = sessionStorage.getItem('ac-password');
+        document.addEventListener('web3-ready', function() {
+          console.log('web3');
+          this.account = app.$.wallet.account;
+        }.bind(this));
       },
 
       _password: function() {
