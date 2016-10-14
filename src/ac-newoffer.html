@@ -15,7 +15,7 @@
   <template>
 
     <style>
-/*  :host {
+  :host {
     display: block;
     height: 100%;
     @apply(--base-structure);
@@ -466,8 +466,8 @@
       }
 
 
-*/
-   :host {
+
+   /*:host {
       display: block;
       height: 100%;
       width: 100vw;
@@ -521,7 +521,6 @@
 
         box-sizing: border-box;
         padding: var(--toppart-padding);
-        /*border-bottom: 1px solid var(--ac-base);*/
       }
 
       .bottompart {
@@ -551,7 +550,6 @@
       .container {
         width: 100%;
         box-sizing: border-box;
-        /*padding: var(--container-padding);*/
         padding-top: var(--toppart-height);
       }
 
@@ -627,7 +625,7 @@
         @apply(--layout-horizontal);
         @apply(--layout-center-center);  
 
-      }
+      }*/
 
 
 
@@ -637,8 +635,8 @@
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
     <ac-transact on-txhash="" on-mined="" on-error="" id="transact"></ac-transact>
     <template id="zerotemp" is="dom-if" if="{{_is(offerview, 'zero')}}"></template>
-    
-    <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'first')}}" restamp>
+
+    <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'bentry')}}" restamp>
       <div class="toppart">
         <span class="flex"></span>
         <ac-icon icon="ac-decline" iconcolor="turquoise" on-tap="toHome" small></ac-icon>
@@ -663,17 +661,15 @@
             <ac-button class="rightmargin" small class="addbtn" txtcolor="base" bg="yellow" on-tap="addHashtag" icon="ac-hashtagbolder"></ac-button>
             <ac-button small class="addbtn" txtcolor="base" bg="yellow" on-tap="addHashtag" icon="ac-hashtagbolder"></ac-button>
           </div>
-<!--
-          <div class="item">
-            <ac-input color="yellow" label="Reference"></ac-input>
-            <ac-icon small icon="ac-hashtag" iconcolor="yellow" class="locationicon"></ac-icon>
-          </div>
-
-          <div class="itemdivider"></div> -->
-
       </div>
+      </template>
 
-<!--         <ac-locationpicker latitude="{{latitude}}" longitude="{{longitude}}" locationbound="{{locationbound}}" current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}"></ac-locationpicker>
+
+    
+    <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'first')}}" restamp>
+
+
+         <ac-locationpicker latitude="{{latitude}}" longitude="{{longitude}}" locationbound="{{locationbound}}" current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}"></ac-locationpicker>
 
         <div class="fixedplace">
           <p>From</p>
@@ -682,7 +678,7 @@
         <div class="confirmbtns">
           <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="yellow"></ac-icon>
           <ac-button on-tap="toSecond" bg="yellow" txtcolor="big" icon="ac-arrowright"></ac-button>
-        </div> -->
+        </div>
 
       </template>
 
