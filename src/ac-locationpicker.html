@@ -34,6 +34,7 @@
       no-Zoom-Control="true"
       min-zoom="8"
       max-zoom="19"
+      on-map-ready="initmap"
       hidden="{{!locationbound}}">
 
       <leaflet-geolocation
@@ -73,22 +74,63 @@
         currentGeo: {
           type: Object,
           notify: true
+        },
+        latitude: {
+          type: Number,
+          observer: 'initmap'
+        },
+        longitude: {
+          type: Number,
+          observer: 'initmap'
+        },
+      },
+
+      attached: function(){        
+       
+      },
+
+      // this is executed when lat/lng is provided to this component
+      initmap: function(){
+        // only execute once
+        if (this.inited){
+          return;
+        }
+        if (this.latitude && this.longitude && this.$.leaflet.map) {
+          console.log('ac-locationpicker -> starting on location',this.latitude, this.longitude);
+          this.setmapgeo(this.latitude,this.longitude);
+          // mark the component as started
+          this.inited = true;
         }
       },
 
+      setcurrentGeo: function(lat, lng) {
+        this.currentGeo = {
+          'lat': lat,
+          'lng': lng
+        };
+      },
+
+      // this triggers when geolocation is done
       locationfound: function(e) {
+        // if lat/lng was supplied , ignore own geolocation...
+        if (this.latitude && this.longitude){
+          return;
+        }
+        this.setmapgeo(e.detail.latitude,e.detail.longitude);
+      },
+
+      setmapgeo: function(lat,lon){
         this.$.leaflet.map.invalidateSize();
         this.$.leaflet.map.addEventListener('moveend', function() {
           this.$.leaflet.map.invalidateSize();
         }.bind(this));
         this.locationbound = true;
-        this.currentGeo = { 'lat': e.detail.latitude, 'lng': e.detail.longitude };
+        this.setcurrentGeo(lat, lon);
         var self = this;
         this.getAddress(this.currentGeo).then(function(response) {
           self.resolvedAddress = JSON.parse(response);
-            }, function(error) {
-          });
-        this.appendMarker(e.detail.latitude, e.detail.longitude);
+        }, function(error) {});
+        this.appendMarker(lat, lon);
       },
 
       appendMarker: function(lat, lng) {
@@ -100,9 +142,12 @@
         marker.addEventListener('dragend', function(e) {
           this.getAddress(e.detail.target._latlng).then(function(response) {
             self.resolvedAddress = JSON.parse(response);
-            self.fire('dragend', { 'resolvedaddress': response, 'lat': e.detail.target._latlng.lat, 'lng': e.detail.target._latlng.lng});
-//            debugger;
-            self.currentGeo = { 'lat': e.detail.target._latlng.lat, 'lng': e.detail.target._latlng.lng };
+            self.fire('dragend', {
+              'resolvedaddress': response,
+              'lat': e.detail.target._latlng.lat,
+              'lng': e.detail.target._latlng.lng
+            });
+            self.setcurrentGeo(e.detail.target._latlng.lat, e.detail.target._latlng.lng);
           }, function(error) {
             self.fire('error', error);
           });
