@@ -6,6 +6,9 @@
 <link rel="import" href="./ac-password.html">
 <link rel="import" href="./ac-ipfsupload.html">
 
+<link rel="import" href="./ac-locationtracker.html">
+
+
 
 <dom-module id="ac-wallet">
   <!-- Defines the element's style and local DOM -->
@@ -38,6 +41,18 @@
     <ac-ipfs id="ipfs"></ac-ipfs>
 
     <img src="{{imgurl}}">
+
+      <ac-locationtracker
+        latitude="{{latitude}}"
+        longitude="{{longitude}}"
+        address="{{address}}"
+        one-shot
+        reverse-geocode
+      ></ac-locationtracker>
+
+Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
+
+
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>
