@@ -3,6 +3,7 @@
 <link rel="import" href="../bower_components/ac-loader/ac-loader.html">
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="./ac-ipfs.html">
 
 <dom-module id="ac-listitem">
 <!-- Defines the element's style and local DOM -->
@@ -433,14 +434,16 @@
   <p>Loading</p>
 </template>
 <template is="dom-if" if="{{!dataloaded}}">
+  <ac-ipfs id="ipfs"></ac-ipfs>
+
 <div class="offercard">
       <div class="offercontent">
         <div class="offerer">
           <div class="offereravatar">
-            <img src="{{_getipfsurl(data.userdata.avatar)}}">
+              <img src="{{imgurl}}">
           </div>
           <div class="offerername">
-            <p><span>{{data.userdata.username}}</span>
+            <p><span>{{data.ipfsdata.userdata.aka}}</span>
              •
             <span class="currentkarma">8</span></p>
           </div>
@@ -448,15 +451,15 @@
         <div class="offercontenttxt">
           <template is="dom-if" if="{{_is(sizeview,'phone')}}">
             <p class="address">Need a ride to<br>
-            {{data.toaddress.display_name}}
+            {{data.ipfsdata.toaddress.display_name}}
             </p>
             <small>{{data.sent}}</small>
           </template>
           <template is="dom-if" if="{{!_is(sizeview,'phone')}}">
             <p class="address">Need a ride to
-            {{data.toaddress.display_name}}
+            {{data.ipfsdata.toaddress.display_name}}
             </p>
-            <small>{{data.sent}}</small>
+            <small>{{data.ipfsdata.sent}}</small>
           </template>
 
 
@@ -496,7 +499,8 @@ Polymer({
       observer: '_key'
     },
     data: {
-      type: Object
+      type: Object,
+      observer: '_data'
     },
     sizeview: {
         type: String,
@@ -515,6 +519,11 @@ Polymer({
     this.dataloaded = false;
   },
 
+  _data: function() {
+    console.log(this.data);
+    this.imgurl = this.$.ipfs.geturl(this.data.ipfsdata.userdata.avatar);
+  },
+
   godetail: function() {
     app.set('route.path', '/detail/'+this.offerid);
   },
@@ -522,34 +531,34 @@ Polymer({
   _key: function() {
     var self = this;
 
-    if(this.key){
-      self.$.ipfs.cat(self.key, function(err, buf) {
-          var ipfsData = JSON.parse(buf);
-
-          //console.log(ipfsData);
-          var fromLATLON =  window.decodeGeoHash(ipfsData.from);
-          var toLATLON =  window.decodeGeoHash(ipfsData.to);
-          var point = {
-            // 'latitude': 51.23579 + (Math.random() - 0.5) / 100,
-            // 'longitude': 4.40886 + (Math.random() - 0.5) / 100,
-            // 'info': 'testing1'
-            'ipfshash': self.key,
-            'fromlatitude': fromLATLON.latitude[0],
-            'fromlongitude': fromLATLON.longitude[0],
-            'fromaddress': ipfsData.fromaddress,
-            'tolatitude': toLATLON.latitude[0],
-            'tolongitude': toLATLON.longitude[0],
-            'toaddress': ipfsData.toaddress,
-            'status': ipfsData.status,
-            'userdata': ipfsData.userdata,
-            'pubkey': ipfsData.pubkey,
-            'amount': ipfsData.offeramount,
-            'offerid': ipfsData.offerid
-          };
-          self.data = point;
-          self.dataloaded = false;
-        });
-    }
+    // if(this.key){
+    //   self.$.ipfs.cat(self.key, function(err, buf) {
+    //       var ipfsData = JSON.parse(buf);
+    //
+    //       //console.log(ipfsData);
+    //       var fromLATLON =  window.decodeGeoHash(ipfsData.from);
+    //       var toLATLON =  window.decodeGeoHash(ipfsData.to);
+    //       var point = {
+    //         // 'latitude': 51.23579 + (Math.random() - 0.5) / 100,
+    //         // 'longitude': 4.40886 + (Math.random() - 0.5) / 100,
+    //         // 'info': 'testing1'
+    //         'ipfshash': self.key,
+    //         'fromlatitude': fromLATLON.latitude[0],
+    //         'fromlongitude': fromLATLON.longitude[0],
+    //         'fromaddress': ipfsData.fromaddress,
+    //         'tolatitude': toLATLON.latitude[0],
+    //         'tolongitude': toLATLON.longitude[0],
+    //         'toaddress': ipfsData.toaddress,
+    //         'status': ipfsData.status,
+    //         'userdata': ipfsData.userdata,
+    //         'pubkey': ipfsData.pubkey,
+    //         'amount': ipfsData.offeramount,
+    //         'offerid': ipfsData.offerid
+    //       };
+    //       self.data = point;
+    //       self.dataloaded = false;
+    //     });
+    // }
   },
 
   _is: function(a, b) {
@@ -590,12 +599,7 @@ Polymer({
           }
         },
 
-  _getipfsurl: function(hash) {
-      if(this.$.ipfsupload){
-       var url = this.$.ipfsupload.url(hash);
-       return url;
-     }
-    },
+
 });
 </script>
 </dom-module>

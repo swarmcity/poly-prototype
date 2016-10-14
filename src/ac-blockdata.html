@@ -30,7 +30,7 @@
     <web3-wallet
       id="web3wallet"
       account="{{account}}"
-      password="{{password}}"
+      password="1234"
       balance="{{balance}}"
       keystore="{{keystore}}"
       walletname="ac-wallet"
@@ -60,7 +60,7 @@
       },
 
       attached: function() {
-        console.log('blockdata attached');
+        console.log('ac-blockdata attached');
 //        this.password = sessionStorage.getItem('ac-password');
       },
 
@@ -89,7 +89,7 @@
       },
 
       loadlastblock: function(){
-        console.log('CACHE: found lastblock in localstorage',this.lastblock);
+        //console.log('CACHE: found lastblock in localstorage',this.lastblock);
         this.getBlockData();
       },
 
@@ -104,7 +104,7 @@
         for (var i = 0, len = this.blockdata.length; i < len; i++) {
           tmpblockobject[this.blockdata[i].offerid] = i;
         }
-        console.log('CACHE: found blockdata in localstorage',this.blockdata.length,'items');
+        //console.log('CACHE: found blockdata in localstorage',this.blockdata.length,'items');
         this.blockobject = tmpblockobject;
         this.getBlockData();
       },

@@ -25,7 +25,7 @@
     <web3-wallet
       id="web3wallet"
       account="{{account}}"
-      password="{{password}}"
+      password="1234"
       balance="{{balance}}"
       keystore="{{keystore}}"
       walletname="ac-wallet"
@@ -60,7 +60,15 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
         account: {
           type: String,
           notify: true
+        },
+        password: {
+          type: String,
+          observer: '_password'
         }
+      },
+
+      _password: function() {
+        console.log('Wallet: ',this.password);
       },
 
       donate: function() {

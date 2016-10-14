@@ -165,7 +165,7 @@
       ac-listitem {
         max-width: 900px;
         @apply(--base-shadow);
-        margin-bottom: 10px;        
+        margin-bottom: 10px;
       }
 
 
@@ -193,8 +193,8 @@
     <div class="main">
       <div class="container">
         <!-- <div class="alloffers"> -->
-          <template is="dom-repeat" items="{{blockdata}}">
-            <ac-listitem offerid="{{item.offerid}}" key="{{item.ipfshash}}" status="{{item.status}}" sizeview="{{sizeview}}"></ac-listitem>
+          <template is="dom-repeat" items="{{blockdatareversed}}">
+            <ac-listitem data="{{item}}" offerid="{{item.offerid}}" key="{{item.ipfshash}}" status="{{item.status}}" sizeview="{{sizeview}}"></ac-listitem>
           </template>
         <!-- </div> -->
       </div>
@@ -203,7 +203,7 @@
     <div class="bottompart">
       <ac-button on-tap="newOffer" icon="ac-plus" bg="red" txtcolor="white"></ac-button>
     </div>
-    
+
     <ac-blockdata name="blockdata" blockdata="{{blockdata}}"></ac-blockdata>
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
 
@@ -225,6 +225,7 @@
       },
 
       _blockdata: function() {
+        this.blockdatareversed = this.blockdata.reverse();
       },
 
       newOffer: function() {

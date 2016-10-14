@@ -247,6 +247,7 @@
           app.set('route.path', '/detail/' + e.target.id);
         });
         this.$.leafletmap.appendChild(marker);
+        this.$.leafletmap.map.invalidateSize();
       },
 
       toList: function() {

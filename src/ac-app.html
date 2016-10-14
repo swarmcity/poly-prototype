@@ -28,9 +28,7 @@
 <link rel="import" href="./ac-settings.html">
 <link rel="import" href="./ac-view404.html">
 <link rel="import" href="./ac-transact.html">
-
-
-<link rel="import" href="my-icons.html">
+<link rel="import" href="./ac-password.html">
 
 <dom-module id="ac-app">
   <template>
@@ -107,18 +105,22 @@
 
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
 
-    <!-- <ac-transact on-txhash="" on-mined="" on-error="" id="transact"></ac-transact> -->
+    <ac-transact on-txhash="" on-mined="" on-error="" id="transact"></ac-transact>
 
 
 </app-drawer-layout>
     <!-- location tracker -->
     <template is="dom-if" if="{{online}}" restamp>
+      <ac-password name="password"></ac-password>
       <ac-locationtracker
         id="locationtracker"
         online="{{online}}"
         on-location-changed="locationchanged"
       ></ac-locationtracker>
     </template>
+
+
+
 
 
   </template>
@@ -158,11 +160,11 @@
         }
 
         // debug code - remove me..
-        var self= this;
-        setInterval(function(){
-          console.log('setting online to true');
-          self.online = !self.online;
-        },15*1000);
+        // var self= this;
+        // setInterval(function(){
+        //   console.log('setting online to true');
+        //   self.online = !self.online;
+        // },15*1000);
 
       },
 
