@@ -115,6 +115,10 @@
 }*/
 
     </style>
+<app-drawer-layout force-narrow>
+  <app-drawer align="right" id="drawer">
+    drawer-content
+  </app-drawer>
 
     <app-location route="{{route}}"></app-location>
 
@@ -128,6 +132,8 @@
         route="{{subroute}}"
         data="{{subrouteData}}"
         pattern="/:key"></app-route>
+
+
 
         <iron-pages
             selected="[[page]]"
@@ -169,7 +175,7 @@
       active="{{online}}"
       on-location-changed="locationchanged"
     ></ac-locationtracker>
-
+</app-drawer-layout>
   </template>
 
   <script>

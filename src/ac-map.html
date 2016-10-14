@@ -60,12 +60,15 @@
         width: 100%;
         height: var(--toppart-height);
         z-index: 2;
-        @apply(--base-structure);
+        /*@apply(--base-structure);*/
+        background-color: transparent;
         @apply(--layout-horizontal);
         @apply(--layout-center-center);
+        position: fixed;
+
         box-sizing: border-box;
         padding: var(--toppart-padding);
-        border-bottom: 1px solid var(--ac-base);
+        /*border-bottom: 1px solid var(--ac-base);*/
       }
 
       .bottompart {
@@ -91,7 +94,8 @@
 
       leaflet-map {
         width: 100vw;
-        height: var(--container-height);
+/*        height: var(--container-height);*/
+        height: 100vh;
         z-index: 1;
       }
 
@@ -111,6 +115,8 @@
         border-radius: 50%;
         overflow: hidden;
         background-color: transparent;
+        z-index: 3;
+
       }
 
       .avatar img {
@@ -120,10 +126,15 @@
       }
 
       .username {
-        margin: 0px 0px 0px 15px;
+        margin: 0px 0px 0px -5px;
+        padding: 5px 8px 6px 18px;
         @apply(--montserrat-reg);
-        color:var(--ac-blue);
+        color:#4CACF5;
         font-size: 20px;
+        background-color: white;
+        z-index: 1;
+        /*background-color: rgba(31,23,66,0.05);*/
+        /*text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);*/
       }
 
       .leftbtn {
@@ -168,7 +179,7 @@
     </style>
 
     <div class="toppart">
-      <div class="userinfo">
+      <div class="userinfo"  on-tap="toProfile">
          <div class="avatar" id="avatar">
           <img src="http://media.hotbirthdays.com/files/1932/06/28/pat-morita-1.jpg">
         </div>
@@ -177,7 +188,7 @@
       <span class="flex"></span>
       <!-- <div class="viewswitch" on-tap="toList"><p>listview</p></div> -->
       <ac-button icon="ac-menu" bg="base" txtcolor="yellow" on-tap="toList"  class="leftbtn" small></ac-button>
-      <ac-button icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button>
+      <ac-button on-tap="toFilter" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button>
     </div>
 
     <!-- <div id="spinner" hidden$="{{!locationunknown}}" class="spinnerdiv">
@@ -284,9 +295,9 @@
             this.updateStyles();
           break;
           case 'desktop':
-            this.customStyle['--toppart-height'] = '15vh';
+            this.customStyle['--toppart-height'] = '14vh';
             this.customStyle['--toppart-padding'] = '10px 20px 10px 26px';
-            this.customStyle['--container-height'] = '85vh';
+            this.customStyle['--container-height'] = '86vh';
 
             this.customStyle['--avatar-size'] = '50px';
 
@@ -304,7 +315,23 @@
           default:
           console.log('!!! ** Niks');
         }
+      },
+
+      newOffer: function() {
+        app.set('route.path', '/newoffer/');
+      },
+
+      toFilter: function() {
+        // app.set('route.path', '/filter/');
+        
+        // var drawer = document.querySelector('#drawer');
+        // console.log("jooo",drawer);
+      },
+
+      toProfile: function() {
+        app.set('route.path', '/profile/');
       }
+
 
     });
   </script>
