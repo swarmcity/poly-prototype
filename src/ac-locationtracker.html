@@ -20,12 +20,12 @@
       is: 'ac-locationtracker',
       properties: {
       },
-      
+
       ready: function(){
         // TODO : add if development then this set - othersie use other set.
         //debugger;
       },
-      
+
       attached: function(){
         console.log('ac-locationtracker attached.');
         //debugger;
@@ -33,11 +33,11 @@
       detached: function(){
         //debugger;
         this.$.geolocator.container.stopLocate();
-        console.log('ac-locationtracker ending. Bye.');
+        //console.log('ac-locationtracker ending. Bye.');
       },
 
       _locationchanged: function(e,data){
-        console.log('ac-locationtracker -> I am now at',data.latitude,data.longitude);
+        //console.log('ac-locationtracker -> I am now at',data.latitude,data.longitude);
         this.fire('locationChanged',data);
       }
 
