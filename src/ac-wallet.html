@@ -37,10 +37,10 @@
     <ac-password password="{{password}}"></ac-password>    
     <h1 on-tap="donate">GEEF HIER DIE TOKENS</h1>
 
-    <ac-ipfsupload on-ipfs-hash-received="setImage" hash="{{hash}}" id="ipfsupload"></ac-ipfsupload>
-    <ac-ipfs id="ipfs"></ac-ipfs>
-
-    <img src="{{imgurl}}">
+    <ac-ipfsupload hidefileinput hash="{{hash}}" url="{{imgurl}}" id="ipfsupload">      
+      <img src="{{imgurl}}">
+    </ac-ipfsupload>
+    
 
       <ac-locationtracker
         latitude="{{latitude}}"
@@ -77,12 +77,6 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
           });
         });
       },
-
-      setImage:function(){
-        this.imgurl = this.$.ipfs.geturl(this.hash);
-      }
-
-
 
     });
   </script>

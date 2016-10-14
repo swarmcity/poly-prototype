@@ -18,6 +18,7 @@
   <template>
     <ac-ipfs id="ipfs"></ac-ipfs>
     <input type="file" id="fileinput" on-change="_fileChange" multiple="{{multi}}" accept="{{accept}}">
+    <content></content>
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>
@@ -67,6 +68,10 @@
           type: Array,
           notify: true,
           value: []
+        },
+        url: {
+          type: String,
+          notify: true
         }
       },
 
@@ -103,7 +108,8 @@
                     });
                   } 
                   if (!self.multi){
-                    self.hash = ipfsfile.hash;                    
+                    self.hash = ipfsfile.hash; 
+                    self.url = self.$.ipfs.geturl(self.hash);                
                   }
                   self.fire('ipfs-hash-received', {
                     file: file,

@@ -80,7 +80,9 @@
 
         <div class="userinfosmall"  on-tap="toProfile">
            <div class="avatarsmall" id="avatar">
-            <img src="{{avatarurl}}">
+            <ac-ipfsupload hash="{{avatarhash}}" url="{{avatarurl}}" id="ipfsupload">
+              <img src="{{avatarurl}}">
+            </ac-ipfsupload>
           </div>
           <p class="usernamesmall">{{username}}</p>
         </div>
