@@ -859,7 +859,8 @@ var to = {location:'daar'};
         pubkey: account,
         rider: this.userdata,
         status: 1,
-        userdata: this.userdata
+        userdata: this.userdata,
+        published: Date.now()
     };
 
     app.$.transact.newOffer(offer, function(e){

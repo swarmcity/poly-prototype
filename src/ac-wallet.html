@@ -34,22 +34,22 @@
 
     <ac-config web3host="{{web3host}}"></ac-config>
     <ac-password password="{{password}}"></ac-password>
-    <h1 on-tap="donate">GEEF HIER DIE TOKENS</h1>
+    <!-- <h1 on-tap="donate">GEEF HIER DIE TOKENS</h1> -->
 
     <ac-ipfsupload hidefileinput hash="{{hash}}" url="{{imgurl}}" id="ipfsupload">
       <img src="{{imgurl}}">
     </ac-ipfsupload>
-
+<!--
       <ac-locationtracker
         latitude="{{latitude}}"
         longitude="{{longitude}}"
         address="{{address}}"
         one-shot
         reverse-geocode
-      ></ac-locationtracker>
-
+      ></ac-locationtracker> -->
+<!-- 
 Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
-
+ -->
 
   </template>
   <!-- Creates the element's prototype and registers it -->
@@ -64,6 +64,10 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
         password: {
           type: String,
           observer: '_password'
+        },
+        balance: {
+          type: Number,
+          notify: true
         }
       },
 

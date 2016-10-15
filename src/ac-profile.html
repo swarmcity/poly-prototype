@@ -75,7 +75,7 @@
     </template>
 
     <template is="dom-if" if="{{!accountlocked}}">
-
+      <ac-wallet balance="{{balance}}"></ac-wallet>
       <!-- no profile view -->
       <template is="dom-if" if="{{_is(viewstate, 'none')}}">
       </template>
@@ -100,7 +100,7 @@
           <h1>User logged in</h1>
           <h2>{{username}}</h2>
           <p>{{account}}</p>
-
+          <p>{{balance}}</p>
           <div class="avatar">
             <img src="{{avatarurl}}" alt="" />
           </div>
@@ -112,9 +112,12 @@
       <template is="dom-if" if="{{_is(viewstate, 'edit')}}">
         <div>
           <ac-input on-bind-value-changed="inputchanged" id="newusername" bind-value="{{newusername}}" value="{{username}}" placeholder="{{username}}"></ac-input>
-          <div class="avatar">
+          <!-- <div class="avatar">
             <img on-tap="uploadavatar" id="avataredit" src="{{newavatarurl}}" alt="" />
-          </div>
+          </div> -->
+          <ac-ipfsupload hidefileinput hash="{{newavatar}}" url="{{newavatarurl}}" id="ipfsupload">
+            <img src="{{newavatarurl}}">
+          </ac-ipfsupload>
           <ac-button on-tap="toCancel" icon="ac-decline" bg="yellow" txtcolor="base" small></ac-button>
           <ac-button on-tap="toSave" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button>
         </div>
@@ -171,7 +174,7 @@
         this.password = sessionStorage.getItem('ac-password');
         document.addEventListener('web3-ready', function() {
           console.log('web3');
-          this.account = app.$.wallet.account;
+          //this.account = app.$.wallet.account;
         }.bind(this));
       },
 
@@ -195,9 +198,10 @@
       },
 
       toSave: function() {
-        var userobject = {avatar: 'QmPh72SvymjpgSiYhguSbWi4hDLSuq9xuAfyys5eFjb8P6', aka: this.newusername };
+        var userdata = {avatar: this.newavatar, aka: this.newusername };
         console.log('old:', this.username, ' new: ', this.newusername);
-        localStorage.setItem('ac-profile', JSON.stringify(userobject));
+        console.log('old:', this.currentavatar, ' new: ', this.newavatar);
+        localStorage.setItem('ac-profile', JSON.stringify(userdata));
         this.loadprofile();
         this.viewstate = 'overview';
       },

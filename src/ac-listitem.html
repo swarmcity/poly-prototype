@@ -3,6 +3,8 @@
 <link rel="import" href="../bower_components/ac-loader/ac-loader.html">
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/moment-js/moment-js.html">
+
 <link rel="import" href="./ac-ipfs.html">
 
 <dom-module id="ac-listitem">
@@ -459,12 +461,12 @@
             <p class="address">Need a ride to
             {{data.ipfsdata.toaddress.display_name}}
             </p>
-            <small>{{data.ipfsdata.sent}}</small>
+            <small></small>
           </template>
 
 
         </div>
-      <p class="drivers">{{status}}</p>
+      <p class="drivers">{{data.status}} <span class>{{publishedtime}}</span></p>
       </div>
 
 
@@ -522,6 +524,10 @@ Polymer({
   _data: function() {
     //console.log(this.data);
     this.imgurl = this.$.ipfs.geturl(this.data.ipfsdata.userdata.avatar);
+    if(this.data.ipfsdata.published) {
+
+      this.publishedtime = moment(this.data.ipfsdata.published).fromNow();
+    }
   },
 
   godetail: function() {

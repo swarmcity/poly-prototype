@@ -82,13 +82,13 @@
             <ac-newuser name="newuser"></ac-newuser>
             <ac-password name="password"></ac-password>
 
-            <ac-map name="map" latitude="{{latitude}}" longitude="{{longitude}}" restamp on-to-filter="firetoggle"></ac-map>
-            <ac-list name="list" restamp on-to-filter="firetoggle"></ac-list>
+            <ac-map name="map" blockdata="{{blockdata}}" latitude="{{latitude}}" longitude="{{longitude}}" restamp on-to-filter="firetoggle"></ac-map>
+            <ac-list name="list" blockdata="{{blockdata}}" restamp on-to-filter="firetoggle"></ac-list>
 
-            <ac-detail name="detail" key="[[subrouteData.key]]" restamp></ac-detail>
+            <ac-detail name="detail" blockdata="{{blockdata}}" key="[[subrouteData.key]]" restamp></ac-detail>
 
-            <ac-myitems name="myitems" restamp></ac-myitems>
-            <ac-myitem name="myitem" key="[[key]]" restamp></ac-myitem>
+            <ac-myitems name="myitems" blockdata="{{blockdata}}" restamp></ac-myitems>
+            <ac-myitem name="myitem" blockdata="{{blockdata}}" key="[[key]]" restamp></ac-myitem>
 
             <ac-newoffer latitude="{{latitude}}" longitude="{{longitude}}" name="newoffer" restamp></ac-newoffer>
 
@@ -106,18 +106,18 @@
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
 
     <ac-transact on-txhash="" on-mined="" on-error="" id="transact"></ac-transact>
-
+    <ac-blockdata></ac-blockdata>
 
 </app-drawer-layout>
     <!-- location tracker -->
-    <template is="dom-if" if="{{online}}" restamp>
+    <!-- <template is="dom-if" if="{{online}}" restamp>
       <ac-password name="password"></ac-password>
       <ac-locationtracker
         id="locationtracker"
         online="{{online}}"
         on-location-changed="locationchanged"
       ></ac-locationtracker>
-    </template>
+    </template> -->
 
 
 

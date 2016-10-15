@@ -140,10 +140,11 @@
               fromBlock: self.lastblock,
             });
 
-            self.eventwatcher.watch(function(error, result) {
 
+
+            self.eventwatcher.watch(function(error, result) {
               var event = result;
-              console.log(result.event, result.args);
+              console.log(result.event, event.timestamp);
               switch (event.event) {
                 case 'OfferAdded':
 
@@ -173,19 +174,19 @@
                 case 'OfferClaimed':
                   var offerid = event.args.offerID.toNumber();
                   // claim events from (too) old are ignored
-                  // if (!self.blockdata[self.blockobject[offerid]]){
-                  //   return;
-                  // }
+                  if (!self.blockdata[self.blockobject[offerid]]){
+                    return;
+                  }
                   self.blockdata[self.blockobject[offerid]].status = 'claimed';
                   self.lastblock = event.blockNumber+1;
                   break;
 
                 case 'OfferReleased':
                 var offerid = event.args.offerID.toNumber();
-                // claim events from (too) old are ignored
-                // if (!self.blockdata[self.blockobject[offerid]]){
-                //   return;
-                // }
+                //claim events from (too) old are ignored
+                if (!self.blockdata[self.blockobject[offerid]]){
+                  return;
+                }
                 self.blockdata[self.blockobject[offerid]].status = 'released';
                 self.lastblock = event.blockNumber+1;
                 break;
