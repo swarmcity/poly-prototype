@@ -250,16 +250,16 @@
         }.bind(this));
       },
 
-      claimOffer: function(offerid) {
+      claimOffer: function(offerid, cb) {
         var self = this;
         this.createAllowance(function() {
           console.log('Claim Offer: allowance created.');
           console.log('Staring claim process.');
-          self.claimContract(offerid);
+          self.claimContract(offerid, cb);
         });
       },
 
-      claimContract: function(offerid) {
+      claimContract: function(offerid, cb) {
         var self = this;
         app.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
           console.log(err, contractjson);
@@ -288,7 +288,7 @@
                   console.log('Transaction Successful!');
 
                   console.log('Tx hash=', result);
-
+                  cb();
                   // set vote status to TxHash received
                   //self.votestatus = 2;
                   //self.transactionHash = result;
@@ -306,7 +306,7 @@
         });
       },
 
-      releaseContract: function(offerid) {
+      releaseContract: function(offerid, cb) {
         var self = this;
         app.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
           console.log(err, contractjson);
@@ -335,7 +335,7 @@
                   console.log('Transaction Successful!');
 
                   console.log('Tx hash=', result);
-
+                  cb();
                   // set vote status to TxHash received
                   //self.votestatus = 2;
                   //self.transactionHash = result;

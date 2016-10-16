@@ -494,7 +494,7 @@
              </div>
            </template>
              <template is="dom-if" if="{{thisismyoffer}}">
-               <ac-button class="claimer" txtbtn on-tap="toSecond" bg="white" txtcolor="red">Release this offer</ac-button>
+               <ac-button class="claimer" txtbtn on-tap="toRelsecond" bg="white" txtcolor="red">Release this offer</ac-button>
              </template>
          </template>
 
@@ -521,7 +521,6 @@
      </div>
 
    </template>
-
 
      <template is="dom-if" if="{{_is(claimstep,'second')}}">
        <div class="offercontent_detail someheight centeredtxt certainwidth">
@@ -563,6 +562,52 @@
        <ac-button txtbtn on-tap="toCurrent" bg="turquoise">Start driving</ac-button>
        </div>
      </template>
+
+     <!-- RELEASE CONTRACT FLOW -->
+
+
+       <template is="dom-if" if="{{_is(claimstep,'relsecond')}}">
+         <div class="offercontent_detail someheight centeredtxt certainwidth">
+
+         <p>Release this offer</p>
+         <div class="whitespace"></div>
+         <ac-button txtbtn on-tap="releaseOffer" bg="red">Send {{data.ipfsdata.offeramount}} ARC</ac-button>
+         <div class="whitespace"></div>
+         <div class="whitespace"></div>
+         <p class="smalltxt">The driver will get your ARC tokens.</p>
+
+        <!--  <p on-tap="toThird">
+           agree / disagree
+         </p> -->
+
+         </div>
+       </template>
+
+       <template is="dom-if" if="{{_is(claimstep,'relthird')}}">
+         <div class="offercontent_detail someheight centeredtxt certainwidth">
+           <ac-loader small>Releasing the offer</ac-loader>
+           <div class="whitespace"></div>
+
+           <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
+         </div>
+       </template>
+       <template is="dom-if" if="{{_is(claimstep,'relfourth')}}">
+         <div class="offercontent_detail someheight">
+         <h1>Offer Released</h1>
+  <!--         <p>
+           [ ] share my live location with the rider
+         </p> -->
+         <!-- <p on-tap="toHome">
+           start driving
+         </p> -->
+         <div class="whitespace"></div>
+         <div class="whitespace"></div>
+         <ac-button txtbtn on-tap="toCurrent" bg="turquoise">Thanks</ac-button>
+         </div>
+       </template>
+
+
+
      </div>
      </div>
 
@@ -624,6 +669,19 @@
         this.claimstep = 'second';
       },
 
+      toRelsecond: function() {
+        this.claimstep = 'relsecond';
+      },
+
+      releaseOffer: function() {
+        this.claimstep = 'relthird';
+        var self = this;
+        app.$.transact.releaseContract(this.key, function(e){
+          console.log('offer released.', e);
+          self.claimstep = 'relfourth';
+        });
+      },
+
       claimOffer: function() {
         var self = this;
         app.$.transact.claimOffer(this.key, function(e){
@@ -643,12 +701,6 @@
         this.claimstep = 'first';
       },
 
-      releaseOffer: function() {
-        var self = this;
-        app.$.transact.releaseContract(this.key, function(e){
-          console.log('offer released.', e);
-        });
-      },
 
       toHome: function() {
         app.set('route.path', localStorage.getItem('ac-lastroute'));
