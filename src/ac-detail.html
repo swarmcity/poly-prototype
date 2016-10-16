@@ -430,7 +430,7 @@
     }
 
   </style>
-  <ac-blockdata name="blockdata" blockdata="{{blockdata}}" blockobject="{{blockobject}}"></ac-blockdata>
+  <!-- <ac-blockdata name="blockdata" blockdata="{{blockdata}}" blockobject="{{blockobject}}"></ac-blockdata> -->
 
     <div class="topbar">
      <p class="flex" on-tap="change"></p>
@@ -578,8 +578,7 @@
           observer: '_loaddata'
         },
         blockobject: {
-          type: Object,
-          observer: '_loaddata'
+          type: Object
         },
         data: {
           type: Object

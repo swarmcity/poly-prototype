@@ -36,14 +36,20 @@
 
       newOffer: function(offer, cb) {
         self = this;
+        self.fire('log-event', {
+          message: 'Creating new offer'
+        });
         self.offeramount = offer.offeramount;
         this.$.ipfs.add(new this.$.ipfs.ipfs.Buffer(JSON.stringify(offer)), function(err, result) {
           var offer_ipfshash = result[0].hash;
 
           self.ipfshash = offer_ipfshash;
+          self.fire('log-event', {
+            message: 'Created IPFS: ' + offer_ipfshash
+          });
           console.log('Offer saved in IPFS', offer_ipfshash);
           self.createAllowance(function() {
-            self.mkoffer();
+            self.mkoffer(cb);
           });
         });
       },
@@ -52,6 +58,10 @@
   createAllowance: function(cb) {
 
         var self = this;
+
+        self.fire('log-event', {
+          message: 'Creating allowance.'
+        });
 
         app.helpers.getfile('./contracts/localsInOut.json', function(err, localsinoutcontractjson) {
         app.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
@@ -85,7 +95,7 @@
                   } else {
                     console.log('Create Allowance');
                     console.log('allowance Transaction Successful! ', result);
-                    self.fire('statusupdate', {
+                    self.fire('log-event', {
                       message: 'done creating allowance. TxHash=' + result,
                       error: err
                     });
@@ -103,9 +113,12 @@
       },
 
 
-      mkoffer: function() {
+      mkoffer: function(cb) {
 
         var self = this;
+        self.fire('log-event', {
+          message: 'Creating offer'
+        });
         app.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
           console.log(err, contractjson);
           self.web3.eth.getGasPrice(function(err, result) {
@@ -127,18 +140,24 @@
               function(err, result) {
                 if (err !== null) {
                   console.log(err);
-                  self.push('statuslog', {
-                    'msg': 'Error.'
+                  self.fire('log-event', {
+                    message: 'Error'
                   });
                   console.log('ERROR: Transaction didnt go through. See console.');
                 } else {
                   console.log('NewOffer called on contract',contractjson.address);
                   console.log('Transaction Successful!');
+                  self.fire('log-event', {
+                    message: 'NewOffer called on contract ' + contractjson.address
+                  });
                   // self.push('statuslog', {
                   //   'msg': 'Creating escrow.'
                   // });
                   //self.progress = 'addedtoindex';
                   console.log('Tx hash=', result);
+                  self.fire('log-event', {
+                    message: 'Tx hash=' + result
+                  });
                   // self.push('statuslog', {
                   //   'msg': result
                   // });
@@ -151,9 +170,12 @@
 
                 self.waitTx(result,function(){
                   console.log('escrow created. Next step...');
-
+                  self.fire('log-event', {
+                    message: 'escrow created. Next step...'
+                  });
                   var offeridx = myContractInstance.ipfstoid.call(self.ipfshash).toNumber();
-                  app.set('route.path', '/detail/'+offeridx);
+                  //app.set('route.path', '/detail/'+offeridx);
+                  cb(offeridx);
                   //self.claimstep = 'fourth';
 
                   // self.whisperer = document.getElementById('whisper');
@@ -190,6 +212,10 @@
         * Ether-pudding uses another method, with web3.eth.getTransaction(...) and checking the txHash;
         * on https://github.com/ConsenSys/ether-pudding/blob/master/index.js
         */
+        self.fire('log-event', {
+          message: 'Waiting on TX ' + txHash
+        });
+
         var blockCounter = 15;
         // Wait for tx to be finished
         var filter = this.web3.eth.filter('latest').watch(function(err, blockHash) {
