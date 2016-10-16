@@ -55,58 +55,74 @@
         blockdata: {
           type: Array,
           notify: true
+            // },
+            // blockobject: {
+            //   type: Object,
+            //   notify: true
+            // }
         },
-        blockobject: {
-          type: Object,
-          notify: true
-        }
       },
 
       attached: function() {
         console.log('blockdata attached');
-//        this.password = sessionStorage.getItem('ac-password');
+        //        this.password = sessionStorage.getItem('ac-password');
       },
 
-      detached: function(){
-        if (this.eventwatcher){
-          try{
+      detached: function() {
+        if (this.eventwatcher) {
+          try {
             this.eventwatcher.stopWatching();
-          }catch(e){
-            console.log('ac-blockdata: error stopWatching',e);
+          } catch (e) {
+            console.log('ac-blockdata: error stopWatching', e);
           }
         }
       },
 
       _web3: function() {
-//        console.log('got web3');
+        //        console.log('got web3');
         this.getBlockData();
       },
 
-      initlastblock: function(){
+      initlastblock: function() {
         this.lastblock = 1759875;
         this.getBlockData();
       },
 
-      loadlastblock: function(){
-        console.log('CACHE: found lastblock in localstorage',this.lastblock);
+      loadlastblock: function() {
+        console.log('CACHE: found lastblock in localstorage', this.lastblock);
         this.getBlockData();
       },
 
       initblockarray: function() {
         this.blockdata = [];
-        this.blockobject = {};
+        //this.blockobject = {};
         this.getBlockData();
       },
 
-      loadblockarray: function(){
-        var tmpblockobject = {}
-        for (var i = 0, len = this.blockdata.length; i < len; i++) {
-          tmpblockobject[this.blockdata[i].offerid] = i;
-        }
-        console.log('CACHE: found blockdata in localstorage',this.blockdata.length,'items');
-        this.blockobject = tmpblockobject;
+      loadblockarray: function() {
+        // var tmpblockobject = {}
+        // for (var i = 0, len = this.blockdata.length; i < len; i++) {
+        //   this.updateBlock(blockdata[i]);
+        // }
+        console.log('CACHE: found blockdata in localstorage', this.blockdata.length, 'items');
         this.getBlockData();
       },
+
+      updateBlock: function(blockJSON) {
+        if (!blockJSON || !blockJSON.offerid) {
+          console.log('ignoring invalid block data', blockJSON);
+        }
+        var block;
+        if (!this.blockdata[blockJSON.offerid]) {
+          block = blockJSON;
+        } else {
+          block = this.blockdata[blockJSON.offerid];
+          for (var key in blockJSON) block[key] = blockJSON[key];
+        }
+        this.blockdata[blockJSON.offerid]= block;
+        this.notifyPath('blockdata.' + blockJSON.offerid);
+      },
+
 
       setFilter: function() {
         this.fire('newblock');
@@ -114,105 +130,136 @@
         var filter = this.web3.eth.filter('latest').watch(function(err, blockHash) {
           self.fire('newblock');
           var block = self.web3.eth.getBlock(blockHash);
-          self.block = block;
+          console.log('ac-blockdata --> we\'re now at block',block);
+//          self.block = block;
         });
       },
 
-      getBlockData: function(){
+      getBlockData: function() {
 
-          // check if all needed data items are in place.
-          if (!this.web3 || !this.blockobject || !this.lastblock ){
-            return;
-          }
+        // check if all needed data items are in place.
+        if (!this.web3 || !this.blockdata || !this.lastblock) {
+          return;
+        }
 
-          // if already started - then just skip ( avoid listening twice to BC)
-          if (this.getblockdata === true){
-            return;
-          }
+        // if already started - then just skip ( avoid listening twice to BC)
+        if (this.getblockdata === true) {
+          return;
+        }
 
-          this.getblockdata = true;
-          console.log('Starting getBlockData at block',this.lastblock);
+        this.getblockdata = true;
+        console.log('Starting getBlockData at block', this.lastblock, '(', this.web3.eth.blockNumber - this.lastblock,'blocks behind)');
 
-          var self = this;
+        var self = this;
 
-          app.helpers.getfile('/src/contracts/localsInOut.json', function(err, inoutcontractjson) {
-            console.log('<<<<< ', inoutcontractjson.address);
-            var MyContract = self.web3.eth.contract(inoutcontractjson.abi);
-            var myContractInstance = MyContract.at(inoutcontractjson.address);
+        app.helpers.getfile('/src/contracts/localsInOut.json', function(err, inoutcontractjson) {
+          console.log('<<<<< ', inoutcontractjson.address);
+          var MyContract = self.web3.eth.contract(inoutcontractjson.abi);
+          var myContractInstance = MyContract.at(inoutcontractjson.address);
 
-            self.eventwatcher = myContractInstance.allEvents({
-              fromBlock: self.lastblock,
-            });
+          self.eventwatcher = myContractInstance.allEvents({
+            fromBlock: self.lastblock,
+          });
 
 
+          self.eventwatcher.watch(function(error, result) {
+            if (error) {
+              console.error('ac-blockdata: ', error);
+              return;
+            }
+            var event = result;
 
-            self.eventwatcher.watch(function(error, result) {
-              var event = result;
-              console.log(result.event, event.timestamp);
-              switch (event.event) {
-                case 'OfferAdded':
+            console.log('ac-blockdata --> received event ',self.web3.eth.blockNumber - event.blockNumber,'blocks back');
+            //              console.log(result.event, event.timestamp);
+            if (event.blockNumber < self.lastblock) {
+              debugger;
+            }
+            switch (event.event) {
+              case 'OfferAdded':
 
-                  //var offerid = event.args.offerID.toNumber();
-                  var point = {
+                // //var offerid = event.args.offerID.toNumber();
+                // var point = {
+                //   escrowaddress: event.args.escrowaddress,
+                //   offerid: event.args.offerID.toNumber(),
+                //   ipfshash: event.args.ipfsdescr,
+                //   repaddress: event.args.repaddress,
+                //   creator: event.args.creator,
+                //   status: 'added'
+                // };
+
+                // resolve IPFS data
+                self.$.ipfs.cat(event.args.ipfsdescr, function(err, data) {
+                  
+                  var ipfsdata = JSON.parse(data);
+                  // resolve avatar URL
+                  if (ipfsdata && ipfsdata.userdata && ipfsdata.userdata.avatar){
+                    ipfsdata.userdata.avatarurl = self.$.ipfs.geturl(ipfsdata.userdata.avatar);
+                  }
+
+                  self.updateBlock({
                     escrowaddress: event.args.escrowaddress,
                     offerid: event.args.offerID.toNumber(),
                     ipfshash: event.args.ipfsdescr,
+                    ipfsdata: ipfsdata,
                     repaddress: event.args.repaddress,
                     creator: event.args.creator,
                     status: 'added'
-                  };
-
-                  // resolve IPFS data
-                  self.$.ipfs.cat(event.args.ipfsdescr, function(err, data) {
-                    point.ipfsdata = JSON.parse(data);
-
-                    self.lastblock = event.blockNumber + 1;
-
-                    if (!self.blockobject[event.args.offerID.toNumber()]) {
-                      self.blockobject[event.args.offerID.toNumber()] = self.blockdata.length;
-                      self.push('blockdata', point);
-                    }
                   });
+                  self.lastblock = event.blockNumber + 1;
+                 
+                });
 
-                  break;
-                case 'OfferClaimed':
-                  var offerid = event.args.offerID.toNumber();
-                  // claim events from (too) old are ignored
-                  if (!self.blockdata[self.blockobject[offerid]]){
-                    return;
-                  }
-                  self.blockdata[self.blockobject[offerid]].status = 'claimed';
-                  self.lastblock = event.blockNumber+1;
-                  break;
+                break;
+              case 'OfferClaimed':
+                self.updateBlock({
+                  offerid: event.args.offerID.toNumber(),
+                  status: 'claimed'
+                });
 
-                case 'OfferReleased':
-                var offerid = event.args.offerID.toNumber();
-                //claim events from (too) old are ignored
-                if (!self.blockdata[self.blockobject[offerid]]){
-                  return;
-                }
-                self.blockdata[self.blockobject[offerid]].status = 'released';
-                self.lastblock = event.blockNumber+1;
+                self.lastblock = event.blockNumber + 1;
                 break;
 
-                case 'OfferConflict':
-                var offerid = event.args.offerID.toNumber();
-                // claim events from (too) old are ignored
-                if (!self.blockdata[self.blockobject[offerid]]){
-                  return;
-                }
-                self.blockdata[self.blockobject[offerid]].status = 'conflict';
-                self.lastblock = event.blockNumber+1;
+              case 'OfferReleased':
+
+                self.updateBlock({
+                  offerid: event.args.offerID.toNumber(),
+                  status: 'released'
+                });
+
+                // var offerid = event.args.offerID.toNumber();
+                // //claim events from (too) old are ignored
+                // if (!self.blockdata[self.blockobject[offerid]]){
+                //   return;
+                // }
+                // self.blockdata[self.blockobject[offerid]].status = 'released';
+                self.lastblock = event.blockNumber + 1;
                 break;
 
-                default:
-                  console.log('unknown event', event.event);
-                  break;
-              }
-            });
+              case 'OfferConflict':
+
+                self.updateBlock({
+                  offerid: event.args.offerID.toNumber(),
+                  status: 'conflict'
+                });
+
+                // var offerid = event.args.offerID.toNumber();
+                // // claim events from (too) old are ignored
+                // if (!self.blockdata[self.blockobject[offerid]]){
+                //   return;
+                // }
+                // self.blockdata[self.blockobject[offerid]].status = 'conflict';
+                self.lastblock = event.blockNumber + 1;
+                break;
+
+              default:
+                console.log('unknown event', event.event);
+                break;
+            }
           });
-      }
 
+        });
+
+      }
 
     });
   </script></dom-module>
