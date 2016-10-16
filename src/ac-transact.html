@@ -213,6 +213,7 @@
         * Ether-pudding uses another method, with web3.eth.getTransaction(...) and checking the txHash;
         * on https://github.com/ConsenSys/ether-pudding/blob/master/index.js
         */
+        var self = this;
         self.fire('log-event', {
           message: 'Waiting on TX ' + txHash
         });
