@@ -126,12 +126,22 @@ this.password = sessionStorage.getItem('ac-password');
         } else {
           block = this.blockobject[blockJSON.offerid];
           console.log('1 ',block);
-          for (var key in blockJSON) block[key] = blockJSON[key];
+          var overwrite = false;
+          if (block.timestamp < blockJSON.timestamp){
+            overwrite = true;
+          }
+          for (var key in blockJSON){
+            if (overwrite == false){
+              if (!block[key]){
+                block[key] = blockJSON[key];
+              }
+            }else{
+              block[key] = blockJSON[key];
+            }
+          }
         }
         this.blockobject[blockJSON.offerid] = block;
         console.log('2 ',block);
-//        this.notifyPath('blockdata.' + blockJSON.offerid);
-          //this.push('blockdata',block);
         this.blockdata = this.object2array(this.blockobject);
 
       },
@@ -204,16 +214,6 @@ this.password = sessionStorage.getItem('ac-password');
             // }
             switch (event.event) {
               case 'OfferAdded':
-
-                // //var offerid = event.args.offerID.toNumber();
-                // var point = {
-                //   escrowaddress: event.args.escrowaddress,
-                //   offerid: event.args.offerID.toNumber(),
-                //   ipfshash: event.args.ipfsdescr,
-                //   repaddress: event.args.repaddress,
-                //   creator: event.args.creator,
-                //   status: 'added'
-                // };
 
                 // resolve IPFS data
                 self.$.ipfs.cat(event.args.ipfsdescr, function(err, data) {
