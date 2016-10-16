@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
 <link rel="import" href="../bower_components/moment-js/moment-js.html">
+<link rel="import" href="../bower_components/ac-loader/ac-loader.html">
 
 <dom-module id="ac-routeplanner">
   <template>
@@ -468,6 +469,11 @@
 
 
 </style>
+
+      <!-- <div class="spinner" id="spinner" hidden$="{{routefound}}">
+        <ac-loader small>Your offer is being prepared</ac-loader>
+      </div> -->
+
       <div class="overviewtotal">
 
         <leaflet-map
@@ -488,7 +494,7 @@
     <div class="overviewinfo">
       <div  class="overviewinfoitemtotal">
         <div class="fromto">
-          <p><i18n-msg msgid="From"></i18n-msg></p>
+          <p>From</p>
         </div>
         <div class="overviewinfoitem">
           <p>{{fromaddress.display_name}}</p>
@@ -496,12 +502,22 @@
       </div>
       <div class="overviewinfoitemtotal">
         <div class="fromto">
-          <p><i18n-msg msgid="to"></i18n-msg></p>
+          <p>To</p>
         </div>
         <div class="overviewinfoitem">
           <p>{{toaddress.display_name}}</p>
         </div>
       </div>
+      <div class="overviewinfoitemtotal">
+        <div class="fromto">
+          <p>Price</p>
+        </div>
+        <div class="overviewinfoitem price">
+          <p>{{costestimate}} <span class="ARC">ARC</span></p>
+        </div>
+      </div>
+
+
 
     </div>
   </div>
@@ -522,12 +538,18 @@
         routedetails: {
           type: Object,
           notify: true
+        },
+        routefound: {
+          type: Boolean,
+          value: false,
+          notify: true
         }
       },
       ready: function() {
 
       },
       attached: function(){
+        this.routefound = false;
       },
 
       doRouting: function() {

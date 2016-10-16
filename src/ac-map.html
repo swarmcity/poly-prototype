@@ -247,7 +247,8 @@
           app.set('route.path', '/detail/' + e.target.id);
         });
         this.$.leafletmap.appendChild(marker);
-        this.$.leafletmap.map.invalidateSize();
+        // TODO : fix this
+//        this.$.leafletmap.map.invalidateSize();
       },
 
       toList: function() {
@@ -259,7 +260,8 @@
         // this.$.spinner.hidden = true;
          //console.log('location found: ', this.locationunknown);
         // this.$.leafletmap.hidden = false;
-        this.$.leafletmap.map.invalidateSize();
+                // TODO : fix this
+//        this.$.leafletmap.map.invalidateSize();
       },
 
       _sizeview: function(){

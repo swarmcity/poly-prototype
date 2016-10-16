@@ -9,6 +9,7 @@
 <link rel="import" href="../bower_components/ac-input/ac-input.html">
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
+
 <script src="../bower_components/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
 
 <dom-module id="ac-newoffer">
@@ -16,459 +17,7 @@
   <template>
 
     <style>
-  :host {
-    display: block;
-    height: 100%;
-    @apply(--base-structure);
-    --map-shit: none;
-    --map-height:60vh;
-    --overviewinfo-height:40vh;
-    --overviewinfo-margins: 2vh 30px 2vh 30px;
-  }
-
-  h1 {
-    @apply(--ac-font-h1);
-  }
-
-  ac-input {
-    @apply(--ac-font-h1);
-  }
-
-  h3 {
-    @apply(--ac-font-h3);
-  }
-
-  p {
-    @apply(--ac-font-body1);
-  }
-
-  ::-webkit-scrollbar {
-    display: none;
-  }
-
-  .topbar {
-    width: 100%;
-    height: var(--topbar-height);
-    @apply(--layout-horizontal);
-    @apply(--layout-center);
-    box-sizing: border-box;
-    padding: 10px 20px 10px 10px;
-  }
-
-  .container {
-    width: 100%;
-    @apply(--layout-vertical);
-    @apply(--layout-center);
-    @apply(--layout-start-justified);
-    background-color: white;
-
-  }
-
-  .main {
-    width: 100%;
-    max-width: 90vw;
-    @apply(--layout-vertical);
-    @apply(--layout-left);
-  }
-
-  .tussenschot {
-    width: 100%;
-    height: 1px;
-    background-color: rgba(0,0,0,0.05);
-  }
-
-  #therest {
-    width: 100%;
-    @apply(--layout-vertical);
-    @apply(--layout-left);
-    line-height: normal;
-  }
-
-  .whitespace {
-    width: 100%;
-    height: 2vh;
-    min-height: 20px;
-  }
-
-  .absolutepos {
-    position: absolute;
-  }
-
-  .flex {
-    @apply(--layout-horizontal);
-    @apply(--layout-flex);
-  }
-
-  /*ac-locationpicker {
-    display: block;
-    height: 100vh;
-    width: 100vw;
-    z-index: 0;
-  }*/
-
-  leaflet-map {
-    display: block;
-    height: 100vh;
-    width: 100vw;
-    z-index: 0;
-  }
-
-  .confirmbtns {
-    position: fixed;
-    bottom: 40px;
-    right: 40px;
-    z-index: 3;
-    @apply(--layout-horizontal);
-    @apply(--layout-center-center);
-  }
-
-  .confirmbtn {
-    margin: 0px 2px 0px 2px;
-  }
-
-  .fixedplace {
-    position: fixed;
-    top: 70px;
-    z-index: 1;
-    width: 75%;
-    max-width: 500px;
-    @apply(--layout-vertical);
-    @apply(--layout-center-center);
-  }
-
-  .fixedplace h1 {
-    color: var(--ac-base);
-    font-size: 18px;
-    line-height: 24px;
-    margin: 0px;
-    width: 100%;
-    text-align: center;
-    background-color: var(--ac-yellow);
-    box-sizing: border-box;
-    padding: 4px 8px 4px 8px;
-    @apply(--montserrat-light);
-  }
-
-
-  .fixedplace p {
-    color: var(--ac-base);
-    font-size: 26px;
-    line-height: 32px;
-    @apply(--montserrat-ultralight);
-    opacity: 0.5;
-    text-align: center;
-    background-color: var(--ac-yellow);
-    width: auto;
-    box-sizing: border-box;
-    padding: 10px 18px 10px 18px;
-  }
-
-  .fixedtoolbar {
-    position: fixed;
-      width: 100%;
-      height: 10vh;
-      @apply(--layout-horizontal);
-      @apply(--layout-center);
-      @apply(--layout-end-justified);
-      box-sizing: border-box;
-      padding: 10px 20px 0px 25px;
-  }
-
-
-
-
-
-  .fixedtitle {
-
-    position: fixed;
-    top: 80px;
-    right: 0;
-    left: 0;
-    z-index: 1;
-    @apply(--layout-horizontal);
-    @apply(--layout-center-center);
-
-  }
-
-  .fixedtitle h1 {
-    color: var(--ac-base);
-    background-color: rgba(255,255,255,0.25);
-    box-sizing: border-box;
-    padding: 4px 15px 4px 15px;
-  }
-
-
-
-  .belowmap {
-    @apply(--base-structure);
-    height: 20vh;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 30px 10vw 0px 10vw;
-    @apply(--layout-horizontal);
-    @apply(--layout-start);
-    @apply(--layout-center-justified);
-  }
-  .belowmaptxt {
-    width: 80%;
-    @apply(--layout-vertical);
-    @apply(--layout-start);
-    @apply(--layout-start-justified);
-  }
-
-
-
-  .spinner {
-    width: 100vw;
-    height: 100vh;
-    @apply(--base-structure);
-    @apply(--layout-horizontal);
-    @apply(--layout-center-center);
-    box-sizing: border-box;
-    padding: 20vw;
-  }
-
-  .spinner h1 {
-    color: var(--ac-yellow);
-    text-align: center;
-
-  }
-
-  .spinnerdiv {
-    width: 100vw;
-    height: 100vh;
-    @apply(--layout-vertical);
-    @apply(--layout-center-center);
-    background-color: var(--ac-darkgrey);
-  }
-
-  .overviewtotal {
-    height: 100vh;
-    width: 100%;
-    @apply(--layout-vertical);
-    @apply(--layout-center);
-    @apply(--base-structure);
-
-  }
-
-
- ac-routeplanner {
-    height: var(--map-height);
-  }
-
-  .overviewinfo {
-    height: var(--overviewinfo-height);
-    box-sizing: border-box;
-    padding: var(--overviewinfo-margins);
-    @apply(--layout-vertical);
-    @apply(--layout-start);
-    @apply(--layout-start-justified);
-    @apply(--base-structure);
-  }
-
-  .overviewinfoitemtotal {
-    width: 100%;
-    @apply(--layout-horizontal);
-    @apply(--layout-start);
-    @apply(--layout-start-justified);
-    box-sizing: border-box;
-    padding: 0px;
-    overflow-y: scroll;
-  }
-
-  .fromto {
-    width: 70px;
-    min-width: 70px;
-    box-sizing: border-box;
-    padding: 0px 10px 0px 0px;
-  }
-
-  .fromto p {
-    text-align: right;
-    color: var(--ac-yellow);
-    opacity: 0.7;
-  }
-
-  .overviewinfoitem {
-    box-sizing: border-box;
-    padding: 0px 0px 0px 10px;
-    max-height: 15vh;
-
-      overflow: hidden;
-      text-overflow: ellipsis;
-  }
-  .overviewinfoitem p {
-    color: var(--ac-yellow);
-
-  }
-
-  .price {
-    @apply(--layout-horizontal);
-    @apply(--layout-end);
-    @apply(--layout-start-justified);
-    margin-top: 20px;
-  }
-
-  .price p {
-    color: var(--ac-red);
-
-    @apply(--montserrat-ultralight);
-    margin: 0px;
-    font-size: 46px;
-    line-height: 58px;
-  }
-
-  .ARC {
-    font-size: 20px;
-    line-height: 34px;
-    margin: 0px;
-  }*/
-
-/*
-  .summary {
-    position: absolute;
-    z-index: 1;
-    width: 90%;
-    @apply(--layout-vertical);
-    @apply(--layout-start);
-    @apply(--layout-start-justified);
-    bottom: 90px;
-    box-sizing: border-box;
-    padding: 15px 15px 15px 0px;
-
-  }
-
-  .summaryitem {
-    width: 100%;
-    @apply(--layout-horizontal);
-    @apply(--layout-center);
-  }
-  .summaryitem p {
-    width: 120px;
-    color: var(--ac-yellow);
-    font-size: 18px;
-    line-height: 24px;
-    @apply(--montserrat-light);
-    opacity: 0.5;
-    text-align: center;
-    box-sizing: border-box;
-    padding: 0px 14px 2px 0px;
-    text-align: right;
-  }
-
-  .fromto {
-    color: var(--ac-yellow);
-    font-size: 18px;
-    line-height: 24px;
-    margin: 0px;
-    width: 100%;
-    text-align: left;
-    @apply(--ac-font-nowrap)
-    @apply(--montserrat-reg);
-    opacity: 1;
-
-  }
-
-
-  .price h1 {
-    box-sizing: border-box;
-    padding: 4px 0px 4px 0px;
-    color: var(--ac-red);
-    @apply(--montserrat-reg);
-  }
-
-  .price p {
-    width: 120px;
-    color: var(--ac-red);
-    font-size: 18px;
-    line-height: 24px;
-    @apply(--montserrat-light);
-    opacity: 0.5;
-    text-align: center;
-    box-sizing: border-box;
-    padding: 4px 14px 4px 0px;
-    text-align: right;
-  }
-
-  .leaflet-container {
-    width: 100vw;
-    height: 100vw;
-  }
-.refresher {
-       -webkit-animation-name: rotate;
-      -webkit-animation-duration: 1s;
-      -webkit-animation-iteration-count: infinite;
-      -webkit-animation-timing-function: linear;
-      -moz-animation-name: rotate;
-      -moz-animation-duration: 1s;
-      -moz-animation-iteration-count: infinite;
-      -moz-animation-timing-function: linear;
-      animation-name: rotate;
-      animation-duration: 1s;
-      animation-iteration-count: infinite;
-      animation-timing-function: linear;
-      opacity: 0.5;
-     }
-
-      @-webkit-keyframes rotate {
-          from {-webkit-transform: rotate(0deg);}
-          to {-webkit-transform: rotate(360deg);}
-      }
-
-      @-moz-keyframes rotate {
-          from {-moz-transform: rotate(0deg);}
-          to {-moz-transform: rotate(360deg);}
-      }
-
-      @keyframes rotate {
-          from {transform: rotate(0deg);}
-          to {transform: rotate(360deg);}
-      }
-
-      .offerview {
-        width: 100vw;
-        height: 100vh;
-        @apply(--layout-vertical);
-        @apply(--layout-center-center);
-        color: var(--ac-yellow);
-        @apply(--base-structure);
-        text-align: center;
-
-      }
-
-
-      .offerview h1 {
-        text-align: center;
-        width: 75%;
-      }
-
-
-
-      .logger {
-        width: 100%;
-        @apply(--layout-vertical);
-        @apply(--layout-center-center);
-      }
-
-      .loggercollapse {
-        @apply(--ac-font-body1);
-        color:var(--ac-blue);
-        text-decoration: none;
-        outline: none;
-        font-size: 12px;
-        border-bottom: 1px dashed var(--ac-blue);
-      }
-
-      .log {
-        height: 30vh;
-        background-color: base;
-        overflow-y: scroll;
-        width: 100%;
-      }
-
-
-
-   /*:host {
+   :host {
       display: block;
       height: 100%;
       width: 100vw;
@@ -539,6 +88,96 @@
         padding: 0px 40px 0px 0px;
       }
 
+      .confirmbtns {
+          position: fixed;
+          bottom: 40px;
+          right: 40px;
+          z-index: 3;
+          @apply(--layout-horizontal);
+          @apply(--layout-center-center);
+        }
+
+        .confirmbtn {
+          margin: 0px 2px 0px 2px;
+        }
+
+        .fixedplace {
+          position: fixed;
+          top: 70px;
+          z-index: 1;
+          width: 75%;
+          max-width: 500px;
+          @apply(--layout-vertical);
+          @apply(--layout-center-center);
+        }
+
+        .fixedplace h1 {
+          color: var(--ac-base);
+          font-size: 18px;
+          line-height: 24px;
+          margin: 0px;
+          width: 100%;
+          text-align: center;
+          background-color: var(--ac-yellow);
+          box-sizing: border-box;
+          padding: 4px 8px 4px 8px;
+          @apply(--montserrat-light);
+        }
+
+        /*.acinputdiv {
+          background-color: var(--ac-yellow);
+          height: 24px;
+        }*/
+        .small {
+          font-size: 12px;
+        }
+
+        .fixedplace p {
+          color: var(--ac-base);
+          font-size: 26px;
+          line-height: 32px;
+          @apply(--montserrat-ultralight);
+          opacity: 0.5;
+          text-align: center;
+          background-color: var(--ac-yellow);
+          width: auto;
+          box-sizing: border-box;
+          padding: 10px 18px 10px 18px;
+        }
+
+        .fixedtoolbar {
+          position: fixed;
+            width: 100%;
+            height: 10vh;
+            @apply(--layout-horizontal);
+            @apply(--layout-center);
+            @apply(--layout-end-justified);
+            box-sizing: border-box;
+            padding: 10px 20px 0px 25px;
+        }
+
+
+
+
+
+        .fixedtitle {
+
+          position: fixed;
+          top: 80px;
+          right: 0;
+          left: 0;
+          z-index: 1;
+          @apply(--layout-horizontal);
+          @apply(--layout-center-center);
+
+        }
+
+        .fixedtitle h1 {
+          color: var(--ac-base);
+          background-color: rgba(255,255,255,0.25);
+          box-sizing: border-box;
+          padding: 4px 15px 4px 15px;
+        }
 
 
       .main {
@@ -548,11 +187,21 @@
         overflow-y: scroll;
       }
 
-      .container {
+      /*.container {
         width: 100%;
         box-sizing: border-box;
         padding-top: var(--toppart-height);
-      }
+      }*/
+
+
+  .container {
+    width: 100%;
+    @apply(--layout-vertical);
+    @apply(--layout-center);
+    @apply(--layout-start-justified);
+    background-color: white;
+
+  }
 
       .grey {
         background-color: var(--ac-grey1);
@@ -626,67 +275,134 @@
         @apply(--layout-horizontal);
         @apply(--layout-center-center);
 
-      }*/
+      }
 
+      .offerview {
+              width: 100vw;
+              height: 100vh;
+              @apply(--layout-vertical);
+              @apply(--layout-center-center);
+              color: var(--ac-yellow);
+              @apply(--base-structure);
+              text-align: center;
+
+            }
+
+
+            .offerview h1 {
+              text-align: center;
+              width: 75%;
+            }
+
+
+
+            .logger {
+              width: 100%;
+              @apply(--layout-vertical);
+              @apply(--layout-center-center);
+            }
+
+            .loggercollapse {
+              @apply(--ac-font-body1);
+              color:var(--ac-blue);
+              text-decoration: none;
+              outline: none;
+              font-size: 12px;
+              border-bottom: 1px dashed var(--ac-blue);
+            }
+
+            .log {
+              height: 30vh;
+              background-color: base;
+              overflow-y: scroll;
+              width: 100%;
+            }
+
+      ac-locationpicker {
+    display: block;
+    height: 100vh;
+    width: 100vw;
+    z-index: 0;
+  }
+
+  .overviewinfoitem {
+   box-sizing: border-box;
+   padding: 0px 0px 0px 10px;
+   max-height: 15vh;
+
+     overflow: hidden;
+     text-overflow: ellipsis;
+ }
+ .overviewinfoitem p {
+   color: var(--ac-yellow);
+
+ }
+
+ .refresher {
+        -webkit-animation-name: rotate;
+       -webkit-animation-duration: 1s;
+       -webkit-animation-iteration-count: infinite;
+       -webkit-animation-timing-function: linear;
+       -moz-animation-name: rotate;
+       -moz-animation-duration: 1s;
+       -moz-animation-iteration-count: infinite;
+       -moz-animation-timing-function: linear;
+       animation-name: rotate;
+       animation-duration: 1s;
+       animation-iteration-count: infinite;
+       animation-timing-function: linear;
+       opacity: 0.5;
+      }
+
+       @-webkit-keyframes rotate {
+           from {-webkit-transform: rotate(0deg);}
+           to {-webkit-transform: rotate(360deg);}
+       }
+
+       @-moz-keyframes rotate {
+           from {-moz-transform: rotate(0deg);}
+           to {-moz-transform: rotate(360deg);}
+       }
+
+       @keyframes rotate {
+           from {transform: rotate(0deg);}
+           to {transform: rotate(360deg);}
+       }
 
 
 </style>
+<!-- <ac-profile id="profile" account="{{account}}" userdata="{{userdata}}" viewstate="none"></ac-profile> -->
 
   <div class="main">
-    <ac-profile id="profile" account="{{account}}" userdata="{{userdata}}" viewstate="none"></ac-profile>
 
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
 
     <template id="zerotemp" is="dom-if" if="{{_is(offerview, 'zero')}}"></template>
 
-    <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'bentry')}}" restamp>
-      <div class="toppart">
-        <span class="flex"></span>
-        <ac-icon icon="ac-decline" iconcolor="turquoise" on-tap="toHome" small></ac-icon>
-      </div>
-      <div class="container verticalstart">
+    <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'first')}}">
+      <div class="container">
 
-          <div class="item completed">
-            <ac-input color="yellow" label="From" bind-value="{{fromlocation}}"></ac-input>
-            <ac-icon small icon="ac-location" iconcolor="yellow" class="locationicon"></ac-icon>
-          </div>
+      <!-- <div hidden="{{locationbound}}" class="spinnerdiv">
+        <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
+      </div> -->
 
-          <div class="itemdivider"></div>
-
-          <div class="item">
-            <ac-input color="yellow" label="To"></ac-input>
-            <ac-icon small icon="ac-location" iconcolor="yellow" class="locationicon"></ac-icon>
-          </div>
-
-          <div class="itemdivider"></div>
-
-          <div class="item centering">
-            <ac-button class="rightmargin" small class="addbtn" txtcolor="base" bg="yellow" on-tap="addHashtag" icon="ac-hashtagbolder"></ac-button>
-            <ac-button small class="addbtn" txtcolor="base" bg="yellow" on-tap="addHashtag" icon="ac-hashtagbolder"></ac-button>
-          </div>
-      </div>
-      </template>
-
-
-
-    <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'first')}}" restamp>
-
-
-         <ac-locationpicker latitude="{{latitude}}" longitude="{{longitude}}" locationbound="{{locationbound}}" current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}"></ac-locationpicker>
+        <ac-locationpicker latitude="{{latitude}}" longitude="{{longitude}}" locationbound="{{locationbound}}" current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}" displayaddress="{{displayaddress}}" on-dragend="checkfrom"></ac-locationpicker>
 
         <div class="fixedplace">
           <p>From</p>
-          <h1>{{fromaddress.display_name}}</h1>
+          <h1>{{displayaddress}}</h1>
         </div>
+
         <div class="confirmbtns">
           <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="yellow"></ac-icon>
           <ac-button on-tap="toSecond" bg="yellow" txtcolor="big" icon="ac-arrowright"></ac-button>
         </div>
 
+      </div>
       </template>
 
-      <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'second')}}" restamp>
-
+      <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'second')}}">
+        <div class="container">
         <ac-locationpicker latitude="{{latitude}}" longitude="{{longitude}}" current-geo="{{tolatlon}}" resolved-address="{{toaddress}}"></ac-locationpicker>
 
         <div class="fixedplace">
@@ -698,44 +414,42 @@
           <ac-button on-tap="toThird" bg="yellow" txtcolor="big" icon="ac-arrowright"></ac-button>
         </div>
 
+      </div>
       </template>
 
-      <template is="dom-if" if="{{_is(offerview, 'third')}}" restamp>
-        <!-- <div class="spinner" hidden="{{routingprocess}}">
-        <ac-loader small>
-          <i18n-msg msgid="Your offer is being prepared"></i18n-msg>
-        </ac-loader>
-      </div>
-      -->
-      <ac-routeplanner id="routeplanner" routedetails="{{routedetails}}" on-route-available="routeAvailable" fromlatlon="{{fromlatlon}}" tolatlon="{{tolatlon}}"></ac-routeplanner>
+      <template is="dom-if" if="{{_is(offerview, 'third')}}">
 
-      <div class="confirmbtns">
-        <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="yellow"></ac-icon>
-        <ac-button id="commitoffer" on-tap="toFourth" bg="yellow" txtcolor="base" icon="ac-v"></ac-button>
-      </div>
+        <h1>{{routefound}}</h1>
+      <ac-routeplanner id="routeplanner" routedetails="{{routedetails}}" on-route-available="routeAvailable" fromlatlon="{{fromlatlon}}" tolatlon="{{tolatlon}}" fromaddress="{{fromaddress}}" toaddress="{{toaddress}}" routefound="{{routefound}}"></ac-routeplanner>
+
+        <div class="confirmbtns" hidden="{{routingprocess}}">
+          <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="yellow"></ac-icon>
+          <ac-button id="toFourth" on-tap="toFourth" bg="yellow" txtcolor="base" icon="ac-v"></ac-button>
+        </div>
 
 </template>
 
-<template is="dom-if" if="{{_is(offerview, 'fourth')}}" restamp>
-  <div class="offerview">
+<template is="dom-if" if="{{_is(offerview, 'fourth')}}" >
+
+    <div class="offerview">
     <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
 
     <h1>Publishing offer</h1>
     <div class="logger" on-tap="logCollapse">
-      <template is="dom-if" if="{{!logshown}}">
+      <!-- <template is="dom-if" if="{{!logshown}}">
         <p class="loggercollapse">show log</p>
       </template>
       <template is="dom-if" if="{{logshown}}">
         <p class="loggercollapse">hide log</p>
-      </template>
+      </template> -->
 
-      <iron-collapse id="logcollapser">
-        <div class="log">
-          <template is="dom-repeat" items="{{statuslog}}" restamp>
-            <p>{{item.msg}}</p>
+      <!-- <iron-collapse id="logcollapser">
+        <div class="log"> -->
+          <template is="dom-repeat" items="{{log}}" >
+            <p class="small">{{item.message}}</p>
           </template>
         </div>
-      </iron-collapse>
+      <!-- </iron-collapse> -->
     </div>
 
   </div>
@@ -747,7 +461,7 @@
     <ac-icon icon="ac-v" iconcolor="yellow"></ac-icon>
     <h1>Your offer is published.</h1>
     <div class="whitespace"></div>
-    <ac-button on-tap="backtohashtag" small txtbtn txtcolor="base" bg="blue">Back to hashtag</ac-button>
+    <ac-button on-tap="toMyoffers" small txtbtn txtcolor="base" bg="blue">Go to My Offers</ac-button>
   </div>
 </template>
   </div>
@@ -781,10 +495,16 @@ Polymer({
       type: String,
       observer: '_sizeview'
     },
-
-    fromlocation: {
-      type: String,
-      value: 'Your current location'
+    routingprocess: {
+      type: Boolean,
+      value: false
+    },
+    log: {
+      type: Array,
+      value: []
+    },
+    displayaddress: {
+      type: String
     }
   },
 
@@ -792,61 +512,39 @@ Polymer({
 //    this.rit = this.routedetails;
   },
 
+  toMyoffers: function() {
+    app.set('route.path', '/myitems/');
+  },
+
+  checkfrom: function() {
+    console.log(this.displayaddress);
+  },
+
   attached: function() {
     console.log('given lat',this.latitude);
     console.log('given lon',this.longitude);
     this.offerview = 'first';
     this.routingprocess = false;
-
-
-//debugger;
-
-
-var from = {location:'hier'};
-var to = {location:'daar'};
-
-  var offer = {
-          rider: {'avatar':'QmIPFSHASHHIER'},
-          status: 1,
-          from: from,
-          to: to,
-          offeramount: 4,
-          userdata: {'userdata':'data'},
-          fromaddress: 'blah',
-          toaddress: 'blah',
-          //pubkey: wallet.account
-        }
-    // TEST
-    // this.$.transact.newOffer(offer,function(){
-    //   console.log('new offer saved.');
-    // })
-
-
   },
 
   toSecond: function() {
     this.offerview = 'second';
-    this.username = this.$.profile.userdata.username;
-
   },
 
   toThird: function() {
     this.offerview = 'third';
-    //var self = this;
-    //this.$.routplanner.fromlatlon =
-    //window.setTimeout(function() {
-      //self.doRouting(self.fromlatlon, self.tolatlon);
-    //}, 2000);
+    this.routingprocess = true;
   },
+
   toFourth: function(){
+    //this.commitoffer();
+    this.offerview = 'fourth';
     this.commitoffer();
-    // this.routedetails omvormen tot this.rit
-    // this.$.transact.rit = {
-    //   ///
-    // };
   },
 
   commitoffer: function() {
+
+    var self = this;
 
     var account = app.helpers.fixaddress(app.$.acwallet.account);
     var offer = {
@@ -863,8 +561,16 @@ var to = {location:'daar'};
         published: Date.now()
     };
 
+    console.log(offer);
+
     app.$.transact.newOffer(offer, function(e){
       console.log('new offer saved.', e);
+      self.offerview = 'fifth';
+    });
+
+    app.$.transact.addEventListener('log-event', function(e) {
+      console.log(e.detail);
+      self.push('log',e.detail);
     });
   },
 
@@ -874,6 +580,7 @@ var to = {location:'daar'};
 
   routeAvailable: function(){
     console.log('ac-newoffer says: route is avaible',this.routedetails);
+    this.routingprocess = false;
   },
 
   _is: function(a, b) {
