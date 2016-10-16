@@ -18,7 +18,7 @@
       web3="{{web3}}"></web3-wallet>
 
       <ac-config web3host="{{web3host}}"></ac-config>
-      <ac-password password="{{password}}"></ac-password>
+     <!--  <ac-password password="{{password}}"></ac-password> -->
       <ac-ipfs id="ipfs"></ac-ipfs>
 
 </template>
@@ -28,6 +28,7 @@
       properties: {
       },
       attached: function(){
+        this.password = sessionStorage.getItem('ac-password');
         console.log('ac-transact -> attached');
         console.log('ac-transact -> web3host=',this.web3host);
         console.log('ac-transact -> web3host=',this.password);

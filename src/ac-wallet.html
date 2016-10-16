@@ -33,7 +33,7 @@
       web3="{{web3}}"></web3-wallet>
 
     <ac-config web3host="{{web3host}}"></ac-config>
-    <ac-password password="{{password}}"></ac-password>
+   <!--  <ac-password password="{{password}}"></ac-password> -->
     <!-- <h1 on-tap="donate">GEEF HIER DIE TOKENS</h1> -->
 
     <ac-ipfsupload hidefileinput hash="{{hash}}" url="{{imgurl}}" id="ipfsupload">
@@ -69,6 +69,10 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
           type: Number,
           notify: true
         }
+      },
+
+      attached: function(){
+        this.password = sessionStorage.getItem('ac-password');
       },
 
       _password: function() {
