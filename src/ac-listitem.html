@@ -445,7 +445,7 @@
               <img src="{{data.ipfsdata.userdata.avatarurl}}">
           </div>
           <div class="offerername">
-            <p><span>{{data.ipfsdata.userdata.username}}</span>
+            <p><span>{{data.ipfsdata.userdata.aka}}</span>
              <!-- •
             <span class="currentkarma">8</span> -->
           </p>
@@ -526,8 +526,8 @@ Polymer({
     //console.log(this.data);
     // URL resolving is now done in ac-blockdata
     //    this.imgurl = this.$.ipfs.geturl(this.data.ipfsdata.userdata.avatar);
-    if(this.data.ipfsdata && this.data.ipfsdata.published) {
-      this.publishedtime = moment(this.data.ipfsdata.published).fromNow();
+    if(this.data.timestamp) {
+      this.publishedtime = moment(this.data.timestamp*1000).fromNow();
     }
   },
 

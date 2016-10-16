@@ -34,6 +34,7 @@
       }
 
       .userinfosmall {
+        margin-top: -50px;
         width: 100%;
         @apply(--layout-horizontal);
         @apply(--layout-center);
@@ -75,7 +76,7 @@
     </template>
 
     <template is="dom-if" if="{{!accountlocked}}">
-      <ac-wallet balance="{{balance}}"></ac-wallet>
+      <ac-wallet id="acwallet" balance="{{balance}}" arcbalance="{{arcbalance}}"></ac-wallet>
       <!-- no profile view -->
       <template is="dom-if" if="{{_is(viewstate, 'none')}}">
       </template>
@@ -99,8 +100,10 @@
         <div>
           <h1>User logged in</h1>
           <h2>{{username}}</h2>
-          <p>{{account}}</p>
-          <p>{{balance}}</p>
+          <p>Account: {{account}}</p>
+          <p>ETH Balance: {{balance}}</p>
+          <p>ARC Balance: {{arcbalance}}</p>
+          <div on-tap="donate">give me ARC</div>
           <div class="avatar">
             <img src="{{avatarurl}}" alt="" />
           </div>
@@ -182,6 +185,10 @@
         if(this.password) {
           this.accountlocked = false;
         }
+      },
+
+      donate: function() {
+        
       },
 
       initprofile: function() {

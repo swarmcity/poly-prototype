@@ -47,7 +47,7 @@
         one-shot
         reverse-geocode
       ></ac-locationtracker> -->
-<!-- 
+<!--
 Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
  -->
 
@@ -68,6 +68,14 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
         balance: {
           type: Number,
           notify: true
+        },
+        arcbalance: {
+          type: Number,
+          notify: true
+        },
+        web3: {
+          type: Object,
+          observer: '_web3'
         }
       },
 
@@ -75,14 +83,39 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
         this.password = sessionStorage.getItem('ac-password');
       },
 
+      _web3: function() {
+        this._getARCbalance();
+      },
+
       _password: function() {
         console.log('Wallet: ',this.password);
       },
 
+      // HIER TOKEN BALANCE OPVRAGEN EN TONEN
+      _getARCbalance: function() {
+
+        this.contracturl = this.resolveUrl('./contracts/ARCToken.json');
+
+        var self = this;
+
+        this.importHref(this.contracturl, function(e) {
+          var contractjson = JSON.parse(e.target.import.body.innerText);
+          var tokenContract = self.web3.eth.contract(contractjson.abi);
+          var tokenContractInstance = tokenContract.at(contractjson.address);
+          var account = app.helpers.fixaddress(self.account);
+          self.arcbalance = tokenContractInstance.balanceOf(account) / 1e18;
+          self.balanceloaded = true;
+          self.fire('balance-loaded');
+        });
+
+      },
+
+
+
       donate: function() {
         var self = this;
 
-        this.contracturl = this.resolveUrl('../contracts/ARCToken.json');
+        this.contracturl = this.resolveUrl('./contracts/ARCToken.json');
         this.importHref(this.contracturl, function(e) {
           var contractjson = JSON.parse(e.target.import.body.innerText);
 

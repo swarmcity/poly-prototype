@@ -3,6 +3,7 @@
 <link rel="import" href="../bower_components/ac-button/ac-button.html">
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="./ac-ipfs.html">
+<link rel="import" href="./ac-wallet.html">
 
 <dom-module id="ac-detail">
   <!-- Defines the element's style and local DOM -->
@@ -438,6 +439,7 @@
    <div class="main">
    <div class="content">
      <ac-ipfs id="ipfs"></ac-ipfs>
+     <ac-wallet id="acwallet" balance="{{balance}}" arcbalance="{{arcbalance}}" account="{{account}}"></ac-wallet>
 
 
    <template is="dom-if" if="{{_is(claimstep,'first')}}">
@@ -450,8 +452,8 @@
            <img src="{{data.ipfsdata.userdata.avatarurl}}">
          </div>
          <div class="offerername_detail">
-           <p><span>{{data.ipfsdata.userdata.username}}</span></p>
-           <p><span class="currentkarma">8 karma</span></p>
+           <p><span>{{data.ipfsdata.userdata.aka}}</span></p>
+           <!-- <p><span class="currentkarma">8 karma</span></p> -->
          </div>
        </div>
 <!--
@@ -473,8 +475,14 @@
          <span class="flex"></span>
 
          <template is="dom-if" if="{{_is(status,'added')}}">
-
-         <ac-button class="claimer" txtbtn on-tap="claimOffer" bg="white" txtcolor="red">Claim this offer</ac-button>
+           <template is="dom-if" if="{{thisismyoffer}}">
+             <div class="claimer">
+               <p>This is offer is yours.</p>
+             </div>
+           </template>
+            <template is="dom-if" if="{{!thisismyoffer}}">
+              <ac-button class="claimer" txtbtn on-tap="claimOffer" bg="white" txtcolor="red">Claim this offer</ac-button>
+            </template>
          </template>
 
          <template is="dom-if" if="{{_is(status,'claimed')}}">
@@ -594,6 +602,9 @@
       _key: function() {
         console.log('item detail has key: ', this.key);
         this.data = this.blockdata[this.key];
+        if(this.data.creator == app.helpers.fixaddress(this.account)){
+          this.thisismyoffer = true;
+        }
         this.status = this.data.status;
         console.log(this.data);
       },

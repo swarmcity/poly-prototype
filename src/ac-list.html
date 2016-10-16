@@ -187,7 +187,7 @@
     <div class="main">
       <div class="container">
         <!-- <div class="alloffers"> -->
-          <template is="dom-repeat" items="[[blockdata]]">
+          <template is="dom-repeat" items="[[blockdatareversed]]">
             <ac-listitem data="{{item}}" offerid="{{item.offerid}}" key="{{item.ipfshash}}" status="{{item.status}}" sizeview="{{sizeview}}"></ac-listitem>
           </template>
         <!-- </div> -->
@@ -241,8 +241,8 @@
         //this.blockdatareversed = this.blockdata.reverse();
         var array = this.blockdata;
         //var array = _.sortBy(array);
-        var sortedArray = _.sortBy(array, 'ipfsdata.published');
-        this.blockdatareversed = sortedArray;
+        var sortedArray = _.sortBy(array, 'timestamp');
+        this.blockdatareversed = sortedArray.reverse();
       },
 
       newOffer: function() {
