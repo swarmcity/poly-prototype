@@ -80,7 +80,7 @@ this.password = sessionStorage.getItem('ac-password');
           try {
             this.eventwatcher.stopWatching();
           } catch (e) {
-            console.log('ac-blockdata: error stopWatching', e);
+            //console.log('ac-blockdata: error stopWatching', e);
           }
         }
       },
@@ -96,7 +96,7 @@ this.password = sessionStorage.getItem('ac-password');
       },
 
       loadlastblock: function() {
-        console.log('CACHE: found lastblock in localstorage', this.lastblock);
+        //console.log('CACHE: found lastblock in localstorage', this.lastblock);
         this.getBlockData();
       },
 
@@ -111,7 +111,7 @@ this.password = sessionStorage.getItem('ac-password');
         // for (var i = 0, len = this.blockdata.length; i < len; i++) {
         //   this.updateBlock(blockdata[i]);
         // }
-        console.log('CACHE: found blockdata in localstorage', Object.keys(this.blockobject).length, 'items');
+        //console.log('CACHE: found blockdata in localstorage', Object.keys(this.blockobject).length, 'items');
         this.blockdata = this.object2array(this.blockobject);
         this.getBlockData();
       },
@@ -125,7 +125,7 @@ this.password = sessionStorage.getItem('ac-password');
           block = blockJSON;
         } else {
           block = this.blockobject[blockJSON.offerid];
-          console.log('1 ',block);
+          //console.log('1 ',block);
           var overwrite = false;
           if (block.timestamp < blockJSON.timestamp){
             overwrite = true;
@@ -141,7 +141,7 @@ this.password = sessionStorage.getItem('ac-password');
           }
         }
         this.blockobject[blockJSON.offerid] = block;
-        console.log('2 ',block);
+        //console.log('2 ',block);
         this.blockdata = this.object2array(this.blockobject);
 
       },
@@ -167,7 +167,7 @@ this.password = sessionStorage.getItem('ac-password');
         var filter = this.web3.eth.filter('latest').watch(function(err, blockHash) {
           self.fire('newblock');
           var block = self.web3.eth.getBlock(blockHash);
-          console.log('ac-blockdata --> we\'re now at block',block);
+          //console.log('ac-blockdata --> we\'re now at block',block);
 //          self.block = block;
         });
       },
@@ -186,12 +186,12 @@ this.password = sessionStorage.getItem('ac-password');
         }
 
         this.getblockdata = true;
-        console.log('Starting getBlockData at block', this.lastblock, '(', this.web3.eth.blockNumber - this.lastblock,'blocks behind)');
+        //console.log('Starting getBlockData at block', this.lastblock, '(', this.web3.eth.blockNumber - this.lastblock,'blocks behind)');
 
         var self = this;
 
         app.helpers.getfile('/src/contracts/localsInOut.json', function(err, inoutcontractjson) {
-          console.log('<<<<< ', inoutcontractjson.address);
+          //console.log('<<<<< ', inoutcontractjson.address);
           var MyContract = self.web3.eth.contract(inoutcontractjson.abi);
           var myContractInstance = MyContract.at(inoutcontractjson.address);
 
@@ -202,12 +202,12 @@ this.password = sessionStorage.getItem('ac-password');
 
           self.eventwatcher.watch(function(error, result) {
             if (error) {
-              console.error('ac-blockdata: ', error);
+              //console.error('ac-blockdata: ', error);
               return;
             }
             var event = result;
 
-            console.log('ac-blockdata --> received event ',self.web3.eth.blockNumber - event.blockNumber,'blocks back');
+            //console.log('ac-blockdata --> received event ',self.web3.eth.blockNumber - event.blockNumber,'blocks back');
             //              console.log(result.event, event.timestamp);
             // if (event.blockNumber < self.lastblock) {
             //   debugger;

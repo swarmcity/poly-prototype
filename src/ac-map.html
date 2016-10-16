@@ -257,6 +257,7 @@
 
       locationfound: function() {
         this.locationunknown = false;
+        this.$.leafletmap.map.invalidateSize();
         // this.$.spinner.hidden = true;
          //console.log('location found: ', this.locationunknown);
         // this.$.leafletmap.hidden = false;

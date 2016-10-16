@@ -17,6 +17,8 @@
         --toppart-padding: 10px 20px 10px 20px;
         --container-height: 85vh;
         --avatar-size: 40px;
+        --flex-align1:end;
+        --flex-align2:flex-end;
       }
 
       .avatar {
@@ -69,6 +71,101 @@
         /*text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);*/
       }
 
+      .topbar {
+        width: 100%;
+        height: 12vh;
+        /*height: var(--topbar-height);*/
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        box-sizing: border-box;
+        padding: 10px 20px 0px 25px;
+        @apply(--base-structure);
+        border-bottom:1px solid transparent;
+      }
+
+      .flex {
+        @apply(--layout-horizontal);
+        @apply(--layout-flex);
+      }
+
+      .main {
+        overflow-y: scroll;
+        height: 88vh;
+        width: 100%;
+        @apply(--base-structure);
+
+      }
+
+      .content {
+        width: 100%;
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+        @apply(--base-structure);
+      }
+
+      h1 {
+        @apply(--ac-font-h1);
+        color:var(--ac-turquoise);
+      }
+
+      h2 {
+        @apply(--ac-font-h2);
+        color:#4CACF5;
+
+        width: 33%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 12px;
+      }
+
+      h3 {
+        @apply(--ac-font-h3);
+      }
+      p {
+        @apply(--ac-font-body1);
+      }
+
+      .whitespace {
+        height: 20px;
+      }
+
+      .offeramount {
+        @apply(--layout-horizontal);
+        @apply(--layout-end);
+        @apply(--layout-end-justified);
+        height: 100%;
+        box-sizing: border-box;
+        padding: 20px 20px 20px 20px;
+      }
+
+      .offeramount h1 {
+        color: var(--ac-red);
+        @apply(--montserrat-ultralight);
+        margin: 0px;
+        font-size: 46px;
+        line-height: 52px;
+      }
+      .offeramount p {
+        color: var(--ac-red);
+        font-size: 16px;
+        line-height: 34px;
+        margin: 0px;
+      }
+
+      .confirmbtns {
+          position: fixed;
+          bottom: 40px;
+          right: 40px;
+          z-index: 3;
+          @apply(--layout-horizontal);
+          @apply(--layout-center-center);
+        }
+
+        .confirmbtn {
+          margin: 0px 2px 0px 2px;
+        }
+
     </style>
 
     <template is="dom-if" if="{{accountlocked}}">
@@ -84,45 +181,76 @@
       <!-- small profile view -->
       <template is="dom-if" if="{{_is(viewstate, 'smallview')}}">
 
-        <div class="userinfosmall"  on-tap="toProfile">
-           <div class="avatarsmall" id="avatar">
-            <ac-ipfsupload hidefileinput hash="{{avatarhash}}" url="{{avatarurl}}" id="ipfsupload"></ac-ipfsupload>
-              <img src="{{avatarurl}}">
 
-          </div>
-          <p class="usernamesmall">{{username}}</p>
-        </div>
+           <div class="userinfosmall"  on-tap="toProfile">
+            <div class="avatarsmall" id="avatar">
+              <ac-ipfsupload hidefileinput hash="{{avatarhash}}" url="{{avatarurl}}" id="ipfsupload"></ac-ipfsupload>
+              <img src="{{avatarurl}}">
+            </div>
+            <p class="usernamesmall">{{username}}</p>
+
+            </div>
 
       </template>
 
       <!-- View profile view -->
       <template is="dom-if" if="{{_is(viewstate, 'overview')}}">
-        <div>
-          <h1>User logged in</h1>
-          <h2>{{username}}</h2>
-          <p>Account: {{account}}</p>
-          <p>ETH Balance: {{balance}}</p>
-          <p>ARC Balance: {{arcbalance}}</p>
-          <div on-tap="donate">give me ARC</div>
-          <div class="avatar">
-            <img src="{{avatarurl}}" alt="" />
-          </div>
-          <ac-button on-tap="toEdit" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button>
+
+        <div class="main">
+          <div class="content">
+            <div class="whitespace"></div>
+            <div class="avatar" on-tap="toEdit">
+              <img src="{{avatarurl}}" alt="" />
+            </div>
+            <div class="whitespace"></div>
+            <h1>{{username}}</h1>
+            <h2>{{account}}</h2>
+            <div class="offeramount">
+              <h1>{{arcbalance}}</h1>
+              <p>
+                ARC
+              </p>
+            </div>
+            <!-- <p>ETH Balance: {{balance}}</p> -->
+            <ac-button on-tap="donate" txtbtn on-tap="toFilter" bg="red" txtcolor="base" small>Give me test-ARC</ac-button>
+
+
+          <!-- <ac-button on-tap="toEdit" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button> -->
         </div>
+      </div>
       </template>
 
       <!-- Edit profile view -->
       <template is="dom-if" if="{{_is(viewstate, 'edit')}}">
-        <div>
-          <ac-input on-bind-value-changed="inputchanged" id="newusername" bind-value="{{newusername}}" value="{{username}}" placeholder="{{username}}"></ac-input>
-          <!-- <div class="avatar">
-            <img on-tap="uploadavatar" id="avataredit" src="{{newavatarurl}}" alt="" />
-          </div> -->
-          <ac-ipfsupload hidefileinput hash="{{newavatar}}" url="{{newavatarurl}}" id="ipfsupload">
-            <img src="{{newavatarurl}}">
-          </ac-ipfsupload>
-          <ac-button on-tap="toCancel" icon="ac-decline" bg="yellow" txtcolor="base" small></ac-button>
-          <ac-button on-tap="toSave" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button>
+        <div class="topbar">
+         <p class="flex" on-tap="change"></p>
+         <ac-button  bg="base" icon="declinenew" on-tap="viewstatehome" small id="exitbtn" txtcolor="turquoise"></ac-button>
+       </div>
+       <div class="main">
+         <div class="content">
+           <div class="whitespace"></div>
+            <div class="avatar">
+              <ac-ipfsupload hidefileinput hash="{{newavatar}}" url="{{newavatarurl}}" id="ipfsupload">
+                <img src="{{newavatarurl}}">
+              </ac-ipfsupload>
+            </div>
+
+            <div>
+
+              <ac-input on-bind-value-changed="inputchanged" id="newusername" bind-value="{{newusername}}" value="{{username}}" placeholder="{{username}}"></ac-input>
+
+            </div>
+
+            <div class="confirmbtns">
+
+              <ac-icon icon="ac-decline" on-tap="toCancel" small class="confirmbtn" iconcolor="yellow"></ac-icon>
+              <ac-button on-tap="toSave" bg="yellow" txtcolor="big" icon="ac-arrowright"></ac-button>
+
+          </div>
+
+
+            </div>
+          </div>
         </div>
       </template>
 
@@ -187,8 +315,12 @@
         }
       },
 
+      viewstatehome: function() {
+        this.viewstate = 'overview';
+      },
+
       donate: function() {
-        
+
       },
 
       initprofile: function() {
