@@ -531,7 +531,10 @@ Polymer({
   },
 
   godetail: function() {
-    app.set('route.path', '/detail/'+this.offerid);
+    console.log('goto detail', this.data.offerid);
+    app.$.detail.key = this.data.offerid;
+    app.$.detail.status = this.data.status;
+    app.set('route.path', '/detail/'+this.data.offerid);
   },
 
   _key: function() {

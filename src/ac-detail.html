@@ -430,6 +430,7 @@
     }
 
   </style>
+  <ac-blockdata name="blockdata" blockdata="{{blockdata}}" blockobject="{{blockobject}}"></ac-blockdata>
 
     <div class="topbar">
      <p class="flex" on-tap="change"></p>
@@ -454,10 +455,10 @@
            <p><span class="currentkarma">8 karma</span></p>
          </div>
        </div>
-
+<!--
        <div class="offercontenttxt_detail">
-           <p>{{data.status}}</p>
-       </div>
+           <p>{{status}}</p>
+       </div> -->
 
        <div class="offercontenttxt_detail">
            <p>Need a ride to<br><span class="detail_addresses">{{data.ipfsdata.toaddress.display_name}}</span></p>
@@ -488,17 +489,19 @@
              </template>
          </template>
 
+         <template is="dom-if" if="{{_is(status,'released')}}">
+             <div class="claimer">
+               <p>This offer has been released.</p>
+             </div>
+         </template>
+
          <!-- <template is="dom-if" if="{{_is(status,'claimedbyme')}}">
              <div class="claimer">
                <p>You claimed this offer.</p>
              </div>
          </template> -->
 
-         <template is="dom-if" if="{{_is(status,'released')}}">
-             <div class="claimer">
-               <p>This offer has been released.</p>
-             </div>
-         </template>
+
 
          <!-- <template is="dom-if" if="{{_is(status,'done')}}"> -->
                <!-- <p>This offer is done. This is a receid</p> -->
@@ -560,7 +563,6 @@
     <ac-button class="claimer" txtbtn on-tap="releaseOffer" bg="red" txtcolor="white">Release this offer</ac-button> -->
 
 
-    <ac-blockdata name="blockdata" blockdata="{{blockdata}}"></ac-blockdata>
 
   </template>
   <!-- Creates the element's prototype and registers it -->
@@ -569,18 +571,24 @@
       is: 'ac-detail',
       properties: {
         key: {
-          type: String,
-          observer: '_blockdata'
+          type: Number,
+          observer: '_keychanged'
         },
         blockdata: {
-          type: Array,
-          observer: '_blockdata'
+          type: Array
+        },
+        blockobject: {
+          type: Object
         },
         data: {
           type: Object
         },
         claimstep: {
           type: String
+        },
+        status: {
+          type: String,
+          observer: '_status'
         }
       },
 
@@ -589,15 +597,29 @@
         this.thisismyoffer = false;
       },
 
+      _status: function() {
+        console.log(this.status);
+      },
+
+      _keychanged: function() {
+        this._blockdata();
+        this._blockobject();
+      },
+
       _blockdata: function() {
-        this.data = this.blockdata[this.key];
+        this.data = this.blockdata[this.blockobject[this.key]];
+      },
+
+      _blockobject: function() {
+        if(this.blockdata){
+        this.data = this.blockdata[this.blockobject[this.key]];
+        //this.data = this.blockdata[this.data.offerid];
         this.imgurl = this.$.ipfs.geturl(this.data.ipfsdata.userdata.avatar);
-        this.status = this.data.status;
         if(app.helpers.fixaddress(app.$.acwallet.account) == this.data.creator){
           console.log('this is my offer!');
           this.thisismyoffer = true;
         }
-        console.log(this.data, this.status);
+      }
       },
 
       claimOffer: function() {

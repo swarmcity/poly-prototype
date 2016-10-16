@@ -3,6 +3,7 @@
 <link rel="import" href="../bower_components/ac-loader/ac-loader.html">
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<script src="../bower_components/underscore/underscore.js"></script>
 
 <link rel="import" href="./ac-blockdata.html">
 <link rel="import" href="./ac-listitem.html">
@@ -220,7 +221,11 @@
       },
 
       _blockdata: function() {
-        this.blockdatareversed = this.blockdata.reverse();
+        //this.blockdatareversed = this.blockdata.reverse();
+        var array = this.blockdata;
+        //var array = _.sortBy(array);
+        var sortedArray = _.sortBy(array, 'published');
+        this.blockdatareversed = sortedArray;
       },
 
       newOffer: function() {

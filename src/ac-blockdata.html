@@ -55,6 +55,10 @@
         blockdata: {
           type: Array,
           notify: true
+        },
+        blockobject: {
+          type: Object,
+          notify: true
         }
       },
 
@@ -190,6 +194,7 @@
                 self.blockdata[self.blockobject[offerid]].status = 'released';
                 self.lastblock = event.blockNumber+1;
                 break;
+
                 case 'OfferConflict':
                 var offerid = event.args.offerID.toNumber();
                 // claim events from (too) old are ignored
@@ -199,6 +204,7 @@
                 self.blockdata[self.blockobject[offerid]].status = 'conflict';
                 self.lastblock = event.blockNumber+1;
                 break;
+
                 default:
                   console.log('unknown event', event.event);
                   break;
