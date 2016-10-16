@@ -208,7 +208,7 @@
       properties: {
           blockdata: {
             type: Array,
-            //observer: '_blockdata'
+            observer: '_blockdata'
           },
           sizeview: {
             type: String,
@@ -237,13 +237,13 @@
   //   }
   // },
 
-      // _blockdata: function() {
-      //   //this.blockdatareversed = this.blockdata.reverse();
-      //   var array = this.blockdata;
-      //   //var array = _.sortBy(array);
-      //   var sortedArray = _.sortBy(array, 'published');
-      //   this.blockdatareversed = sortedArray;
-      // },
+      _blockdata: function() {
+        //this.blockdatareversed = this.blockdata.reverse();
+        var array = this.blockdata;
+        //var array = _.sortBy(array);
+        var sortedArray = _.sortBy(array, 'published');
+        this.blockdatareversed = sortedArray.reverse();
+      },
 
       newOffer: function() {
         app.set('route.path', '/newoffer/');
