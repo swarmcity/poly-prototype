@@ -1,4 +1,4 @@
-<link rel="import" href="../bower_components/polymer/polymer.html">
+z<link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-request.html">
 <link rel="import" href="../bower_components/web3-wallet/web3-wallet.html">
 
@@ -85,6 +85,7 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
 
       _web3: function() {
         this._getARCbalance();
+        this.fire('map-update');
       },
 
       _password: function() {
@@ -106,6 +107,7 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
           self.arcbalance = tokenContractInstance.balanceOf(account) / 1e18;
           self.balanceloaded = true;
           self.fire('balance-loaded');
+          self.fire('map-update');
         });
 
       },

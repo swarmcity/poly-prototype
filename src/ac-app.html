@@ -158,9 +158,13 @@
       ],
 
       attached: function() {
+
+        this.fire('map-update');
+
         if(localStorage.getItem("ac-user")){
           if(sessionStorage.getItem("ac-password", this.password)){
             app.set('route.path', localStorage.getItem('ac-lastroute'));
+            this.fire('map-update');
           } else {
             app.set('route.path', '/password/');
           }
@@ -205,6 +209,7 @@
 
       _route: function() {
         localStorage.setItem('ac-lastroute', this.route.path);
+        this.fire('map-update');
       }
     });
   </script>

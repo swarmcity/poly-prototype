@@ -303,6 +303,7 @@
       attached: function() {
         this.accountlocked = true;
         this.password = sessionStorage.getItem('ac-password');
+
         document.addEventListener('web3-ready', function() {
           console.log('web3');
           //this.account = app.$.wallet.account;
@@ -310,6 +311,7 @@
       },
 
       _password: function() {
+        this.fire('map-update');
         if(this.password) {
           this.accountlocked = false;
         }
