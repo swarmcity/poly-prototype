@@ -378,7 +378,9 @@
     }
 
 
-
+    .small {
+      font-size: 12px;
+    }
 
     .centeredtxt {
       text-align: center;
@@ -481,7 +483,7 @@
              </div>
            </template>
             <template is="dom-if" if="{{!thisismyoffer}}">
-              <ac-button class="claimer" txtbtn on-tap="claimOffer" bg="white" txtcolor="red">Claim this offer</ac-button>
+              <ac-button class="claimer" txtbtn on-tap="toSecond" bg="white" txtcolor="red">Claim this offer</ac-button>
             </template>
          </template>
 
@@ -492,7 +494,7 @@
              </div>
            </template>
              <template is="dom-if" if="{{thisismyoffer}}">
-               <ac-button class="claimer" txtbtn on-tap="claimOffer" bg="white" txtcolor="red">Release this offer</ac-button>
+               <ac-button class="claimer" txtbtn on-tap="toRelsecond" bg="white" txtcolor="red">Release this offer</ac-button>
              </template>
          </template>
 
@@ -520,13 +522,12 @@
 
    </template>
 
-
      <template is="dom-if" if="{{_is(claimstep,'second')}}">
        <div class="offercontent_detail someheight centeredtxt certainwidth">
 
        <p>To claim an offer, you have to match the amount offered.</p>
        <div class="whitespace"></div>
-       <ac-button txtbtn on-tap="toThird" bg="red">Match {{data.ipfsdata.offeramount}} ARC</ac-button>
+       <ac-button txtbtn on-tap="claimOffer" bg="red">Match {{data.ipfsdata.offeramount}} ARC</ac-button>
        <div class="whitespace"></div>
        <div class="whitespace"></div>
        <p class="smalltxt">When confirmed by the rider, you will get your tokens back with the reward. If the offer was canceled, you will just get your tokens back.</p>
@@ -541,8 +542,8 @@
        <div class="offercontent_detail someheight centeredtxt certainwidth">
          <ac-loader small>Sending ARCtokens to offer</ac-loader>
          <div class="whitespace"></div>
-         <template is="dom-repeat" items="{{statuslog}}">
-           <p>{{item.msg}}</p>
+         <template is="dom-repeat" items="{{log}}">
+           <p class="small">{{item.message}}</p>
          </template>
          <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
        </div>
@@ -561,6 +562,52 @@
        <ac-button txtbtn on-tap="toCurrent" bg="turquoise">Start driving</ac-button>
        </div>
      </template>
+
+     <!-- RELEASE CONTRACT FLOW -->
+
+
+       <template is="dom-if" if="{{_is(claimstep,'relsecond')}}">
+         <div class="offercontent_detail someheight centeredtxt certainwidth">
+
+         <p>Release this offer</p>
+         <div class="whitespace"></div>
+         <ac-button txtbtn on-tap="releaseOffer" bg="red">Send {{data.ipfsdata.offeramount}} ARC</ac-button>
+         <div class="whitespace"></div>
+         <div class="whitespace"></div>
+         <p class="smalltxt">The driver will get your ARC tokens.</p>
+
+        <!--  <p on-tap="toThird">
+           agree / disagree
+         </p> -->
+
+         </div>
+       </template>
+
+       <template is="dom-if" if="{{_is(claimstep,'relthird')}}">
+         <div class="offercontent_detail someheight centeredtxt certainwidth">
+           <ac-loader small>Releasing the offer</ac-loader>
+           <div class="whitespace"></div>
+
+           <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
+         </div>
+       </template>
+       <template is="dom-if" if="{{_is(claimstep,'relfourth')}}">
+         <div class="offercontent_detail someheight">
+         <h1>Offer Released</h1>
+  <!--         <p>
+           [ ] share my live location with the rider
+         </p> -->
+         <!-- <p on-tap="toHome">
+           start driving
+         </p> -->
+         <div class="whitespace"></div>
+         <div class="whitespace"></div>
+         <ac-button txtbtn on-tap="toCurrent" bg="turquoise">Thanks</ac-button>
+         </div>
+       </template>
+
+
+
      </div>
      </div>
 
@@ -592,11 +639,13 @@
           type: String
         },
 
+
       },
 
       attached: function() {
         this.claimstep = 'first';
         this.thisismyoffer = false;
+        this.log = [];
       },
 
       _key: function() {
@@ -616,17 +665,42 @@
         }
       },
 
-      claimOffer: function() {
-        app.$.transact.claimOffer(this.key, function(e){
-          console.log('offer claimed.', e);
-        });
+      toSecond: function() {
+        this.claimstep = 'second';
+      },
+
+      toRelsecond: function() {
+        this.claimstep = 'relsecond';
       },
 
       releaseOffer: function() {
+        this.claimstep = 'relthird';
+        var self = this;
         app.$.transact.releaseContract(this.key, function(e){
           console.log('offer released.', e);
+          self.claimstep = 'relfourth';
         });
       },
+
+      claimOffer: function() {
+        var self = this;
+        app.$.transact.claimOffer(this.key, function(e){
+          console.log('offer claimed.', e);
+          self.claimstep = 'fourth';
+        });
+
+        app.$.transact.addEventListener('log-event', function(e) {
+          console.log(e.detail);
+          self.push('log',e.detail);
+        });
+        this.claimstep = 'third';
+      },
+
+      toCurrent: function() {
+        app.set('route.path', '/list/');
+        this.claimstep = 'first';
+      },
+
 
       toHome: function() {
         app.set('route.path', localStorage.getItem('ac-lastroute'));
