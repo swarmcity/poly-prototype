@@ -219,6 +219,9 @@
 
       attached: function() {
         this.locationunknown = true;
+        document.addEventListener('map-update', function() {
+          this.$.leafletmap.map.invalidateSize();
+        }.bind(this));
       },
 
       _blockdata: function() {
