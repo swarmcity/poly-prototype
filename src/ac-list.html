@@ -241,8 +241,8 @@
         //this.blockdatareversed = this.blockdata.reverse();
         var array = this.blockdata;
         //var array = _.sortBy(array);
-        var sortedArray = _.sortBy(array, 'published');
-        this.blockdatareversed = sortedArray.reverse();
+        var sortedArray = _.sortBy(array, 'ipfsdata.published');
+        this.blockdatareversed = sortedArray;
       },
 
       newOffer: function() {
