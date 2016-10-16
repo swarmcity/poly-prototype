@@ -12,20 +12,20 @@
         display: block;
       }
     </style>
-
+<!-- 
     <iron-localstorage
-  name="ac-blockdata"
-  value="{{blockdata}}"
-  on-iron-localstorage-load-empty="initblockarray"
-  on-iron-localstorage-load="loadblockarray"
-  ></iron-localstorage>
-
+  name="ac-blockobject"
+  value="{{blockobject}}"
+  on-iron-localstorage-load-empty="initblockobject"
+  on-iron-localstorage-load="loadblockobject"
+  ></iron-localstorage> -->
+<!-- 
     <iron-localstorage
     name="ac-lastblock"
     value="{{lastblock}}"
     on-iron-localstorage-load-empty="initlastblock"
     on-iron-localstorage-load="loadlastblock"
-    ></iron-localstorage>
+    ></iron-localstorage> -->
 
     <web3-wallet
       id="web3wallet"
@@ -56,16 +56,20 @@
           type: Array,
           notify: true
             // },
-            // blockobject: {
-            //   type: Object,
-            //   notify: true
-            // }
+            
         },
+        blockobject: {
+            type: Object,
+           
+        }            
       },
-
       attached: function() {
         console.log('blockdata attached');
         //        this.password = sessionStorage.getItem('ac-password');
+    this.blockobject = {};
+    this.lastblock = 1759875;
+     this.getBlockData();
+
       },
 
       detached: function() {
@@ -93,36 +97,54 @@
         this.getBlockData();
       },
 
-      initblockarray: function() {
-        this.blockdata = [];
-        //this.blockobject = {};
+      initblockobject: function() {
+        //this.blockdata = {};
+        this.blockobject = {};
         this.getBlockData();
       },
 
-      loadblockarray: function() {
+      loadblockobject: function() {
         // var tmpblockobject = {}
         // for (var i = 0, len = this.blockdata.length; i < len; i++) {
         //   this.updateBlock(blockdata[i]);
         // }
-        console.log('CACHE: found blockdata in localstorage', this.blockdata.length, 'items');
+        console.log('CACHE: found blockdata in localstorage', Object.keys(this.blockobject).length, 'items');
+        this.blockdata = this.object2array(this.blockobject);        
         this.getBlockData();
       },
 
       updateBlock: function(blockJSON) {
-        if (!blockJSON || !blockJSON.offerid) {
+        if (!blockJSON || !blockJSON.offerid === undefined) {
           console.log('ignoring invalid block data', blockJSON);
         }
         var block;
-        if (!this.blockdata[blockJSON.offerid]) {
+        if (!this.blockobject[blockJSON.offerid]) {
           block = blockJSON;
         } else {
-          block = this.blockdata[blockJSON.offerid];
+          block = this.blockobject[blockJSON.offerid];
           for (var key in blockJSON) block[key] = blockJSON[key];
         }
-        this.blockdata[blockJSON.offerid]= block;
-        this.notifyPath('blockdata.' + blockJSON.offerid);
+        this.blockobject[blockJSON.offerid]= block;
+//        this.notifyPath('blockdata.' + blockJSON.offerid);
+          //this.push('blockdata',block);
+          this.blockdata = this.object2array(this.blockobject);
+         
       },
 
+       object2array: function(input){
+
+        var r = [];
+        var keys = Object.keys(input);
+        for (var i=0;i<keys.length;i++){
+          if (input[keys[i]].ipfsdata){
+            r[keys[i]]= input[keys[i]];
+          }
+        }
+        return r;
+
+  },
+
+    
 
       setFilter: function() {
         this.fire('newblock');
@@ -137,8 +159,9 @@
 
       getBlockData: function() {
 
+
         // check if all needed data items are in place.
-        if (!this.web3 || !this.blockdata || !this.lastblock) {
+        if (!this.web3 || !this.blockobject || !this.lastblock) {
           return;
         }
 

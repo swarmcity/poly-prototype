@@ -4,8 +4,6 @@
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <script src="../bower_components/underscore/underscore.js"></script>
-
-<link rel="import" href="./ac-blockdata.html">
 <link rel="import" href="./ac-listitem.html">
 
 <dom-module id="ac-list">
@@ -189,7 +187,7 @@
     <div class="main">
       <div class="container">
         <!-- <div class="alloffers"> -->
-          <template is="dom-repeat" items="{{blockdatareversed}}">
+          <template is="dom-repeat" items="[[blockdata]]">
             <ac-listitem data="{{item}}" offerid="{{item.offerid}}" key="{{item.ipfshash}}" status="{{item.status}}" sizeview="{{sizeview}}"></ac-listitem>
           </template>
         <!-- </div> -->
@@ -210,7 +208,7 @@
       properties: {
           blockdata: {
             type: Array,
-            observer: '_blockdata'
+            //observer: '_blockdata'
           },
           sizeview: {
             type: String,
@@ -219,13 +217,33 @@
 
       },
 
-      _blockdata: function() {
-        //this.blockdatareversed = this.blockdata.reverse();
-        var array = this.blockdata;
-        //var array = _.sortBy(array);
-        var sortedArray = _.sortBy(array, 'published');
-        this.blockdatareversed = sortedArray;
-      },
+  // observers: [
+  //   'blockdatachanged(blockdata.splices)'
+  // ],
+
+  // blockdatachanged: function(changeRecord) {
+  //   debugger;
+  //   if (changeRecord) {
+  //     changeRecord.indexSplices.forEach(function(s) {
+  //       s.removed.forEach(function(user) {
+  //         console.log(user.name + ' was removed');
+  //       });
+  //       for (var i=0; i<s.addedCount; i++) {
+  //         var index = s.index + i;
+  //         var newUser = s.object[index];
+  //         console.log('User ' + newUser.name + ' added at index ' + index);
+  //       }
+  //     }, this);
+  //   }
+  // },
+
+      // _blockdata: function() {
+      //   //this.blockdatareversed = this.blockdata.reverse();
+      //   var array = this.blockdata;
+      //   //var array = _.sortBy(array);
+      //   var sortedArray = _.sortBy(array, 'published');
+      //   this.blockdatareversed = sortedArray;
+      // },
 
       newOffer: function() {
         app.set('route.path', '/newoffer/');
