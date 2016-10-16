@@ -447,10 +447,10 @@
 
        <div class="offerer_detail">
          <div class="offereravatar_detail">
-           <img src="{{imgurl}}">
+           <img src="{{data.ipfsdata.userdata.avatarurl}}">
          </div>
          <div class="offerername_detail">
-           <p><span>{{data.ipfsdata.userdata.aka}}</span></p>
+           <p><span>{{data.ipfsdata.userdata.username}}</span></p>
            <p><span class="currentkarma">8 karma</span></p>
          </div>
        </div>
@@ -570,14 +570,12 @@
       is: 'ac-detail',
       properties: {
         key: {
-          type: Number
+          type: Number,
+          observer: '_key'
         },
         blockdata: {
           type: Array,
           observer: '_loaddata'
-        },
-        blockobject: {
-          type: Object
         },
         data: {
           type: Object
@@ -585,10 +583,7 @@
         claimstep: {
           type: String
         },
-        status: {
-          type: String,
-          observer: '_status'
-        }
+
       },
 
       attached: function() {
@@ -596,8 +591,11 @@
         this.thisismyoffer = false;
       },
 
-      _status: function() {
-        console.log(this.status);
+      _key: function() {
+        console.log('item detail has key: ', this.key);
+        this.data = this.blockdata[this.key];
+        this.status = this.data.status;
+        console.log(this.data);
       },
 
       _loaddata: function() {
@@ -605,22 +603,6 @@
           this._blockdata();
           this._blockobject();
         }
-      },
-
-      _blockdata: function() {
-        this.data = this.blockdata[this.blockobject[this.key]];
-      },
-
-      _blockobject: function() {
-        if(this.blockdata){
-        this.data = this.blockdata[this.blockobject[this.key]];
-        //this.data = this.blockdata[this.data.offerid];
-        this.imgurl = this.$.ipfs.geturl(this.data.ipfsdata.userdata.avatar);
-        if(app.helpers.fixaddress(app.$.acwallet.account) == this.data.creator){
-          console.log('this is my offer!');
-          this.thisismyoffer = true;
-        }
-      }
       },
 
       claimOffer: function() {

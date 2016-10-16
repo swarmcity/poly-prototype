@@ -445,9 +445,10 @@
               <img src="{{data.ipfsdata.userdata.avatarurl}}">
           </div>
           <div class="offerername">
-            <p><span>{{data.ipfsdata.userdata.aka}}</span>
-             •
-            <span class="currentkarma">8</span></p>
+            <p><span>{{data.ipfsdata.userdata.username}}</span>
+             <!-- •
+            <span class="currentkarma">8</span> -->
+          </p>
           </div>
         </div>
         <div class="offercontenttxt">
@@ -525,16 +526,14 @@ Polymer({
     //console.log(this.data);
     // URL resolving is now done in ac-blockdata
     //    this.imgurl = this.$.ipfs.geturl(this.data.ipfsdata.userdata.avatar);
-    // if(this.data.ipfsdata.published) {
-
-    //   this.publishedtime = moment(this.data.ipfsdata.published).fromNow();
-    // }
+    if(this.data.ipfsdata && this.data.ipfsdata.published) {
+      this.publishedtime = moment(this.data.ipfsdata.published).fromNow();
+    }
   },
 
   godetail: function() {
     console.log('goto detail', this.data.offerid);
     app.$.detail.key = this.data.offerid;
-    app.$.detail.status = this.data.status;
     app.set('route.path', '/detail/'+this.data.offerid);
   },
 
