@@ -491,7 +491,7 @@
 
          <template is="dom-if" if="{{_is(status,'released')}}">
              <div class="claimer">
-               <p>This offer has been released.</p>
+               <p>Offer archived.</p>
              </div>
          </template>
 
@@ -571,14 +571,15 @@
       is: 'ac-detail',
       properties: {
         key: {
-          type: Number,
-          observer: '_keychanged'
+          type: Number
         },
         blockdata: {
-          type: Array
+          type: Array,
+          observer: '_loaddata'
         },
         blockobject: {
-          type: Object
+          type: Object,
+          observer: '_loaddata'
         },
         data: {
           type: Object
@@ -592,7 +593,7 @@
         }
       },
 
-      ready: function() {
+      attached: function() {
         this.claimstep = 'first';
         this.thisismyoffer = false;
       },
@@ -601,9 +602,11 @@
         console.log(this.status);
       },
 
-      _keychanged: function() {
-        this._blockdata();
-        this._blockobject();
+      _loaddata: function() {
+        if(this.blockdata && this.blockobject && this.key) {
+          this._blockdata();
+          this._blockobject();
+        }
       },
 
       _blockdata: function() {
