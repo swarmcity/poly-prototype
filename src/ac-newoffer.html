@@ -386,11 +386,11 @@
         <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
       </div> -->
 
-        <ac-locationpicker latitude="{{latitude}}" longitude="{{longitude}}" locationbound="{{locationbound}}" current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}" on-dragend="checkfrom"></ac-locationpicker>
+        <ac-locationpicker latitude="{{latitude}}" longitude="{{longitude}}" locationbound="{{locationbound}}" current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}" displayaddress="{{displayaddress}}" on-dragend="checkfrom"></ac-locationpicker>
 
         <div class="fixedplace">
           <p>From</p>
-          <h1>{{fromaddress.display_name}}</h1>
+          <h1>{{displayaddress}}</h1>
         </div>
 
         <div class="confirmbtns">
@@ -502,6 +502,9 @@ Polymer({
     log: {
       type: Array,
       value: []
+    },
+    displayaddress: {
+      type: String
     }
   },
 
@@ -514,7 +517,7 @@ Polymer({
   },
 
   checkfrom: function() {
-    console.log(this.fromaddress.display_name);
+    console.log(this.displayaddress);
   },
 
   attached: function() {

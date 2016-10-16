@@ -87,6 +87,10 @@
         dogeolocation: {
           type: Boolean,
           value: false
+        },
+        displayaddress: {
+          type: String,
+          notify: true
         }
       },
 
@@ -144,6 +148,7 @@
         var self = this;
         this.getAddress(this.currentGeo).then(function(response) {
           self.resolvedAddress = JSON.parse(response);
+          self.displayaddress = self.resolvedAddress.display_name;
         }, function(error) {});
         this.appendMarker(lat, lon);
       },
@@ -158,6 +163,7 @@
         marker.addEventListener('dragend', function(e) {
           this.getAddress(e.detail.target._latlng).then(function(response) {
             self.resolvedAddress = JSON.parse(response);
+            self.displayaddress = self.resolvedAddress.display_name;
             self.fire('dragend', {
               'resolvedaddress': response,
               'lat': e.detail.target._latlng.lat,
