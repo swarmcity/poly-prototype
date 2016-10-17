@@ -189,7 +189,6 @@
         <!-- <div class="alloffers"> -->
           <template is="dom-repeat" items="[[blockdata]]" index-as="timestamp">
             <ac-listitem data="[[item]]" sizeview="{{sizeview}}"></ac-listitem>
-            <li bg="yellow">{{item.ipfsdata.toaddress.display_name}}</li>
           </template>
         <!-- </div> -->
       </div>
@@ -197,7 +196,6 @@
 
     <div class="bottompart">
       <ac-button on-tap="newOffer" icon="ac-plus" bg="red" txtcolor="white"></ac-button>
-      <ac-button on-tap="dumpblockdata" icon="ac-plus" bg="blue" txtcolor="white"></ac-button>
     </div>
 
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
@@ -210,7 +208,6 @@
       properties: {
           blockdata: {
             type: Array,
-//            notify: true
           },
           sizeview: {
             type: String,
@@ -219,19 +216,15 @@
 
       },
 
-      dumpblockdata: function(){
-        //debugger;
-        console.log(this.blockdata);
-      },
 
- observers: [
-     'niks(blockdata.splices)'
-   ],      
+//  observers: [
+//      'niks(blockdata.splices)'
+//    ],      
 
- niks: function(changeRecord){
-   console.log('NIKS',changeRecord.indexSplices[0].object);
-//   //debugger;
- },
+//  niks: function(changeRecord){
+//    console.log('NIKS',changeRecord.indexSplices[0].object);
+// //   //debugger;
+//  },
   //  observers: [
   //   'blockdatachanged(blockdata.splices)'
   // ],

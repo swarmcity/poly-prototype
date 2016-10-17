@@ -111,9 +111,9 @@
       },
 
       updateBlock: function(blockJSON) {
-        console.log('updateblock',blockJSON);
+        //console.log('updateblock',blockJSON);
         if (!blockJSON || !blockJSON.offerid === undefined) {
-          console.log('ignoring invalid block data', blockJSON);
+          //console.log('ignoring invalid block data', blockJSON);
         }
         var block;
         if (!this.blockobject[blockJSON.offerid]) {
@@ -122,7 +122,8 @@
           };
           this.blockobject[blockJSON.offerid] = block;
         } else {
-          block = this.blockobject[blockJSON.offerid];
+//          block = this.blockobject[blockJSON.offerid];
+          block = JSON.parse(JSON.stringify(this.blockobject[blockJSON.offerid]));
           var overwrite = false;
           if (block.data.timestamp < blockJSON.timestamp) {
             overwrite = true;
@@ -142,10 +143,10 @@
         var aindex = this.blockobject[blockJSON.offerid].arrayindex;
         if (!aindex && aindex !== 0) {
             block.arrayindex = this.push('blockdata', block.data) - 1;
-          console.log('adding new block',block.arrayindex);
-            console.log('blockdata length is now ',this.blockdata.length,'arrayindex=',block.arrayindex,'offerid=',blockJSON.offerid);            
+          //console.log('adding new block',block.arrayindex);
+            //console.log('blockdata length is now ',this.blockdata.length,'arrayindex=',block.arrayindex,'offerid=',blockJSON.offerid);            
         } else {
-          console.log('updating existing block arrayindex=',aindex,'offerid=',blockJSON.offerid);
+          //console.log('updating existing block arrayindex=',aindex,'offerid=',blockJSON.offerid);
             this.splice('blockdata', aindex, 1, block.data);
         }
 
@@ -185,7 +186,7 @@
 
 
             var oid = event.args.offerID.toNumber();
-            console.log('ac-blockdata --> received event ',event.event,oid);
+            //console.log('ac-blockdata --> received event ',event.event,oid);
             //              console.log(result.event, event.timestamp);
             // if (event.blockNumber < self.lastblock) {
             //   debugger;
@@ -202,7 +203,7 @@
                     ipfsdata.userdata.avatarurl = self.$.ipfs.geturl(ipfsdata.userdata.avatar);
                   }
 
-                  console.log('GOT IPFS'),
+                  //console.log('GOT IPFS'),
                   self.updateBlock({
                     escrowaddress: event.args.escrowaddress,
                     offerid: event.args.offerID.toNumber(),

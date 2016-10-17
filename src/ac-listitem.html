@@ -525,7 +525,7 @@ Polymer({
   },
 
   _data: function() {
-    console.log('ac-listitem',this.data.offerid,this.data);
+    //console.log('ac-listitem',this.data.offerid,this.data);
     //console.log(this.data);
     // URL resolving is now done in ac-blockdata
     //    this.imgurl = this.$.ipfs.geturl(this.data.ipfsdata.userdata.avatar);
@@ -535,7 +535,7 @@ Polymer({
   },
 
   godetail: function() {
-    console.log('goto detail', this.data.offerid);
+    //console.log('goto detail', this.data.offerid);
     //app.$.detail.key = this.data.offerid;
     app.set('route.path', '/detail/'+this.data.offerid);
   },
