@@ -3,6 +3,7 @@
 <link rel="import" href="../bower_components/web3-wallet/web3-wallet.html">
 <link rel="import" href="./ac-ipfs.html">
 <link rel="import" href="./ac-config.html">
+<link rel="import" href="./ac-helpers.html">
 
 <dom-module id="ac-blockdata">
   <!-- Defines the element's style and local DOM -->
@@ -41,6 +42,7 @@
     <!-- <ac-password password="{{password}}"></ac-password> -->
 
     <ac-ipfs id="ipfs"></ac-ipfs>
+    <ac-helpers id="helpers"></ac-helpers>
 
   </template>
   <!-- Creates the element's prototype and registers it -->
@@ -165,7 +167,7 @@
 
         var self = this;
 
-        app.helpers.getfile('/src/contracts/localsInOut.json', function(err, inoutcontractjson) {
+        this.$.helpers.getfile('/src/contracts/localsInOut.json', function(err, inoutcontractjson) {
           //console.log('<<<<< ', inoutcontractjson.address);
           var MyContract = self.web3.eth.contract(inoutcontractjson.abi);
           var myContractInstance = MyContract.at(inoutcontractjson.address);
@@ -186,7 +188,7 @@
 
 
             var oid = event.args.offerID.toNumber();
-            //console.log('ac-blockdata --> received event ',event.event,oid);
+            console.log('ac-blockdata --> received event ',event.event,oid);
             //              console.log(result.event, event.timestamp);
             // if (event.blockNumber < self.lastblock) {
             //   debugger;

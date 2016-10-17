@@ -135,6 +135,7 @@
   </template>
 
   <script>
+
     Polymer({
       is: 'ac-app',
 
@@ -159,18 +160,22 @@
 
       attached: function() {
 
+        window.app = this;
+
         this.fire('map-update');
 
-        if(localStorage.getItem("ac-user")){
-          if(sessionStorage.getItem("ac-password", this.password)){
-            app.set('route.path', localStorage.getItem('ac-lastroute'));
-            this.fire('map-update');
-          } else {
-            app.set('route.path', '/password/');
-          }
-        } else {
-          app.set('route.path', '/newuser/');
-        }
+        app.set('route.path', '/map');
+
+        // if(localStorage.getItem("ac-user")){
+        //   if(sessionStorage.getItem("ac-password", this.password)){
+        //     app.set('route.path', localStorage.getItem('ac-lastroute'));
+        //     this.fire('map-update');
+        //   } else {
+        //     app.set('route.path', '/password/');
+        //   }
+        // } else {
+        //   app.set('route.path', '/newuser/');
+        // }
 
         // debug code - remove me..
         // var self= this;
@@ -213,7 +218,5 @@
       }
     });
   </script>
-  <script src="scripts/helpers.js"></script>
   <script src="../bower_components/geohash-js/geohash.js" type="text/javascript"></script>
-
 </dom-module>

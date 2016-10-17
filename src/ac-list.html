@@ -188,7 +188,7 @@
       <div class="container">
         <!-- <div class="alloffers"> -->
           <template is="dom-repeat" items="[[blockdata]]" index-as="timestamp">
-            <ac-listitem data="[[item]]" sizeview="{{sizeview}}"></ac-listitem>
+            <ac-listitem key="[[item.offerid]]" data="[[item]]" sizeview="{{sizeview}}"></ac-listitem>
           </template>
         <!-- </div> -->
       </div>

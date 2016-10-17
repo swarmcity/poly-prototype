@@ -8,6 +8,7 @@
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="../bower_components/ac-input/ac-input.html">
 <link rel="import" href="../bower_components/ac-button/ac-button.html">
+<script type="text/javascript" src="../bower_components/crypto-js/crypto-js.js"></script>
 
 <dom-module id="ac-newuser">
   <!-- Defines the element's style and local DOM -->
@@ -15,6 +16,8 @@
     <style>
       :host {
         display: block;
+        margin: 0px;
+        padding: 0px;
       }
       .total {
         width: 100vw;
@@ -310,7 +313,7 @@
         <div class="whitespace"></div>
         <ac-input id="p2" color="yellow" label="Password control" bind-value="{{password1}}" type="password" center></ac-input>
         <div class="whitespace"></div>
-        <ac-button icon="ac-v" on-tap="savepass" disabled="{{passcheck}}" bg="base" txtcolor="yellow">Continue</ac-button>
+        <ac-button icon="ac-v" on-tap="savePassword" disabled="{{passcheck}}" bg="base" txtcolor="yellow">Continue</ac-button>
       </div>
     </neon-animatable>
 
@@ -339,19 +342,17 @@
       },
 
       attached: function() {
-        this.$.p1.addEventListener('bind-value-changed', function(e) {
-          this.password = e.detail.value;
-        }.bind(this));
-
-        this.$.p2.addEventListener('bind-value-changed', function(e) {
-          this.password1 = e.detail.value;
-        }.bind(this));
+        console.log('ac-newuser attached.');
       },
 
       savePassword: function() {
-        sessionStorage.setItem("ac-password", this.password);
-        localStorage.setItem("ac-user", "1");
-        app.set('route.path', '/');
+        // Encrypt localstorage userobject with password.
+        console.log('encr started');
+        var encrypted = CryptoJS.AES.encrypt(this.password, this.password).toString();
+        console.log('encr: ', encrypted);
+        localStorage.setItem("ac-password", encrypted);
+        localStorage.setItem("ac-init", "1");
+        this.restart();
       },
 
       ready: function(){
@@ -366,17 +367,15 @@
         this.state = 2;
       },
 
-      savepass: function() {
-        sessionStorage.setItem("ac-password", this.password);
-        localStorage.setItem("ac-user", "1");
-        app.set('route.path', '/');
-      },
-
       _passwordcheck: function() {
         console.log(this.password, this.password1);
         if(this.password && this.password===this.password1){
           this.passcheck = false;
         }
+      },
+
+      restart: function(){
+        location.reload();
       }
     });
   </script>

@@ -4,6 +4,7 @@
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="./ac-ipfs.html">
 <link rel="import" href="./ac-wallet.html">
+<link rel="import" href="./ac-helpers.html">
 
 <dom-module id="ac-detail">
   <!-- Defines the element's style and local DOM -->
@@ -440,6 +441,7 @@
    </div>
    <div class="main">
    <div class="content">
+    <ac-helpers id="helpers"></ac-helpers>   
      <ac-ipfs id="ipfs"></ac-ipfs>
      <ac-wallet id="acwallet" balance="{{balance}}" arcbalance="{{arcbalance}}" account="{{account}}"></ac-wallet>
 
@@ -651,7 +653,7 @@
       _key: function() {
         console.log('item detail has key: ', this.key);
         this.data = this.blockdata[this.key];
-        if(this.data.creator == app.helpers.fixaddress(this.account)){
+        if(this.data.creator == this.$.helpers.fixaddress(this.account)){
           this.thisismyoffer = true;
         }
         this.status = this.data.status;
