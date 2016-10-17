@@ -16,7 +16,7 @@
         --toppart-height: 15vh;
         --toppart-padding: 10px 20px 10px 20px;
         --container-height: 85vh;
-        --avatar-size: 40px;
+        --avatar-size: 55px;
       }
 
       .avatar {
@@ -90,7 +90,7 @@
               <img src="{{avatarurl}}">
 
           </div>
-          <p class="usernamesmall">{{username}}</p>
+          <p class="usernamesmall">{{username2}}</p>
         </div>
 
       </template>
@@ -169,6 +169,11 @@
         account: {
           type: String,
           notify: true
+        },
+
+        username2: {
+          type: String,
+          value: 'Dr Arcade'          
         }
       },
 
