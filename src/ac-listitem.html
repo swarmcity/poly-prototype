@@ -20,6 +20,8 @@
       --address-lineheight:25px;
       --flex-align1:end;
       --flex-align2:flex-end;
+      --item-transparency:1;
+      opacity: var(--item-transparency);
       @apply(--base-structure);
     }
 
@@ -511,6 +513,10 @@ Polymer({
     },
     ipfs: {
       type: Object
+    },
+    status: {
+      type: String,
+      observer: '_status'
     }
   },
 
@@ -526,15 +532,22 @@ Polymer({
     //console.log(this.data);
     // URL resolving is now done in ac-blockdata
     //    this.imgurl = this.$.ipfs.geturl(this.data.ipfsdata.userdata.avatar);
+    if(this.data.status) {
+      this.status = this.data.status;
+    }
+
     if(this.data.timestamp) {
       this.publishedtime = moment(this.data.timestamp*1000).fromNow();
     }
+    
   },
 
   godetail: function() {
-    console.log('goto detail', this.data.offerid);
-    app.$.detail.key = this.data.offerid;
-    app.set('route.path', '/detail/'+this.data.offerid);
+    if(this.status != 'released'){
+      console.log('goto detail', this.data.offerid, this.status);
+      app.$.detail.key = this.data.offerid;
+      app.set('route.path', '/detail/'+this.data.offerid);
+    }
   },
 
   _key: function() {
@@ -568,6 +581,16 @@ Polymer({
     //       self.dataloaded = false;
     //     });
     // }
+  },
+
+  _status: function() {
+    if(this.status === 'released'){
+      this.customStyle['--item-transparency'] = '0.5';
+      this.updateStyles();
+    } else {
+      this.customStyle['--item-transparency'] = '1';
+      this.updateStyles();
+    }
   },
 
   _is: function(a, b) {
