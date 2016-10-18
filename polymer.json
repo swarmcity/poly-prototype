@@ -14,7 +14,8 @@
     "manifest.json",
     "bower_components/webcomponentsjs/webcomponents-lite.min.js",
     "bower_components/ac-style/ac-fonts/*.otf",
-    "bower_components/neon-animation/animations/*",
+    "bower_components/neon-animation/animations/*.html",
+    "bower_components/neon-animation/*.html",
     "bower_components/crypto-js/crypto-js.js",
     "bower_components/web-animations-js/web-animations-next-lite.min.js",
     "bower_components/web-animations-js/*"
