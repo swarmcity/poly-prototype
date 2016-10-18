@@ -187,7 +187,7 @@
     <div class="main">
       <div class="container">
         <!-- <div class="alloffers"> -->
-          <template is="dom-repeat" items="[[blockdata]]" index-as="timestamp">
+          <template is="dom-repeat" items="[[blockdata]]" sort="sortblockdata">
             <ac-listitem data="[[item]]" sizeview="{{sizeview}}"></ac-listitem>
           </template>
         <!-- </div> -->
@@ -207,7 +207,7 @@
       is: 'ac-list',
       properties: {
           blockdata: {
-            type: Array,
+            type: Array
           },
           sizeview: {
             type: String,
@@ -216,7 +216,9 @@
 
       },
 
-
+      sortblockdata: function(a, b) {
+        return b.timestamp - a.timestamp;
+      },
 //  observers: [
 //      'niks(blockdata.splices)'
 //    ],
@@ -245,13 +247,7 @@
   //   }
   // },
 
-      // _blockdata: function() {
-      //   //this.blockdatareversed = this.blockdata.reverse();
-      //   var array = this.blockdata;
-      //   //var array = _.sortBy(array);
-      //   var sortedArray = _.sortBy(array, 'timestamp');
-      //   this.blockdatareversed = sortedArray.reverse();
-      // },
+
 
       offerSort: function compare(a, b) {
         return a.timestamp > b.timestamp;
