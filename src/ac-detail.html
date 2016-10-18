@@ -447,8 +447,6 @@
 
 
    <template is="dom-if" if="{{_is(claimstep,'first')}}">
-
-<!--         <div><p>{{data.ipfsdata.object}}</p></div> -->
      <div class="offercontent_detail">
 
        <div class="offerer_detail">
@@ -457,13 +455,8 @@
          </div>
          <div class="offerername_detail">
            <p><span>{{data.ipfsdata.userdata.aka}} {{data.offerid}}</span></p>
-           <!-- <p><span class="currentkarma">8 karma</span></p> -->
          </div>
        </div>
-<!--
-       <div class="offercontenttxt_detail">
-           <p>{{status}}</p>
-       </div> -->
 
        <div class="offercontenttxt_detail">
            <p>Need a ride to<br><span class="detail_addresses">{{data.ipfsdata.toaddress.display_name}}</span></p>
@@ -506,18 +499,6 @@
              </div>
          </template>
 
-         <!-- <template is="dom-if" if="{{_is(status,'claimedbyme')}}">
-             <div class="claimer">
-               <p>You claimed this offer.</p>
-             </div>
-         </template> -->
-
-
-
-         <!-- <template is="dom-if" if="{{_is(status,'done')}}"> -->
-               <!-- <p>This offer is done. This is a receid</p> -->
-         <!-- </template> -->
-
        </div>
 
      </div>
@@ -533,10 +514,6 @@
        <div class="whitespace"></div>
        <div class="whitespace"></div>
        <p class="smalltxt">When confirmed by the rider, you will get your tokens back with the reward. If the offer was canceled, you will just get your tokens back.</p>
-
-      <!--  <p on-tap="toThird">
-         agree / disagree
-       </p> -->
 
        </div>
      </template>
@@ -571,7 +548,7 @@
        <template is="dom-if" if="{{_is(claimstep,'relsecond')}}">
          <div class="offercontent_detail someheight centeredtxt certainwidth">
 
-         <p>Release this offer</p>
+         <p>Payout</p>
          <div class="whitespace"></div>
          <ac-button txtbtn on-tap="releaseOffer" bg="red">Send {{data.ipfsdata.offeramount}} ARC</ac-button>
          <div class="whitespace"></div>
@@ -587,7 +564,7 @@
 
        <template is="dom-if" if="{{_is(claimstep,'relthird')}}">
          <div class="offercontent_detail someheight centeredtxt certainwidth">
-           <ac-loader small>Releasing the offer</ac-loader>
+           <ac-loader small>Doing payout now</ac-loader>
            <div class="whitespace"></div>
 
            <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
@@ -595,28 +572,16 @@
        </template>
        <template is="dom-if" if="{{_is(claimstep,'relfourth')}}">
          <div class="offercontent_detail someheight">
-         <h1>Offer Released</h1>
-  <!--         <p>
-           [ ] share my live location with the rider
-         </p> -->
-         <!-- <p on-tap="toHome">
-           start driving
-         </p> -->
+         <h1>Payment Successful.</h1>
+
          <div class="whitespace"></div>
          <div class="whitespace"></div>
          <ac-button txtbtn on-tap="toCurrent" bg="turquoise">Thanks</ac-button>
          </div>
        </template>
 
-
-
      </div>
      </div>
-
-<!--
-    <ac-button class="claimer" txtbtn on-tap="claimOffer" bg="white" txtcolor="red">Claim this offer</ac-button>
-
-    <ac-button class="claimer" txtbtn on-tap="releaseOffer" bg="red" txtcolor="white">Release this offer</ac-button> -->
 
 
 
