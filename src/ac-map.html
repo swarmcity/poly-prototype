@@ -220,22 +220,38 @@
 
       attached: function() {
         this.locationunknown = true;
-        this.fire('mapp-ready');
+        //this.fire('mapp-ready');
+        //console.log('map attached');
 
-        console.log('map attached');
+        // this.addEventListener('map-ready', function() {
+        //   console.log('map ready ac map');
 
-        this.addEventListener('map-ready', function() {
-          console.log('map ready ac map');
-        }.bind(this));
+        //   document.addEventListener('map-update', function() {
+        //     if (!this.$.leafletmap.map){
+        //       console.log('fix this: leaflet.map not here yet.');
+        //       return;
+        //     }
+        //     this.$.leafletmap.map.invalidateSize();
+        //   }.bind(this));
 
-        document.addEventListener('map-update', function() {
-          this.$.leafletmap.map.invalidateSize();
-        }.bind(this));
+        // }.bind(this));
+
+
       },
 
       mapready: function() {
         console.log('map ready ac map');
-        window.setTimeout(this.leafletfix, 5000);
+
+        document.addEventListener('map-update', function() {
+          if (!this.$.leafletmap.map) {
+            console.log('fix this: leaflet.map not here yet.');
+            return;
+          }
+          //this.$.leafletmap.map.invalidateSize();
+        }.bind(this));
+
+        // TODO : remove this hack ?
+        //window.setTimeout(this.leafletfix, 5000);
       },
 
       leafletfix: function() {

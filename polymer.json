@@ -8,11 +8,11 @@
    "src/**/*",
    "src/*",
    "images/**/*",
-   "bower_components/webcomponentsjs/webcomponents-lite.min.js",
    "bower.json"
-   ],
+  ],
   "includeDependencies": [
     "manifest.json",
+    "bower_components/webcomponentsjs/webcomponents-lite.min.js",
     "bower_components/ac-style/ac-fonts/*.otf"
   ]
 }
