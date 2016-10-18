@@ -91,13 +91,13 @@
             <ac-newuser name="newuser"></ac-newuser>
             <ac-password name="password"></ac-password>
 
-            <ac-map name="map" blockdata="{{blockdata}}" latitude="{{latitude}}" longitude="{{longitude}}" restamp on-to-filter="firetoggle"></ac-map>
+            <ac-map name="map" blockdata="[[blockdata]]" latitude="{{latitude}}" longitude="{{longitude}}" restamp on-to-filter="firetoggle"></ac-map>
              <ac-list name="list" restamp blockdata="[[blockdata]]" on-to-filter="firetoggle"></ac-list>
 
-            <ac-detail name="detail" id="detail" blockdata="{{blockdata}}" key="[[subrouteData.key]]" restamp></ac-detail>
+            <ac-detail name="detail" id="detail" blockdata="[[blockdata]]" key="[[subrouteData.key]]" restamp></ac-detail>
 
-            <ac-myitems name="myitems" blockdata="{{blockdata}}" restamp></ac-myitems>
-            <ac-myitem name="myitem" blockdata="{{blockdata}}" key="[[key]]" restamp></ac-myitem>
+            <ac-myitems name="myitems" blockdata="[[blockdata]]" restamp></ac-myitems>
+            <ac-myitem name="myitem" blockdata="[[blockdata]]" key="[[key]]" restamp></ac-myitem>
 
             <ac-newoffer latitude="{{latitude}}" longitude="{{longitude}}" name="newoffer" restamp></ac-newoffer>
 
@@ -135,6 +135,7 @@
   </template>
 
   <script>
+
     Polymer({
       is: 'ac-app',
 
@@ -159,18 +160,22 @@
 
       attached: function() {
 
+        window.app = this;
+
         this.fire('map-update');
 
-        if(localStorage.getItem("ac-user")){
-          if(sessionStorage.getItem("ac-password", this.password)){
-            app.set('route.path', localStorage.getItem('ac-lastroute'));
-            this.fire('map-update');
-          } else {
-            app.set('route.path', '/password/');
-          }
-        } else {
-          app.set('route.path', '/newuser/');
-        }
+        app.set('route.path', '/map');
+
+        // if(localStorage.getItem("ac-user")){
+        //   if(sessionStorage.getItem("ac-password", this.password)){
+        //     app.set('route.path', localStorage.getItem('ac-lastroute'));
+        //     this.fire('map-update');
+        //   } else {
+        //     app.set('route.path', '/password/');
+        //   }
+        // } else {
+        //   app.set('route.path', '/newuser/');
+        // }
 
         // debug code - remove me..
         // var self= this;
@@ -213,7 +218,5 @@
       }
     });
   </script>
-  <script src="scripts/helpers.js"></script>
   <script src="../bower_components/geohash-js/geohash.js" type="text/javascript"></script>
-
 </dom-module>

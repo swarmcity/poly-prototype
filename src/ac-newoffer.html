@@ -2,6 +2,7 @@
 <link rel="import" href="./ac-locationpicker.html">
 <link rel="import" href="./ac-routeplanner.html">
 <link rel="import" href="./ac-profile.html">
+<link rel="import" href="./ac-helpers.html">
 
 <link rel="import" href="../bower_components/ac-button/ac-button.html">
 <link rel="import" href="../bower_components/ac-loader/ac-loader.html">
@@ -371,7 +372,7 @@
 
 </style>
 <ac-profile id="profile" account="{{account}}" userdata="{{userdata}}" viewstate="none"></ac-profile>
-
+  <ac-helpers id="helpers"></ac-helpers>
   <div class="main">
 
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
@@ -547,7 +548,7 @@ Polymer({
 
     var self = this;
 
-    var account = app.helpers.fixaddress(app.$.acwallet.account);
+    var account = self.$.helpers.fixaddress(app.$.acwallet.account);
     var offer = {
         from: this.fromlatlon,
         to: this.tolatlon,
