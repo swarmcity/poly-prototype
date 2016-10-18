@@ -2,34 +2,17 @@
   "entrypoint": "index.html",
   "shell": "src/ac-app.html",
   "fragments": [
-    "src/ac-map.html",
-    "src/ac-marker.html",
-    "src/ac-list.html",
-    "src/ac-listitem.html",
-    "src/ac-filter.html",
-    "src/ac-detail.html",
-    "src/ac-newoffer.html",
-    "src/ac-wallet.html",
-    "src/ac-profile.html",
-    "src/ac-myitems.html",
-    "src/ac-myitem.html",
-    "src/ac-mylistitem.html",
-    "src/ac-settings.html",
-    "src/ac-blockdata.html",
-    "src/ac-password.html",
-    "src/ac-newuser.html",
-    "src/ac-locationpicker.html",
-    "src/ac-view404.html",
-    "src/ac-ipfs.html",
-    "src/ac-config.html"
+
   ],
   "sourceGlobs": [
    "src/**/*",
+   "src/*",
    "images/**/*",
+   "bower_components/webcomponentsjs/webcomponents-lite.min.js",
    "bower.json"
-  ],
+   ],
   "includeDependencies": [
     "manifest.json",
-    "bower_components/webcomponentsjs/webcomponents-lite.min.js"
+    "bower_components/ac-style/ac-fonts/*.otf"
   ]
 }

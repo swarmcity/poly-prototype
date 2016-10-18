@@ -219,35 +219,6 @@
       sortblockdata: function(a, b) {
         return b.timestamp - a.timestamp;
       },
-//  observers: [
-//      'niks(blockdata.splices)'
-//    ],
-
-//  niks: function(changeRecord){
-//    console.log('NIKS',changeRecord.indexSplices[0].object);
-// //   //debugger;
-//  },
-  //  observers: [
-  //   'blockdatachanged(blockdata.splices)'
-  // ],
-
-  // blockdatachanged: function(changeRecord) {
-  //   debugger;
-  //   if (changeRecord) {
-  //     changeRecord.indexSplices.forEach(function(s) {
-  //       s.removed.forEach(function(user) {
-  //         console.log(user.name + ' was removed');
-  //       });
-  //       for (var i=0; i<s.addedCount; i++) {
-  //         var index = s.index + i;
-  //         var newUser = s.object[index];
-  //         console.log('User ' + newUser.name + ' added at index ' + index);
-  //       }
-  //     }, this);
-  //   }
-  // },
-
-
 
       offerSort: function compare(a, b) {
         return a.timestamp > b.timestamp;

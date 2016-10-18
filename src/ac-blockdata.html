@@ -191,25 +191,22 @@
             }
             var event = result;
 
-
-            var oid = event.args.offerID.toNumber();
-            console.log('ac-blockdata --> received event ',event.event,oid);
-
             switch (event.event) {
               case 'OfferAdded':
+                //  event OfferAdded(uint offerID, address creator, string ipfsdescr, address escrowaddress, address repaddress,uint timestamp);
 
                 // resolve IPFS data
                 self.$.ipfs.cat(event.args.ipfsdescr, function(err, data) {
 
                   var ipfsdata = JSON.parse(data);
                   // resolve avatar URL
-                  if (ipfsdata && ipfsdata.userdata && ipfsdata.userdata.avatar) {
+                  if (ipfsdata && ipfsdata.userdata && ipfsdata.userdata.avatar){
                     ipfsdata.userdata.avatarurl = self.$.ipfs.geturl(ipfsdata.userdata.avatar);
                   }
 
-                  //console.log('GOT IPFS'),
                   self.updateBlock({
                     escrowaddress: event.args.escrowaddress,
+                    repaddress: event.args.repaddress,
                     offerid: event.args.offerID.toNumber(),
                     ipfshash: event.args.ipfsdescr,
                     ipfsdata: ipfsdata,
@@ -224,9 +221,14 @@
 
                 break;
               case 'OfferClaimed':
+              // from inout.sol
+              //  event OfferClaimed(uint offerID, address creator, string ipfsdescr, address claimer, address escrowaddress, address repaddress,uint timestamp);
+
+
                 self.updateBlock({
                   offerid: event.args.offerID.toNumber(),
                   timestamp: event.args.timestamp.toNumber(),
+                  claimer: event.args.claimer
                   status: 'claimed'
                 });
 
@@ -234,6 +236,7 @@
                 break;
 
               case 'OfferReleased':
+                //  event OfferReleased(uint offerID, address creator, string ipfsdescr,uint timestamp);
 
                 self.updateBlock({
                   offerid: event.args.offerID.toNumber(),
@@ -241,28 +244,17 @@
                   status: 'released'
                 });
 
-                // var offerid = event.args.offerID.toNumber();
-                // //claim events from (too) old are ignored
-                // if (!self.blockdata[self.blockobject[offerid]]){
-                //   return;
-                // }
-                // self.blockdata[self.blockobject[offerid]].status = 'released';
                 self.lastblock = event.blockNumber + 1;
                 break;
 
               case 'OfferConflict':
+                //  event OfferConflict(uint offerID, address creator, string ipfsdescr, address claimer, address escrowaddress, address repaddress,uint timestamp);
 
                 self.updateBlock({
                   offerid: event.args.offerID.toNumber(),
                   status: 'conflict'
                 });
 
-                // var offerid = event.args.offerID.toNumber();
-                // // claim events from (too) old are ignored
-                // if (!self.blockdata[self.blockobject[offerid]]){
-                //   return;
-                // }
-                // self.blockdata[self.blockobject[offerid]].status = 'conflict';
                 self.lastblock = event.blockNumber + 1;
                 break;
 
