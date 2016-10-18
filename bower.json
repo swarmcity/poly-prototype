@@ -39,6 +39,7 @@
   },
   "resolutions": {
     "web3-wallet": "^0.0.13",
-    "ipfs-upload": "^0.0.26"
+    "ipfs-upload": "^0.0.26",
+    "polymer": "^1.6.0"
   }
 }

@@ -5,12 +5,12 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/moment-js/moment-js.html">
 
-<!-- <link rel="import" href="./ac-ipfs.html"> -->
+<link rel="import" href="./ac-ipfs.html">
 
 <dom-module id="ac-listitem">
-  <!-- Defines the element's style and local DOM -->
-  <template>
-    <style>
+<!-- Defines the element's style and local DOM -->
+<template>
+<style>
 :host {
       display: block;
       width: 100%;
@@ -20,6 +20,8 @@
       --address-lineheight:25px;
       --flex-align1:end;
       --flex-align2:flex-end;
+      --item-transparency:1;
+      opacity: var(--item-transparency);
       @apply(--base-structure);
     }
 
@@ -432,77 +434,75 @@
         to {transform: rotate(360deg);}
     }
 </style>
-    <template is="dom-if" if="{{dataloaded}}">
-      <p>Loading</p>
-    </template>
-    <template is="dom-if" if="{{l(data.*)}}">
-      <!-- <ac-ipfs id="ipfs"></ac-ipfs>
-    -->
-    <div class="offercard">
+<template is="dom-if" if="{{dataloaded}}">
+  <p>Loading</p>
+</template>
+<template is="dom-if" if="{{!dataloaded}}">
+  <ac-ipfs id="ipfs"></ac-ipfs>
+
+<div class="offercard">
       <div class="offercontent">
         <div class="offerer">
           <div class="offereravatar">
-            <img src="{{data.ipfsdata.userdata.avatarurl}}"></div>
+              <img src="{{data.ipfsdata.userdata.avatarurl}}">
+          </div>
           <div class="offerername">
-            <p>
-              <span>{{data.ipfsdata.userdata.aka}}</span>
-              <!-- •
-            <span class="currentkarma">8</span>
-            -->
+            <p><span>{{data.ipfsdata.userdata.aka}}</span>
+             <!-- •
+            <span class="currentkarma">8</span> -->
           </p>
+          </div>
         </div>
-      </div>
-      <div class="offercontenttxt">
-        <template is="dom-if" if="{{_is(sizeview,'phone')}}">
-          <p class="address">
-            Need a ride to
-            <br>{{data.ipfsdata.toaddress.display_name}}</p>
-          <small>{{data.sent}}</small>
-        </template>
-        <template is="dom-if" if="{{!_is(sizeview,'phone')}}">
-          <p class="address">
-            Need a ride to
+        <div class="offercontenttxt">
+          <template is="dom-if" if="{{_is(sizeview,'phone')}}">
+            <p class="address">Need a ride to<br>
             {{data.ipfsdata.toaddress.display_name}}
-          </p>
-          <small></small>
-        </template>
+            </p>
+            <small>{{data.sent}}</small>
+          </template>
+          <template is="dom-if" if="{{!_is(sizeview,'phone')}}">
+            <p class="address">Need a ride to
+            {{data.ipfsdata.toaddress.display_name}}
+            </p>
+            <small></small>
+          </template>
 
-      </div>
-      <p class="drivers">
-        {{data.status}}
-        <span class>{{publishedtime}}</span>
-      </p>
-    </div>
 
-    <!-- <template is="dom-if" if="{{_is(status,'toclaim')}}">
-    -->
-    <template is="dom-if" if="{{!_is(sizeview,'phone')}}">
-      <div class="offeramount">
-        <h1>{{data.ipfsdata.offeramount}}</h1>
-        <template is="dom-if" if="{{_is(sizeview,'phone')}}">
-          <br></template>
-        <p>ARC</p>
+        </div>
+      <p class="drivers">{{data.status}} <span class>{{publishedtime}}</span></p>
       </div>
-    </template>
 
-    <template is="dom-if" if="{{_is(sizeview,'phone')}}">
-      <div class="offeramountmobile">
-        <h1>{{data.ipfsdata.offeramount}}</h1>
-        <p>ARC</p>
-        <span class="flex"></span>
-      </div>
-    </template>
+
+      <!-- <template is="dom-if" if="{{_is(status,'toclaim')}}"> -->
+      <template is="dom-if" if="{{!_is(sizeview,'phone')}}">
+        <div class="offeramount">
+          <h1>{{data.ipfsdata.offeramount}}</h1><template is="dom-if" if="{{_is(sizeview,'phone')}}"><br></template>
+          <p>ARC</p>
+        </div>
+      </template>
+
+      <template is="dom-if" if="{{_is(sizeview,'phone')}}">
+        <div class="offeramountmobile">
+          <h1>{{data.ipfsdata.offeramount}}</h1>
+          <p>ARC</p>
+          <span class="flex"></span>
+        </div>
+      </template>
   </div>
 </template>
 
-<!-- <ac-ipfs id="ipfs"></ac-ipfs>
- -->
+<ac-ipfs id="ipfs"></ac-ipfs>
+
 </template>
 <!-- Creates the element's prototype and registers it -->
 <script>
 Polymer({
   is: 'ac-listitem',
   properties: {
+    key: {
+      type: String,
+      observer: '_key'
+    },
     data: {
       type: Object,
       observer: '_data'
@@ -511,13 +511,17 @@ Polymer({
         type: String,
         observer: '_sizeview'
     },
+    ipfs: {
+      type: Object
+    },
+    status: {
+      type: String,
+      observer: '_status'
+    }
   },
 
   listeners: {
     'tap': 'godetail'
-  },
-  l: function(){
-    return true;
   },
 
   attached: function() {
@@ -525,19 +529,25 @@ Polymer({
   },
 
   _data: function() {
-    //console.log('ac-listitem',this.data.offerid,this.data);
     //console.log(this.data);
     // URL resolving is now done in ac-blockdata
     //    this.imgurl = this.$.ipfs.geturl(this.data.ipfsdata.userdata.avatar);
+    if(this.data.status) {
+      this.status = this.data.status;
+    }
+
     if(this.data.timestamp) {
       this.publishedtime = moment(this.data.timestamp*1000).fromNow();
     }
+    
   },
 
   godetail: function() {
-    //console.log('goto detail', this.data.offerid);
-    //app.$.detail.key = this.data.offerid;
-    app.set('route.path', '/detail/'+this.data.offerid);
+    if(this.status != 'released'){
+      console.log('goto detail', this.data.offerid, this.status);
+      app.$.detail.key = this.data.offerid;
+      app.set('route.path', '/detail/'+this.data.offerid);
+    }
   },
 
   _key: function() {
@@ -571,6 +581,16 @@ Polymer({
     //       self.dataloaded = false;
     //     });
     // }
+  },
+
+  _status: function() {
+    if(this.status === 'released'){
+      this.customStyle['--item-transparency'] = '0.5';
+      this.updateStyles();
+    } else {
+      this.customStyle['--item-transparency'] = '1';
+      this.updateStyles();
+    }
   },
 
   _is: function(a, b) {

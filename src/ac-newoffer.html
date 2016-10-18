@@ -370,7 +370,6 @@
            to {transform: rotate(360deg);}
        }
 
-
 </style>
 <ac-profile id="profile" account="{{account}}" userdata="{{userdata}}" viewstate="none"></ac-profile>
   <ac-helpers id="helpers"></ac-helpers>
@@ -387,11 +386,12 @@
         <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
       </div> -->
 
-        <ac-locationpicker latitude="{{latitude}}" longitude="{{longitude}}" locationbound="{{locationbound}}" current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}" displayaddress="{{displayaddress}}" on-dragend="checkfrom"></ac-locationpicker>
+        <ac-locationpicker latitude="{{latitude}}" longitude="{{longitude}}" locationbound="{{locationbound}}" current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}" on-geo-set="setfromgeo" displayaddress="{{displayaddress}}">
+        </ac-locationpicker>
 
         <div class="fixedplace">
           <p>From</p>
-          <h1>{{displayaddress}}</h1>
+          <h1>[[froma]]</h1>
         </div>
 
         <div class="confirmbtns">
@@ -517,8 +517,9 @@ Polymer({
     app.set('route.path', '/myitems/');
   },
 
-  checkfrom: function() {
-    console.log(this.displayaddress);
+  setfromgeo: function(e) {
+    console.log('set geo: ', e.detail);
+    this.froma = e.detail.display_address;
   },
 
   attached: function() {
