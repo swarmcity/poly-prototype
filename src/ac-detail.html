@@ -652,7 +652,7 @@
 
       _offerid: function() {
         console.log('item detail has key: ', this.offerid);
-        this.data = this.blockobject[this.offerid];
+        this.data = this.blockobject[this.offerid].data;
         if(this.data.creator == this.$.helpers.fixaddress(this.account)){
           this.thisismyoffer = true;
         }
