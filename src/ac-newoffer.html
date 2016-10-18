@@ -2,6 +2,7 @@
 <link rel="import" href="./ac-locationpicker.html">
 <link rel="import" href="./ac-routeplanner.html">
 <link rel="import" href="./ac-profile.html">
+<link rel="import" href="./ac-helpers.html">
 
 <link rel="import" href="../bower_components/ac-button/ac-button.html">
 <link rel="import" href="../bower_components/ac-loader/ac-loader.html">
@@ -369,10 +370,9 @@
            to {transform: rotate(360deg);}
        }
 
-
 </style>
-<!-- <ac-profile id="profile" account="{{account}}" userdata="{{userdata}}" viewstate="none"></ac-profile> -->
-
+<ac-profile id="profile" account="{{account}}" userdata="{{userdata}}" viewstate="none"></ac-profile>
+  <ac-helpers id="helpers"></ac-helpers>
   <div class="main">
 
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
@@ -386,11 +386,12 @@
         <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
       </div> -->
 
-        <ac-locationpicker latitude="{{latitude}}" longitude="{{longitude}}" locationbound="{{locationbound}}" current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}" displayaddress="{{displayaddress}}" on-dragend="checkfrom"></ac-locationpicker>
+        <ac-locationpicker latitude="{{latitude}}" longitude="{{longitude}}" locationbound="{{locationbound}}" current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}" on-geo-set="setfromgeo" displayaddress="{{displayaddress}}">
+        </ac-locationpicker>
 
         <div class="fixedplace">
           <p>From</p>
-          <h1>{{displayaddress}}</h1>
+          <h1>[[froma]]</h1>
         </div>
 
         <div class="confirmbtns">
@@ -419,7 +420,7 @@
 
       <template is="dom-if" if="{{_is(offerview, 'third')}}">
 
-        <!-- <h1>{{routefound}}</h1> -->
+        <h1>{{routefound}}</h1>
       <ac-routeplanner id="routeplanner" routedetails="{{routedetails}}" on-route-available="routeAvailable" fromlatlon="{{fromlatlon}}" tolatlon="{{tolatlon}}" fromaddress="{{fromaddress}}" toaddress="{{toaddress}}" routefound="{{routefound}}"></ac-routeplanner>
 
         <div class="confirmbtns" hidden="{{routingprocess}}">
@@ -516,8 +517,9 @@ Polymer({
     app.set('route.path', '/myitems/');
   },
 
-  checkfrom: function() {
-    console.log(this.displayaddress);
+  setfromgeo: function(e) {
+    console.log('set geo: ', e.detail);
+    this.froma = e.detail.display_address;
   },
 
   attached: function() {
@@ -546,7 +548,7 @@ Polymer({
 
     var self = this;
 
-    var account = app.helpers.fixaddress(app.$.acwallet.account);
+    var account = self.$.helpers.fixaddress(app.$.acwallet.account);
     var offer = {
         from: this.fromlatlon,
         to: this.tolatlon,

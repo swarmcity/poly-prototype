@@ -5,6 +5,7 @@ z<link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="./ac-ipfs.html">
 <link rel="import" href="./ac-password.html">
 <link rel="import" href="./ac-ipfsupload.html">
+<link rel="import" href="./ac-helpers.html">
 
 <link rel="import" href="./ac-locationtracker.html">
 
@@ -21,7 +22,7 @@ z<link rel="import" href="../bower_components/polymer/polymer.html">
 
      <!-- faucet stuff -->
     <iron-request id="donaterequest"></iron-request>
-
+    <ac-helpers id="helpers"></ac-helpers>
     <web3-wallet
       id="web3wallet"
       account="{{account}}"
@@ -103,7 +104,7 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
           var contractjson = JSON.parse(e.target.import.body.innerText);
           var tokenContract = self.web3.eth.contract(contractjson.abi);
           var tokenContractInstance = tokenContract.at(contractjson.address);
-          var account = app.helpers.fixaddress(self.account);
+          var account = self.$.helpers.fixaddress(self.account);
           self.arcbalance = tokenContractInstance.balanceOf(account) / 1e18;
           self.balanceloaded = true;
           self.fire('balance-loaded');
@@ -121,8 +122,8 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
         this.importHref(this.contracturl, function(e) {
           var contractjson = JSON.parse(e.target.import.body.innerText);
 
-          console.log('send some ARC to ', app.helpers.fixaddress(self.account));
-          var url = 'https://eth.arcadecity.world:3000/donate/' + app.helpers.fixaddress(self.account) + '/' + contractjson.address;
+          console.log('send some ARC to ', self.$.helpers.fixaddress(self.account));
+          var url = 'https://eth.arcadecity.world:3000/donate/' + self.$.helpers.fixaddress(self.account) + '/' + contractjson.address;
           console.log('tapping into the faucet', url);
           this.$.donaterequest.send({
             url: url

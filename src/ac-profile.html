@@ -212,7 +212,7 @@
               </p>
             </div>
             <!-- <p>ETH Balance: {{balance}}</p> -->
-            <ac-button on-tap="donate" txtbtn on-tap="toFilter" bg="red" txtcolor="base" small>Give me test-ARC</ac-button>
+            <ac-button on-tap="donate" txtbtn bg="red" txtcolor="base" small>Give me test-ARC</ac-button>
 
 
           <!-- <ac-button on-tap="toEdit" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button> -->
@@ -229,11 +229,11 @@
        <div class="main">
          <div class="content">
            <div class="whitespace"></div>
-            <div class="avatar">
-              <ac-ipfsupload hidefileinput hash="{{newavatar}}" url="{{newavatarurl}}" id="ipfsupload">
+            <!-- <div class="avatar"> -->
+              <ac-ipfsupload class="avatar" hidefileinput hash="{{newavatar}}" url="{{newavatarurl}}" id="ipfsupload">
                 <img src="{{newavatarurl}}">
               </ac-ipfsupload>
-            </div>
+            <!-- </div> -->
 
             <div>
 

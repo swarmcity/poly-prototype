@@ -183,13 +183,11 @@
     </div>
     </div>
 
-
     <div class="main">
       <div class="container">
         <!-- <div class="alloffers"> -->
-          <template is="dom-repeat" items="[[blockdata]]" index-as="timestamp">
-            <ac-listitem data="[[item]]" sizeview="{{sizeview}}"></ac-listitem>
-            <li bg="yellow">{{item.ipfsdata.toaddress.display_name}}</li>
+          <template is="dom-repeat" items="[[blockdatareversed]]" id="repeatlist">
+            <ac-listitem data="[[item]]" offerid="{{item.offerid}}" key="{{item.ipfshash}}" sizeview="{{sizeview}}"></ac-listitem>
           </template>
         <!-- </div> -->
       </div>
@@ -197,7 +195,6 @@
 
     <div class="bottompart">
       <ac-button on-tap="newOffer" icon="ac-plus" bg="red" txtcolor="white"></ac-button>
-      <ac-button on-tap="dumpblockdata" icon="ac-plus" bg="blue" txtcolor="white"></ac-button>
     </div>
 
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
@@ -210,7 +207,7 @@
       properties: {
           blockdata: {
             type: Array,
-//            notify: true
+            observer: '_blockdata'
           },
           sizeview: {
             type: String,
@@ -219,20 +216,7 @@
 
       },
 
-      dumpblockdata: function(){
-        //debugger;
-        console.log(this.blockdata);
-      },
-
- observers: [
-     'niks(blockdata.splices)'
-   ],      
-
- niks: function(changeRecord){
-   console.log('NIKS',changeRecord.indexSplices[0].object);
-//   //debugger;
- },
-  //  observers: [
+  // observers: [
   //   'blockdatachanged(blockdata.splices)'
   // ],
 
@@ -252,16 +236,14 @@
   //   }
   // },
 
-      // _blockdata: function() {
-      //   //this.blockdatareversed = this.blockdata.reverse();
-      //   var array = this.blockdata;
-      //   //var array = _.sortBy(array);
-      //   var sortedArray = _.sortBy(array, 'timestamp');
-      //   this.blockdatareversed = sortedArray.reverse();
-      // },
-
-      offerSort: function compare(a, b) {
-        return a.timestamp > b.timestamp;
+      _blockdata: function() {
+        console.log('blockdata changed in Listview');
+        //this.blockdatareversed = this.blockdata.reverse();
+        var array = this.blockdata;
+        //var array = _.sortBy(array);
+        var sortedArray = _.sortBy(array, 'timestamp');
+        this.blockdatareversed = sortedArray.reverse();
+        //this.$.repeatlist.render();
       },
 
       newOffer: function() {

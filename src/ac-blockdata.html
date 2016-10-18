@@ -55,18 +55,35 @@
         blockdata: {
           type: Array,
           notify: true
+        },
+        blockobject: {
+          type: Object,
+          observer: '_blockobject'
         }
+      },
+
+      observers: [
+        '_itemsChanged(blockobject.*)'
+      ],
+
+      _blockobject: function() {
+        //console.log(Date.now(), ' - Blockobject changed ', this.blockobject);
+      },
+
+      _itemsChanged(changeRecord) {
+          this.blockdata = this.object2array(this.blockobject);
       },
 
       attached: function() {
         console.log('blockdata attached');
         this.password = sessionStorage.getItem('ac-password');
-
         this.blockobject = {};
-        this.blockdata = [];
         this.lastblock = 1759875;
-
         this.getBlockData();
+
+        // window.setInterval(function() {
+        //   this.updateBlock({ offerid: 4, status: 'added', timestamp: Date.now() * 1000 });
+        // }.bind(this), 7000);
       },
 
       detached: function() {
@@ -80,7 +97,6 @@
       },
 
       _web3: function() {
-        //        console.log('got web3');
         this.getBlockData();
       },
 
@@ -90,87 +106,94 @@
       },
 
       loadlastblock: function() {
-        //console.log('CACHE: found lastblock in localstorage', this.lastblock);
         this.getBlockData();
       },
 
       initblockobject: function() {
-        //this.blockdata = {};
-        //this.blockobject = {};
+        this.blockobject = {};
         this.getBlockData();
       },
 
       loadblockobject: function() {
-        // var tmpblockobject = {}
-        // for (var i = 0, len = this.blockdata.length; i < len; i++) {
-        //   this.updateBlock(blockdata[i]);
-        // }
-        //console.log('CACHE: found blockdata in localstorage', Object.keys(this.blockobject).length, 'items');
-        //this.blockdata = this.object2array(this.blockobject);
+        this.blockdata = this.object2array(this.blockobject);
         this.getBlockData();
       },
 
       updateBlock: function(blockJSON) {
-        console.log('updateblock',blockJSON);
         if (!blockJSON || !blockJSON.offerid === undefined) {
           console.log('ignoring invalid block data', blockJSON);
         }
         var block;
         if (!this.blockobject[blockJSON.offerid]) {
-          block = {
-            data: blockJSON
-          };
-          this.blockobject[blockJSON.offerid] = block;
+          block = blockJSON;
         } else {
           block = this.blockobject[blockJSON.offerid];
           var overwrite = false;
-          if (block.data.timestamp < blockJSON.timestamp) {
+          if (block.timestamp < blockJSON.timestamp){
             overwrite = true;
           }
-          for (var key in blockJSON) {
-            if (overwrite == false) {
-              if (!block.data[key]) {
-                block.data[key] = blockJSON[key];
+          for (var key in blockJSON){
+            if (overwrite == false){
+              if (!block[key]){
+                block[key] = blockJSON[key];
               }
             } else {
-              block.data[key] = blockJSON[key];
+              block[key] = blockJSON[key];
             }
           }
         }
-       
-        // merge this object into the array
-        var aindex = this.blockobject[blockJSON.offerid].arrayindex;
-        if (!aindex && aindex !== 0) {
-            block.arrayindex = this.push('blockdata', block.data) - 1;
-          console.log('adding new block',block.arrayindex);
-            console.log('blockdata length is now ',this.blockdata.length,'arrayindex=',block.arrayindex,'offerid=',blockJSON.offerid);            
-        } else {
-          console.log('updating existing block arrayindex=',aindex,'offerid=',blockJSON.offerid);
-            this.splice('blockdata', aindex, 1, block.data);
-        }
 
+        this.blockobject[blockJSON.offerid] = block;
+        this.blockdata = this.object2array(this.blockobject);
+
+      },
+
+       object2array: function(input){
+        //this.blockdata = [];
+
+        var r = [];
+        var keys = Object.keys(input);
+        for (var i=0;i<keys.length;i++){
+          if (input[keys[i]].ipfsdata){
+            r[keys[i]]= input[keys[i]];
+          }
+        }
+        return r;
+
+  },
+
+
+
+      setFilter: function() {
+        this.fire('newblock');
+        var self = this;
+        var filter = this.web3.eth.filter('latest').watch(function(err, blockHash) {
+          self.fire('newblock');
+          var block = self.web3.eth.getBlock(blockHash);
+        });
       },
 
       getBlockData: function() {
 
 
         // check if all needed data items are in place.
-        if (!this.web3 || !this.blockobject || !this.lastblock || this.getblockdata) {
+        if (!this.web3 || !this.blockobject || !this.lastblock) {
+          return;
+        }
+
+        // if already started - then just skip ( avoid listening twice to BC)
+        if (this.getblockdata === true) {
           return;
         }
 
         this.getblockdata = true;
-        //console.log('Starting getBlockData at block', this.lastblock, '(', this.web3.eth.blockNumber - this.lastblock,'blocks behind)');
 
         var self = this;
 
         app.helpers.getfile('/src/contracts/localsInOut.json', function(err, inoutcontractjson) {
-          //console.log('<<<<< ', inoutcontractjson.address);
           var MyContract = self.web3.eth.contract(inoutcontractjson.abi);
           var myContractInstance = MyContract.at(inoutcontractjson.address);
 
-
-          console.log('start-filter');
           self.eventwatcher = myContractInstance.allEvents({
             fromBlock: self.lastblock,
           });
@@ -183,13 +206,6 @@
             }
             var event = result;
 
-
-            var oid = event.args.offerID.toNumber();
-            console.log('ac-blockdata --> received event ',event.event,oid);
-            //              console.log(result.event, event.timestamp);
-            // if (event.blockNumber < self.lastblock) {
-            //   debugger;
-            // }
             switch (event.event) {
               case 'OfferAdded':
 
@@ -198,11 +214,10 @@
 
                   var ipfsdata = JSON.parse(data);
                   // resolve avatar URL
-                  if (ipfsdata && ipfsdata.userdata && ipfsdata.userdata.avatar) {
+                  if (ipfsdata && ipfsdata.userdata && ipfsdata.userdata.avatar){
                     ipfsdata.userdata.avatarurl = self.$.ipfs.geturl(ipfsdata.userdata.avatar);
                   }
 
-                  console.log('GOT IPFS'),
                   self.updateBlock({
                     escrowaddress: event.args.escrowaddress,
                     offerid: event.args.offerID.toNumber(),
@@ -236,12 +251,6 @@
                   status: 'released'
                 });
 
-                // var offerid = event.args.offerID.toNumber();
-                // //claim events from (too) old are ignored
-                // if (!self.blockdata[self.blockobject[offerid]]){
-                //   return;
-                // }
-                // self.blockdata[self.blockobject[offerid]].status = 'released';
                 self.lastblock = event.blockNumber + 1;
                 break;
 
@@ -252,12 +261,6 @@
                   status: 'conflict'
                 });
 
-                // var offerid = event.args.offerID.toNumber();
-                // // claim events from (too) old are ignored
-                // if (!self.blockdata[self.blockobject[offerid]]){
-                //   return;
-                // }
-                // self.blockdata[self.blockobject[offerid]].status = 'conflict';
                 self.lastblock = event.blockNumber + 1;
                 break;
 

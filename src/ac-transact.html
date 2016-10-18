@@ -3,6 +3,7 @@
 <link rel="import" href="./ac-config.html">
 <link rel="import" href="./ac-ipfs.html">
 <link rel="import" href="./ac-password.html">
+<link rel="import" href="./ac-helpers.html">
 
 <dom-module id="ac-transact">
 
@@ -20,6 +21,7 @@
       <ac-config web3host="{{web3host}}"></ac-config>
      <!--  <ac-password password="{{password}}"></ac-password> -->
       <ac-ipfs id="ipfs"></ac-ipfs>
+      <ac-helpers id="helpers"></ac-helpers>
 
 </template>
   <script>
@@ -64,8 +66,8 @@
           message: 'Creating allowance.'
         });
 
-        app.helpers.getfile('./contracts/localsInOut.json', function(err, localsinoutcontractjson) {
-        app.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
+        self.$.helpers.getfile('./contracts/localsInOut.json', function(err, localsinoutcontractjson) {
+        self.$.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
 
 
             //var allowance = _ARCCoin.allowance('0xe4d11ca64f35a909ccfd9076ac4f700133eb8cfb', _localsInOut.address).then(function(a) {
@@ -77,8 +79,8 @@
               // });
               var MyContract = self.web3.eth.contract(arccontractjson.abi);
               var myContractInstance = MyContract.at(arccontractjson.address);
-              var account = app.helpers.fixaddress(self.account);
-              result = myContractInstance.allowance.sendTransaction(app.helpers.fixaddress(self.account), localsinoutcontractjson.address, {
+              var account = self.$.helpers.fixaddress(self.account);
+              result = myContractInstance.allowance.sendTransaction(self.$.helpers.fixaddress(self.account), localsinoutcontractjson.address, {
                   from: account,
                   gasPrice: gasPrice,
                   gasLimit: 600000,
@@ -120,7 +122,7 @@
         self.fire('log-event', {
           message: 'Creating offer'
         });
-        app.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
+        self.$.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
           console.log(err, contractjson);
           self.web3.eth.getGasPrice(function(err, result) {
             var gasPrice = result.toNumber(10);
@@ -130,7 +132,7 @@
             self.hashtag = "0x88c80a97cc95015662124a2069e51c706cbf3e80";
             var MyContract = self.web3.eth.contract(contractjson.abi);
             var myContractInstance = MyContract.at(contractjson.address);
-            var account = app.helpers.fixaddress(self.account);
+            var account = self.$.helpers.fixaddress(self.account);
             result = myContractInstance.newOffer.sendTransaction(self.hashtag, self.offeramount * 1e18, self.ipfshash, {
                 from: account,
                 gasPrice: gasPrice,
@@ -261,7 +263,7 @@
 
       claimContract: function(offerid, cb) {
         var self = this;
-        app.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
+        self.$.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
           console.log(err, contractjson);
           self.web3.eth.getGasPrice(function(err, result) {
             var gasPrice = result.toNumber(10);
@@ -270,7 +272,7 @@
             // });
             var MyContract = self.web3.eth.contract(contractjson.abi);
             var myContractInstance = MyContract.at(contractjson.address);
-            var account = app.helpers.fixaddress(self.account);
+            var account = self.$.helpers.fixaddress(self.account);
 
             result = myContractInstance.claim.sendTransaction(offerid, {
                 from: account,
@@ -308,7 +310,7 @@
 
       releaseContract: function(offerid, cb) {
         var self = this;
-        app.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
+        self.$.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
           console.log(err, contractjson);
           self.web3.eth.getGasPrice(function(err, result) {
             var gasPrice = result.toNumber(10);
@@ -317,7 +319,7 @@
             // });
             var MyContract = self.web3.eth.contract(contractjson.abi);
             var myContractInstance = MyContract.at(contractjson.address);
-            var account = app.helpers.fixaddress(self.account);
+            var account = self.$.helpers.fixaddress(self.account);
 
             result = myContractInstance.confirm(offerid, {
                 from: account,
