@@ -8,6 +8,7 @@
 <link rel="import" href="./ac-ipfs.html">
 <link rel="import" href="./ac-helpers.html">
 <link rel="import" href="./ac-config.html">
+<link rel="import" href="./ac-tokentransfer.html">
 
 <dom-module id="ac-profile">
   <!-- Defines the element's style and local DOM -->
@@ -174,6 +175,7 @@
     </style>
     <ac-helpers id="helpers"></ac-helpers>
     <ac-config etherscanroot="{{etherscanroot}}"></ac-config>
+
     <iron-request id="donaterequest"></iron-request>
 
     <template is="dom-if" if="{{!accountlocked}}">
@@ -203,6 +205,8 @@
         <div class="main">
           <div class="content">
             <div class="whitespace"></div>
+            <div class="whitespace"></div>
+
             <div class="avatar" on-tap="toEdit">
               <img src="{{avatarurl}}" alt="" />
             </div>
@@ -213,6 +217,8 @@
               <h1>{{arcbalance}}</h1>
               <p>ARC</p>
             </div>
+
+            <ac-tokentransfer web3="{{web3}}" account="{{acount}}"></ac-tokentransfer>
             <!-- <p>ETH Balance: {{balance}}</p> -->
             <template is="dom-if" if="{{donateview}}">
               <ac-button on-tap="donate" txtbtn bg="red" txtcolor="base" small>Give me test-ARC</ac-button>
@@ -267,7 +273,7 @@
     </iron-localstorage>
 
     <ac-ipfs id="ipfs" ipfs="{{ipfs}}"></ac-ipfs>
-    <ac-wallet id="acwallet" balance="{{balance}}" arcbalance="{{arcbalance}}"></ac-wallet>
+    <ac-wallet id="acwallet" web3="{{web3}}" account="{{acount}}" balance="{{balance}}" arcbalance="{{arcbalance}}"></ac-wallet>
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>

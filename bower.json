@@ -32,7 +32,9 @@
     "ac-loader": "https://github.com/ArcadeCity/ac-loader.git",
     "ac-input": "https://github.com/ArcadeCity/ac-input.git",
     "moment-js": "^0.4.1",
-    "iron-ajax": "PolymerElements/iron-ajax#^1.4.3"
+    "iron-ajax": "PolymerElements/iron-ajax#^1.4.3",
+    "locals-whisperer": "https://github.com/locals-world/locals-whisperer.git",
+    "iron-collapse": "^1.2.1"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
