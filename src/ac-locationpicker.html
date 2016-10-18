@@ -78,11 +78,9 @@
         },
         latitude: {
           type: Number,
-          observer: 'initmap'
         },
         longitude: {
           type: Number,
-          observer: 'initmap'
         },
         dogeolocation: {
           type: Boolean,
@@ -97,6 +95,7 @@
       mapready: function(){
         // try to init the map with given lat/lon
         // when we arrive here, the attach event is passed already.
+
         this.initmap();
         // if nothing was inited now - the lat/lng were not given.
         // so enable our own geolocation component
@@ -131,10 +130,7 @@
 
       // this triggers when DIY geolocation is done
       locationfound: function(e) {
-        // if lat/lng was supplied , ignore own geolocation...
-        // if (this.latitude && this.longitude){
-        //   return;
-        // }
+        //console.log('location found ready, ', Date.now(), e.detail);
         this.setmapgeo(e.detail.latitude,e.detail.longitude);
       },
 
@@ -147,7 +143,8 @@
         this.setcurrentGeo(lat, lon);
         var self = this;
         this.getAddress(this.currentGeo).then(function(response) {
-          self.resolvedAddress = JSON.parse(response);
+          self.set('resolvedAddress', JSON.parse(response));
+          self.fire('address-found', response);
           self.displayaddress = self.resolvedAddress.display_name;
         }, function(error) {});
         this.appendMarker(lat, lon);
@@ -164,6 +161,7 @@
           this.getAddress(e.detail.target._latlng).then(function(response) {
             self.resolvedAddress = JSON.parse(response);
             self.displayaddress = self.resolvedAddress.display_name;
+            self.fire('address-found', response);
             self.fire('dragend', {
               'resolvedaddress': response,
               'lat': e.detail.target._latlng.lat,

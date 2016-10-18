@@ -7,6 +7,7 @@
 
 <link rel="import" href="./ac-blockdata.html">
 <link rel="import" href="./ac-profile.html">
+<link rel="import" href="./ac-spinner.html">
 
 <dom-module id="ac-map">
   <!-- Defines the element's style and local DOM -->
@@ -92,6 +93,12 @@
         z-index: 1;
       }
 
+      ac-spinner {
+        width: 100vw;
+        height: 100vh;
+        z-index: 5;
+      }
+
 
       /*  toppart  */
 
@@ -151,9 +158,7 @@
       <ac-button on-tap="toFilter" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button>
     </div>
 
-    <!-- <div id="spinner" hidden$="{{!locationunknown}}" class="spinnerdiv">
-      <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
-		</div> -->
+    <ac-spinner hidden$="{{!locationunknown}}"></ac-spinner>
 
     <leaflet-map
       id="leafletmap"
