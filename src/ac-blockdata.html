@@ -57,6 +57,10 @@
         blockdata: {
           type: Array,
           notify: true
+        },
+        blockobject: {
+          type: Object,
+          notify: true
         }
       },
 
@@ -178,10 +182,8 @@
             fromBlock: self.lastblock,
           });
 
-
           self.eventwatcher.watch(function(error, result) {
             if (error) {
-              //console.error('ac-blockdata: ', error);
               return;
             }
             var event = result;
@@ -189,10 +191,7 @@
 
             var oid = event.args.offerID.toNumber();
             console.log('ac-blockdata --> received event ',event.event,oid);
-            //              console.log(result.event, event.timestamp);
-            // if (event.blockNumber < self.lastblock) {
-            //   debugger;
-            // }
+
             switch (event.event) {
               case 'OfferAdded':
 
