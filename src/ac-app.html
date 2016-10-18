@@ -14,15 +14,15 @@
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="./ac-sizeview.html">
-<!-- <link rel="import" href="./ac-locationpicker.html"> -->
+<link rel="import" href="./ac-locationpicker.html">
 <!-- <link rel="import" href="./ac-locationtracker.html"> -->
-<!-- <link rel="import" href="./ac-profile.html"> -->
-<!-- <link rel="import" href="./ac-list.html"> -->
+<link rel="import" href="./ac-profile.html">
+<link rel="import" href="./ac-newoffer.html">
+<link rel="import" href="./ac-list.html">
 <!-- <link rel="import" href="./ac-myitem.html"> -->
 <!-- <link rel="import" href="./ac-myitems.html"> -->
-<!-- <link rel="import" href="./ac-newuser.html"> -->
-<!-- <link rel="import" href="./ac-map.html"> -->
-<!-- <link rel="import" href="./ac-detail.html"> -->
+<link rel="import" href="./ac-map.html">
+<link rel="import" href="./ac-detail.html">
 <!-- <link rel="import" href="./ac-ipfsupload.html"> -->
 <!-- <link rel="import" href="./ac-wallet.html"> -->
 <!-- <link rel="import" href="./ac-settings.html"> -->
@@ -30,7 +30,7 @@
 <link rel="import" href="./ac-transact.html">
 <link rel="import" href="./ac-helpers.html">
 <!-- <link rel="import" href="./ac-password.html"> -->
-<!-- <link rel="import" href="./ac-spinner.html"> -->
+<link rel="import" href="./ac-spinner.html">
 
 <dom-module id="ac-app">
   <template>
@@ -97,7 +97,7 @@
             <ac-newuser name="newuser"></ac-newuser>
             <ac-password name="password"></ac-password>
 
-            <ac-map name="map" blockdata="[[blockdata]]" latitude="{{latitude}}" longitude="{{longitude}}" restamp on-to-filter="firetoggle"></ac-map>
+            <ac-map name="map" blockdata="[[blockdata]]" latitude="{{latitude}}" longitude="{{longitude}}" restamp on-to-filter="firetoggle" id="acmap"></ac-map>
             <ac-list name="list" restamp blockdata="[[blockdata]]" on-to-filter="firetoggle"></ac-list>
 
             <ac-detail name="detail" id="detail" blockdata="[[blockdata]]" blockobject="[[blockobject]]" offerid="[[subrouteData.offerid]]" restamp></ac-detail>

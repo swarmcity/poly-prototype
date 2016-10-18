@@ -107,10 +107,10 @@
           position: fixed;
           top: 70px;
           z-index: 1;
-          width: 75%;
-          max-width: 500px;
-          @apply(--layout-vertical);
-          @apply(--layout-center-center);
+          /*width: 75%;*/
+          /*max-width: 500px;*/
+          /*@apply(--layout-vertical);*/
+          /*@apply(--layout-center-center);*/
         }
 
         .fixedplace h1 {
@@ -161,7 +161,7 @@
 
 
 
-
+/*
         .fixedtitle {
 
           position: fixed;
@@ -179,7 +179,7 @@
           background-color: rgba(255,255,255,0.25);
           box-sizing: border-box;
           padding: 4px 15px 4px 15px;
-        }
+        }*/
 
 
       .main {
@@ -428,7 +428,6 @@
 
     <template is="dom-if" if="{{_is(offerview, 'third')}}">
 
-      <h1>{{routefound}}</h1>
       <ac-routeplanner id="routeplanner" routedetails="{{routedetails}}" on-route-available="routeAvailable" fromlatlon="[[from.latlng]]" tolatlon="[[to.latlng]]" fromaddress="[[from.address.display_name]]" toaddress="[[to.address.display_name]]" routefound="{{routefound}}"></ac-routeplanner>
 
       <div class="confirmbtns" hidden="{{routingprocess}}">

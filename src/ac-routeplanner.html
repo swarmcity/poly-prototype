@@ -614,9 +614,9 @@
           //this.$.mapp.map.fitToMarkers = true;
           //this.customStyle['--map-shit'] = 'none';
           //this.updateStyles();
-          //var iti = document.querySelector('#overviewmap');
-          //var cc = iti.querySelector('.leaflet-control-container');
-          //cc.style = "display: none";
+          var iti = this.$.mapp;
+          var cc = iti.querySelector('.leaflet-control-container');
+          cc.style = "display: none";
           //this.$.mapp.map.invalidateSize();
         }.bind(this));
 

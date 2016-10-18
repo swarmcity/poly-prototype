@@ -447,7 +447,7 @@
             <img src="{{data.ipfsdata.userdata.avatarurl}}"></div>
           <div class="offerername">
             <p>
-              <span>{{data.ipfsdata.userdata.aka}} {{data.offerid}}</span>
+              <span>{{data.ipfsdata.userdata.aka}}</span>
               <!-- •
             <span class="currentkarma">8</span>
             -->
@@ -458,13 +458,13 @@
         <template is="dom-if" if="{{_is(sizeview,'phone')}}">
           <p class="address">
             Need a ride to
-            <br>{{data.ipfsdata.toaddress.display_name}}</p>
+            <br>{{data.ipfsdata.toaddress}}</p>
           <small>{{data.sent}}</small>
         </template>
         <template is="dom-if" if="{{!_is(sizeview,'phone')}}">
           <p class="address">
             Need a ride to
-            {{data.ipfsdata.toaddress.display_name}}
+            {{data.ipfsdata.toaddress}}
           </p>
           <small></small>
         </template>

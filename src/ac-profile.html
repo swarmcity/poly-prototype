@@ -201,7 +201,10 @@
 
       <!-- View profile view -->
       <template is="dom-if" if="{{_is(viewstate, 'overview')}}">
-
+        <div class="topbar">
+         <p class="flex" on-tap="change"></p>
+         <ac-button  bg="base" icon="declinenew" on-tap="toHome" small id="exitbtn" txtcolor="turquoise"></ac-button>
+        </div>
         <div class="main">
           <div class="content">
             <div class="whitespace"></div>
@@ -398,6 +401,10 @@
 
       inputchanged: function(e) {
         this.newusername = e.detail.value;
+      },
+
+      toHome: function() {
+        app.set('route.path', '/');
       },
 
       uploadavatar: function() {
