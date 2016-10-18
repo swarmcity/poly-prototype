@@ -435,7 +435,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var self=this;
       },
 
-
       handlewhispermessage: function(m) {
         var self = this;
         var message = JSON.parse(m.detail.message);
@@ -503,7 +502,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _getARCbalance: function() {
-        console.log('ac-tokentransfer ', Date.now());
+        //console.log('ac-tokentransfer ', Date.now());
         this.contracturl = this.resolveUrl('./contracts/ARCToken.json');
 
         var self = this;

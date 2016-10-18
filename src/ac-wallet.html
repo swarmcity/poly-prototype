@@ -105,7 +105,8 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
           var tokenContract = self.web3.eth.contract(contractjson.abi);
           var tokenContractInstance = tokenContract.at(contractjson.address);
           var account = self.$.helpers.fixaddress(self.account);
-          self.arcbalance = tokenContractInstance.balanceOf(account) / 1e18;
+          var arcbalance = tokenContractInstance.balanceOf(account) / 1e18;
+          self.arcbalance = arcbalance.toFixed(2);
           self.balanceloaded = true;
           self.fire('balance-loaded');
           self.fire('map-update');

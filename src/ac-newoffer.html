@@ -529,7 +529,7 @@ Polymer({
   },
 
   _from: function(){
-    
+
     console.log('received From',this.from.address.display_name);
     this.showfromspinner = false;
   },
@@ -589,10 +589,12 @@ Polymer({
 
     var self = this;
 
+    console.log(this.to, this.from);
+
     var account = self.$.helpers.fixaddress(app.$.acwallet.account);
     var offer = {
-        from: this.from.latlon,
-        to: this.to.latlon,
+        from: this.from.latlng,
+        to: this.to.latlng,
         fromaddress: this.from.address.display_name,
         toaddress: this.to.address.display_name,
         offeramount: this.routedetails.costestimate,
