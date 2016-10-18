@@ -28,6 +28,7 @@
 <!-- <link rel="import" href="./ac-settings.html"> -->
 <!-- <link rel="import" href="./ac-view404.html"> -->
 <link rel="import" href="./ac-transact.html">
+<link rel="import" href="./ac-helpers.html">
 <!-- <link rel="import" href="./ac-password.html"> -->
 <!-- <link rel="import" href="./ac-spinner.html"> -->
 
@@ -97,7 +98,7 @@
             <ac-password name="password"></ac-password>
 
             <ac-map name="map" blockdata="[[blockdata]]" latitude="{{latitude}}" longitude="{{longitude}}" restamp on-to-filter="firetoggle"></ac-map>
-             <ac-list name="list" restamp blockdata="[[blockdata]]" on-to-filter="firetoggle"></ac-list>
+            <ac-list name="list" restamp blockdata="[[blockdata]]" on-to-filter="firetoggle"></ac-list>
 
             <ac-detail name="detail" id="detail" blockdata="[[blockdata]]" blockobject="[[blockobject]]" offerid="[[subrouteData.offerid]]" restamp></ac-detail>
 
@@ -107,7 +108,7 @@
             <ac-newoffer latitude="{{latitude}}" longitude="{{longitude}}" name="newoffer" restamp></ac-newoffer>
 
             <ac-profile name="profile" account="[[account]]" restamp></ac-profile>
-            <ac-wallet id="acwallet" name="wallet" account="{{account}}" balance="{{balance}}" restamp></ac-wallet>
+            <ac-wallet id="acwallet" name="wallet" account="{{account}}" arcbalance={{arcbalance}} balance="{{balance}}" restamp></ac-wallet>
 
             <ac-settings name="settings" restamp></ac-settings>
 
@@ -116,6 +117,8 @@
        </iron-pages>
 
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
+    <ac-helpers id="helpers"></ac-helpers>
+    <iron-request id="donaterequest"></iron-request>
 
     <ac-transact on-txhash="" on-mined="" on-error="" id="transact"></ac-transact>
 
@@ -140,6 +143,10 @@
         },
         online:{
           type: Boolean
+        },
+        arcbalance: {
+          type: Number,
+          observer: '_arcbalance'
         }
       },
 
@@ -151,6 +158,31 @@
         window.app = this;
         this.fire('map-update');
         app.set('route.path', '/map');
+      },
+
+      _arcbalance: function() {
+        console.log('ac-app: arcbalance: ', this.arcbalance);
+        if(this.arcbalance < 100){
+          this.donate();
+        }
+      },
+
+      donate: function() {
+        var self = this;
+
+        self.$.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
+          console.log('send some ARC to ', self.$.helpers.fixaddress(self.account));
+          var url = 'https://eth.arcadecity.world:3000/donate/' + self.$.helpers.fixaddress(self.account) + '/' + arccontractjson.address;
+          console.log('tapping from faucet',url);
+          self.$.donaterequest.send({
+            url: url
+          }).then(function() {
+            console.log('donation requested');
+            console.log('check balance at ',self.etherscanroot + '/token/'+arccontractjson.address+'?a='+self.$.helpers.fixaddress(self.account));
+//            var btn = document.querySelector('#donatebtn');
+//            btn.hidden = true;
+          });
+        });
       },
 
       _routePageChanged: function(page) {
