@@ -445,7 +445,7 @@
             <img src="{{data.ipfsdata.userdata.avatarurl}}"></div>
           <div class="offerername">
             <p>
-              <span>{{data.ipfsdata.userdata.aka}}</span>
+              <span>{{data.ipfsdata.userdata.aka}} {{data.offerid}}</span>
               <!-- •
             <span class="currentkarma">8</span>
             -->
@@ -542,35 +542,6 @@ Polymer({
 
   _key: function() {
     var self = this;
-
-    // if(this.key){
-    //   self.$.ipfs.cat(self.key, function(err, buf) {
-    //       var ipfsData = JSON.parse(buf);
-    //
-    //       //console.log(ipfsData);
-    //       var fromLATLON =  window.decodeGeoHash(ipfsData.from);
-    //       var toLATLON =  window.decodeGeoHash(ipfsData.to);
-    //       var point = {
-    //         // 'latitude': 51.23579 + (Math.random() - 0.5) / 100,
-    //         // 'longitude': 4.40886 + (Math.random() - 0.5) / 100,
-    //         // 'info': 'testing1'
-    //         'ipfshash': self.key,
-    //         'fromlatitude': fromLATLON.latitude[0],
-    //         'fromlongitude': fromLATLON.longitude[0],
-    //         'fromaddress': ipfsData.fromaddress,
-    //         'tolatitude': toLATLON.latitude[0],
-    //         'tolongitude': toLATLON.longitude[0],
-    //         'toaddress': ipfsData.toaddress,
-    //         'status': ipfsData.status,
-    //         'userdata': ipfsData.userdata,
-    //         'pubkey': ipfsData.pubkey,
-    //         'amount': ipfsData.offeramount,
-    //         'offerid': ipfsData.offerid
-    //       };
-    //       self.data = point;
-    //       self.dataloaded = false;
-    //     });
-    // }
   },
 
   _is: function(a, b) {
@@ -582,7 +553,6 @@ Polymer({
     },
 
   _sizeview: function(){
-
           switch(this.sizeview) {
             case 'phone':
             // console.log("OOOOOOOOOOOWWKKKEEEEEEEjn wemmenem in OFFER");

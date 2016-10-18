@@ -69,9 +69,9 @@
     <app-route
         route="{{subroute}}"
         data="{{subrouteData}}"
-        pattern="/:key"></app-route>
+        pattern="/:offerid"></app-route>
 
- <ac-blockdata blockdata="{{blockdata}}"></ac-blockdata>
+ <ac-blockdata blockdata="{{blockdata}}" blockobject="{{blockobject}}"></ac-blockdata>
 
 <!--  <h1>OFFERS</h1>
 <template is="dom-repeat" items="{{blockdata}}">
@@ -94,7 +94,7 @@
             <ac-map name="map" blockdata="[[blockdata]]" latitude="{{latitude}}" longitude="{{longitude}}" restamp on-to-filter="firetoggle"></ac-map>
              <ac-list name="list" restamp blockdata="[[blockdata]]" on-to-filter="firetoggle"></ac-list>
 
-            <ac-detail name="detail" id="detail" blockdata="[[blockdata]]" key="[[subrouteData.key]]" restamp></ac-detail>
+            <ac-detail name="detail" id="detail" blockdata="[[blockdata]]" blockobject="[[blockobject]]" offerid="[[subrouteData.offerid]]" restamp></ac-detail>
 
             <ac-myitems name="myitems" blockdata="[[blockdata]]" restamp></ac-myitems>
             <ac-myitem name="myitem" blockdata="[[blockdata]]" key="[[key]]" restamp></ac-myitem>

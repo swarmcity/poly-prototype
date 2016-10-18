@@ -243,7 +243,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    
+
     .address p {
       font-size: var(--address-size);
       line-height: var(--address-lineheight);
@@ -441,7 +441,7 @@
    </div>
    <div class="main">
    <div class="content">
-    <ac-helpers id="helpers"></ac-helpers>   
+    <ac-helpers id="helpers"></ac-helpers>
      <ac-ipfs id="ipfs"></ac-ipfs>
      <ac-wallet id="acwallet" balance="{{balance}}" arcbalance="{{arcbalance}}" account="{{account}}"></ac-wallet>
 
@@ -456,7 +456,7 @@
            <img src="{{data.ipfsdata.userdata.avatarurl}}">
          </div>
          <div class="offerername_detail">
-           <p><span>{{data.ipfsdata.userdata.aka}}</span></p>
+           <p><span>{{data.ipfsdata.userdata.aka}} {{data.offerid}}</span></p>
            <!-- <p><span class="currentkarma">8 karma</span></p> -->
          </div>
        </div>
@@ -626,9 +626,9 @@
     Polymer({
       is: 'ac-detail',
       properties: {
-        key: {
+        offerid: {
           type: Number,
-          observer: '_key'
+          observer: '_offerid'
         },
         blockdata: {
           type: Array,
@@ -650,9 +650,9 @@
         this.log = [];
       },
 
-      _key: function() {
-        console.log('item detail has key: ', this.key);
-        this.data = this.blockdata[this.key];
+      _offerid: function() {
+        console.log('item detail has key: ', this.offerid);
+        this.data = this.blockobject[this.offerid];
         if(this.data.creator == this.$.helpers.fixaddress(this.account)){
           this.thisismyoffer = true;
         }
@@ -661,7 +661,7 @@
       },
 
       _loaddata: function() {
-        if(this.blockdata && this.blockobject && this.key) {
+        if(this.blockdata && this.blockobject && this.offerid) {
           this._blockdata();
           this._blockobject();
         }
@@ -678,7 +678,7 @@
       releaseOffer: function() {
         this.claimstep = 'relthird';
         var self = this;
-        app.$.transact.releaseContract(this.key, function(e){
+        app.$.transact.releaseContract(this.offerid, function(e){
           console.log('offer released.', e);
           self.claimstep = 'relfourth';
         });
@@ -686,7 +686,7 @@
 
       claimOffer: function() {
         var self = this;
-        app.$.transact.claimOffer(this.key, function(e){
+        app.$.transact.claimOffer(this.offerid, function(e){
           console.log('offer claimed.', e);
           self.claimstep = 'fourth';
         });
