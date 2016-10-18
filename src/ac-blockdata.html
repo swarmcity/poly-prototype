@@ -144,8 +144,11 @@
             }
           }
         }
+
+        // update blockdata object
+        this.set('blockdata.' + blockJSON.offerid,block);
        
-        // merge this object into the array
+        // and merge this object into the array
         var aindex = this.blockobject[blockJSON.offerid].arrayindex;
         if (!aindex && aindex !== 0) {
             block.arrayindex = this.push('blockdata', block.data) - 1;
