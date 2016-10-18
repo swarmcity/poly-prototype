@@ -1,22 +1,586 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/ac-button/ac-button.html">
+<link rel="import" href="../bower_components/ac-loader/ac-loader.html">
+<link rel="import" href="../bower_components/ac-style/ac-style.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/moment-js/moment-js.html">
+
+<!-- <link rel="import" href="./ac-ipfs.html"> -->
 
 <dom-module id="ac-mylistitem">
   <!-- Defines the element's style and local DOM -->
   <template>
     <style>
-      :host {
-        display: block;
+:host {
+      display: block;
+      width: 100%;
+      --offeramount-size: 46px;
+      --offeramount-lineheight: 52px;
+      --address-size:20px;
+      --address-lineheight:25px;
+      --flex-align1:end;
+      --flex-align2:flex-end;
+      @apply(--base-structure);
+      --transparency-item: 1;
+      opacity: var(--transparency-item);
+    }
 
-        padding: 16px;
+
+    h1 {
+      @apply(--ac-font-h1);
+    }
+    h2 {
+      @apply(--ac-font-h2);
+    }
+    h3 {
+      @apply(--ac-font-h3);
+    }
+    p {
+      @apply(--ac-font-body1);
+    }
+
+
+    .topbar {
+      width: 100%;
+      height: 12vh;
+      /*height: var(--topbar-height);*/
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+      box-sizing: border-box;
+      padding: 10px 20px 0px 25px;
+      @apply(--base-structure);
+      border-bottom:1px solid transparent;
+    }
+
+    .flex {
+      @apply(--layout-horizontal);
+      @apply(--layout-flex);
+    }
+
+    .main {
+      overflow-y: scroll;
+      height: 88vh;
+      width: 100%;
+      @apply(--base-structure);
+    }
+
+    .content {
+      width: 100%;
+      @apply(--layout-vertical);
+      @apply(--layout-center);
+      @apply(--base-structure);
+    }
+
+    .offercard {
+      background-color: var(--ac-blue);
+      width: 100%;
+      box-sizing: border-box;
+      @apply(--layout-horizontal);
+      @apply(--layout-start-justified);
+      border:1px solid var(--ac-base);
+      -ms-flex-align: var(--flex-align1);
+      -webkit-align-items: var(--flex-align2);
+
+    }
+
+
+    .offercontent {
+      @apply(--layout-vertical);
+      @apply(--layout-start);
+      @apply(--layout-start-justified);
+      @apply(--layout-flex);
+      box-sizing: border-box;
+      padding: 20px 20px 20px 20px;
+      border-right:3px dotted #181233;
+      width: 70%;
+      color: white;
+    }
+
+    .offercontenttxt {
+      @apply(--layout-horizontal);
+      @apply(--layout-start);
+      @apply(--layout-start-justified);
+      height: 100%;
+      box-sizing: border-box;
+      margin-top: 7px;
+      width: 100%;
+    }
+
+    .offercontenttxt p {
+      font-size: 20px;
+      line-height: 25px;
+    }
+
+    .offerer {
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+    }
+
+    .offereravatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      overflow: hidden;
+      background-color: rgba(0,0,0,0.25);
+    }
+
+
+    .offereravatar img {
+      width: 100%;
+      height: 100%;
+    }
+
+
+    .myoffereravatar {
+      width: 35px;
+      height: 35px;
+      min-width: 35px;
+      min-height: 35px;
+      border-radius: 50%;
+      overflow: hidden;
+      background-color: rgba(0,0,0,0.25);
+      border: 1px solid var(--ac-red);
+    }
+    .myoffereravatar img {
+      width: 100%;
+      height: 100%;
+    }
+
+
+    .offerername {
+      margin: 0px 0px 0px 10px;
+    }
+
+    .offerername p {
+      @apply(--montserrat-ultralight);
+      /*color: var(--ac-green);*/
+      color: rgba(255,255,255,0.5);
+
+/*        font-size: 14px;
+      line-height: 17px;*/
+    }
+
+    .myofferername {
+      margin: 0px 0px 0px 15px;
+    }
+    .myofferername p {
+      @apply(--montserrat-ultralight);
+      color: rgba(255,255,255,0.5);
+    }
+
+    .iamofferer {
+      @apply(--montserrat-light);
+      color: var(--ac-base);
+      background-color: rgba(255,255,255,0.2);
+      box-sizing: border-box;
+      padding: 2px 4px 2px 4px;
+      border-radius: 2px;
+
+/*        font-size: 14px;
+      line-height: 17px;*/
+    }
+
+
+
+    .offeramount {
+      @apply(--layout-horizontal);
+      @apply(--layout-end);
+      @apply(--layout-end-justified);
+      height: 100%;
+      box-sizing: border-box;
+      padding: 20px 20px 20px 20px;
+      width: 30%;
+    }
+
+
+    .offeramountmobile {
+      @apply(--layout-vertical);
+      @apply(--layout-end);
+      @apply(--layout-end-justified);
+      height: 100%;
+      box-sizing: border-box;
+      padding: 20px 20px 20px 20px;
+      width: 30%;
+    }
+
+
+    .offeramount h1 {
+      color: var(--ac-red);
+      @apply(--montserrat-ultralight);
+      margin: 0px;
+      font-size: 46px;
+      line-height: 52px;
+    }
+    .offeramount p {
+      color: var(--ac-red);
+      font-size: 16px;
+      line-height: 34px;
+      margin: 0px;
+    }
+
+
+    .offeramountmobile h1 {
+      color: var(--ac-red);
+      @apply(--montserrat-ultralight);
+      margin: 0px;
+      font-size: 30px;
+      line-height: 34px;
+    }
+    .offeramountmobile p {
+      color: var(--ac-red);
+      font-size: 16px;
+      line-height: 20px;
+      margin: 0px;
+    }
+
+    .address {
+      /*@apply(--ac-fonts-nowrap);*/
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .address p {
+      font-size: var(--address-size);
+      line-height: var(--address-lineheight);
+    }
+
+    .needride {
+      width: 50%;
+    }
+
+    .drivers {
+      font-size: 12px;
+      color: var(--ac-blue);
+    }
+
+    .currentkarma {
+      @apply(--montserrat-reg);
+    }
+
+
+
+
+
+    .offercontent_detail {
+      @apply(--layout-vertical);
+      @apply(--layout-center-center);
+      box-sizing: border-box;
+      padding: 0px 20px 20px 20px;
+      width: 100%;
+      color: white;
+    }
+
+
+    .offeramount_detail {
+      @apply(--layout-horizontal);
+      @apply(--layout-end);
+      @apply(--layout-start-justified);
+      margin-top: 30px;
+/*        box-sizing: border-box;
+      padding: 0px 20px 20px 20px;*/
+    }
+
+    .claimer {
+      margin-top: 30px;
+    }
+
+    .claimer p {
+      @apply(--montserrat-reg);
+      color: var(--ac-red);
+      opacity: 0.5
+    }
+
+    .offeramount_detail h1 {
+      color: var(--ac-red);
+      @apply(--montserrat-ultralight);
+      margin: 0px;
+      font-size: var(--offeramount-size);
+      line-height: var(--offeramount-lineheight);
+    }
+    .offeramount_detail p {
+      color: var(--ac-red);
+      font-size: 16px;
+      line-height: 34px;
+      margin: 0px;
+    }
+
+    .offercontenttxt_detail {
+      @apply(--layout-vertical);
+      @apply(--layout-start);
+      @apply(--layout-start-justified);
+      box-sizing: border-box;
+      margin: 40px 10vw 20px 10vw;
+      width: 80%;
+    }
+
+    .offercontenttxt_detail p {
+      font-size: 18px;
+      line-height: 24px;
+      text-align: left;
+    }
+
+    .detail_addresses {
+      font-size: 22px;
+      line-height: 25px;
+    }
+
+
+    .offerer_detail {
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+      @apply(--layout-start-justified);
+      width: 80%;
+    }
+
+    .offerername_detail {
+      @apply(--layout-vertical);
+      @apply(--layout-start);
+      @apply(--layout-start-justified);
+      margin: 0px 0px 0px 20px;
+      /*color: var(--ac-green);*/
+      color: rgba(255,255,255,0.5);
+    }
+
+    .offereravatar_detail {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      overflow: hidden;
+      background-color: rgba(0,0,0,0.25);
+    }
+
+    .offereravatar_detail img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .pickmeup {
+      font-size: 16px;
+      line-height: 22px;
+      color: var(--ac-turquoise);
+    }
+
+    .amountandclaimer {
+      width: 80%;
+      margin:30px 10vw 40px 10vw;
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+      @apply(--layout-start-justified);
+
+      @apply(--layout-wrap);
+
+      border-top: 1px dashed rgba(255,255,255,0.25);
+      box-sizing: border-box;
+    }
+
+
+
+
+    .centeredtxt {
+      text-align: center;
+    }
+    .someheight {
+      height: 60vh;
+    }
+    .certainwidth {
+      width: 70%;
+    }
+
+    .smalltxt {
+      font-size: 12px;
+      line-height: 16px;
+      color:var(--ac-turquoise);
+    }
+
+    .whitespace {
+      height: 20px;
+    }
+.refresher {
+     -webkit-animation-name: rotate;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-name: rotate;
+    -moz-animation-duration: 1s;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-timing-function: linear;
+    animation-name: rotate;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    opacity: 0.5;
+   }
+
+    @-webkit-keyframes rotate {
+        from {-webkit-transform: rotate(0deg);}
+        to {-webkit-transform: rotate(360deg);}
+    }
+
+    @-moz-keyframes rotate {
+        from {-moz-transform: rotate(0deg);}
+        to {-moz-transform: rotate(360deg);}
+    }
+
+    @keyframes rotate {
+        from {transform: rotate(0deg);}
+        to {transform: rotate(360deg);}
+    }
+</style>
+    <template is="dom-if" if="{{dataloaded}}">
+      <p>Loading</p>
+    </template>
+    <template is="dom-if" if="{{l(data.*)}}">
+      <!-- <ac-ipfs id="ipfs"></ac-ipfs>
+    -->
+    <div class="offercard">
+      <div class="offercontent">
+        <div class="offerer">
+          <div class="offereravatar">
+            <img src="{{data.ipfsdata.userdata.avatarurl}}"></div>
+          <div class="offerername">
+            <p>
+              <span>{{data.ipfsdata.userdata.aka}} {{data.offerid}}</span>
+              <!-- •
+            <span class="currentkarma">8</span>
+            -->
+          </p>
+        </div>
+      </div>
+      <div class="offercontenttxt">
+        <template is="dom-if" if="{{_is(sizeview,'phone')}}">
+          <p class="address">
+            Need a ride to
+            <br>{{data.ipfsdata.toaddress.display_name}}</p>
+          <small>{{data.sent}}</small>
+        </template>
+        <template is="dom-if" if="{{!_is(sizeview,'phone')}}">
+          <p class="address">
+            Need a ride to
+            {{data.ipfsdata.toaddress.display_name}}
+          </p>
+          <small></small>
+        </template>
+
+      </div>
+      <p class="drivers">
+        {{data.status}}
+        <span class>{{publishedtime}}</span>
+      </p>
+    </div>
+
+    <!-- <template is="dom-if" if="{{_is(status,'toclaim')}}">
+    -->
+    <template is="dom-if" if="{{!_is(sizeview,'phone')}}">
+      <div class="offeramount">
+        <h1>{{data.ipfsdata.offeramount}}</h1>
+        <template is="dom-if" if="{{_is(sizeview,'phone')}}">
+          <br></template>
+        <p>ARC</p>
+      </div>
+    </template>
+
+    <template is="dom-if" if="{{_is(sizeview,'phone')}}">
+      <div class="offeramountmobile">
+        <h1>{{data.ipfsdata.offeramount}}</h1>
+        <p>ARC</p>
+        <span class="flex"></span>
+      </div>
+    </template>
+  </div>
+</template>
+
+<!-- <ac-ipfs id="ipfs"></ac-ipfs>
+ -->
+</template>
+<!-- Creates the element's prototype and registers it -->
+<script>
+Polymer({
+  is: 'ac-mylistitem',
+  properties: {
+    data: {
+      type: Object,
+      observer: '_data'
+    },
+    sizeview: {
+        type: String,
+        observer: '_sizeview'
+    },
+  },
+
+  listeners: {
+    'tap': 'godetail'
+  },
+  l: function(){
+    return true;
+  },
+
+  attached: function() {
+    this.dataloaded = false;
+  },
+
+  _data: function() {
+    //console.log('ac-listitem',this.data.offerid,this.data);
+    //console.log(this.data);
+    // URL resolving is now done in ac-blockdata
+    //    this.imgurl = this.$.ipfs.geturl(this.data.ipfsdata.userdata.avatar);
+    if(this.data.timestamp) {
+      this.publishedtime = moment(this.data.timestamp*1000).fromNow();
+    }
+
+  },
+
+  godetail: function() {
+    //console.log('goto detail', this.data.offerid);
+    //app.$.detail.key = this.data.offerid;
+
+      app.set('route.path', '/detail/'+this.data.offerid);
+
+  },
+
+  _key: function() {
+    var self = this;
+  },
+
+  _is: function(a, b) {
+      if (b === undefined){
+        b = true;
       }
-    </style>
+      //console.log(a ,'(',typeof a,') is',b,'(',typeof b,') they are equal for ==',a == b,', they are equal for ===',a === b);
+      return a === b;
+    },
 
-    <h1>New view</h1>
-  </template>
-  <!-- Creates the element's prototype and registers it -->
-  <script>
-    Polymer({
-      is: 'ac-mylistitem'
-    });
-  </script>
+  _sizeview: function(){
+          switch(this.sizeview) {
+            case 'phone':
+            // console.log("OOOOOOOOOOOWWKKKEEEEEEEjn wemmenem in OFFER");
+            this.customStyle['--address-size'] = '18px';
+            this.customStyle['--address-lineheight'] = '24px';
+            this.customStyle['--flex-align1'] = 'start';
+            this.customStyle['--flex-align2'] = 'flex-start';
+            this.updateStyles();
+            break;
+            case 'desktop':
+            this.customStyle['--address-size'] = '18px';
+            this.customStyle['--address-lineheight'] = '24px';
+            this.customStyle['--flex-align1'] = 'end';
+            this.customStyle['--flex-align2'] = 'flex-end';
+            this.updateStyles();
+            break;
+            case 'xlarge':
+            this.customStyle['--address-size'] = '18px';
+            this.customStyle['--address-lineheight'] = '24px';
+            this.customStyle['--flex-align1'] = 'end';
+            this.customStyle['--flex-align2'] = 'flex-end';
+            this.updateStyles();
+            break;
+            default:
+            //console.log('!!! ** Niks');
+          }
+        },
+
+
+});
+</script>
 </dom-module>

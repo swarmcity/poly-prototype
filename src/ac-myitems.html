@@ -1,22 +1,318 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/ac-button/ac-button.html">
+<link rel="import" href="../bower_components/ac-loader/ac-loader.html">
+<link rel="import" href="../bower_components/ac-style/ac-style.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<script src="../bower_components/underscore/underscore.js"></script>
+<link rel="import" href="./ac-mylistitem.html">
+<link rel="import" href="./ac-wallet.html">
+<link rel="import" href="./ac-helpers.html">
 
 <dom-module id="ac-myitems">
   <!-- Defines the element's style and local DOM -->
   <template>
     <style>
-      :host {
-        display: block;
+    /*  GENERAL STUFF  */
+    :host {
+      display: block;
+      height: 100%;
 
-        padding: 16px;
+      --toppart-height: 14vh;
+      --toppart-padding: 10px 20px 10px 20px;
+      --container-height: 86vh;
+      --container-padding: 5vh 20px 0px 20px;
+
+      --avatar-size: 40px;
+
+    }
+
+      h1 {
+        @apply(--ac-font-h1);
       }
-    </style>
 
-    <h1>New view</h1>
-  </template>
+      h2 {
+        @apply(--ac-font-h2);
+      }
+
+      h3 {
+        @apply(--ac-font-h3);
+      }
+
+      p {
+        @apply(--ac-font-body1);
+      }
+
+      li {
+        @apply(--ac-font-body1);
+      }
+
+      .flex {
+        @apply(--layout-flex);
+      }
+
+      .absolutepos {
+        position: absolute;
+      }
+
+
+      .toppart {
+        width: 100%;
+        height: var(--toppart-height);
+        z-index: 2;
+        @apply(--base-structure);
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+        box-sizing: border-box;
+        padding: var(--toppart-padding);
+      }
+
+      .bottompart {
+        width: 100%;
+        height: 120px;
+        z-index: 4;
+        background-color: transparent;
+        @apply(--layout-horizontal);
+        @apply(--layout-start);
+        @apply(--layout-end-justified);
+        position: fixed;
+        bottom: 0px;
+        right: 0px;
+        box-sizing: border-box;
+        padding: 0px 40px 0px 0px;
+      }
+
+
+
+
+
+    /*  SPECIFIC STUFF  */
+
+      .main {
+        width: 100%;
+        height: var(--container-height);
+        @apply(--base-structure);
+        overflow-y: scroll;
+      }
+
+      .container {
+        width: 100%;
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+        @apply(--layout-start-justified);
+        box-sizing: border-box;
+        padding: var(--container-padding);
+      }
+
+
+
+      /*  toppart  */
+
+      .userinfo {
+        width: 100%;
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        box-sizing: border-box;
+      }
+
+      .avatar {
+        width: var(--avatar-size);
+        height: var(--avatar-size);
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: transparent;
+      }
+
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+
+      .username {
+        margin: 0px 0px 0px 15px;
+        @apply(--montserrat-reg);
+        color:var(--ac-blue);
+        font-size: 20px;
+      }
+
+      .leftbtn {
+        margin: 0px 10px 0px 0px;
+      }
+
+/*      .viewswitch {
+        border-bottom: 1px dashed var(--ac-yellow);
+        margin: 0px 10px 0px 0px;
+        box-sizing: border-box;
+        padding: 2px 0px 2px 0px;
+      }
+
+      .viewswitch:hover {
+        cursor: pointer;
+      }
+
+      .viewswitch p {
+        @apply(--montserrat-reg);
+        color: var(--ac-yellow);
+        font-size: 12px;
+      }
+*/
+
+
+
+
+
+      /*    */
+
+      ac-listitem {
+        max-width: 900px;
+        @apply(--base-shadow);
+        margin-bottom: 10px;
+      }
+
+
+
+
+
+
+    </style>
+    <ac-helpers id="helpers"></ac-helpers>
+
+    <div class="toppart">
+      <ac-profile viewstate="smallview"></ac-profile>
+      <span class="flex"></span>
+      <!-- <div class="viewswitch" on-tap="toList"><p>listview</p></div> -->
+      <ac-button icon="ac-location" bg="base" txtcolor="yellow" on-tap="toMap" class="leftbtn" small></ac-button>
+      <ac-button icon="ac-filter" bg="yellow" txtcolor="base" on-tap="toFilter" small></ac-button>
+    </div>
+    </div>
+
+
+    <div class="main">
+      <div class="container">
+        <!-- <div class="alloffers"> -->
+          <template is="dom-repeat" items="[[blockdata]]" sort="sortblockdata" filter="filter">
+            <ac-mylistitem data="[[item]]" sizeview="{{sizeview}}"></ac-mylistitem>
+          </template>
+        <!-- </div> -->
+      </div>
+    </div>
+
+    <div class="bottompart">
+      <ac-button on-tap="newOffer" icon="ac-plus" bg="red" txtcolor="white"></ac-button>
+    </div>
+
+    <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
+
+    <ac-wallet account="{{account}}"></ac-wallet>
+</template>
   <!-- Creates the element's prototype and registers it -->
   <script>
     Polymer({
-      is: 'ac-myitems'
+      is: 'ac-myitems',
+      properties: {
+          blockdata: {
+            type: Array
+          },
+          sizeview: {
+            type: String,
+            observer: '_sizeview'
+          }
+
+      },
+
+      sortblockdata: function(a, b) {
+        return b.timestamp - a.timestamp;
+      },
+
+      filter: function(a) {
+        if(a.creator == this.$.helpers.fixaddress(this.account) || a.claimer == this.$.helpers.fixaddress(this.account)){
+          return a;
+        }
+
+      },
+//  observers: [
+//      'niks(blockdata.splices)'
+//    ],
+
+//  niks: function(changeRecord){
+//    console.log('NIKS',changeRecord.indexSplices[0].object);
+// //   //debugger;
+//  },
+  //  observers: [
+  //   'blockdatachanged(blockdata.splices)'
+  // ],
+
+  // blockdatachanged: function(changeRecord) {
+  //   debugger;
+  //   if (changeRecord) {
+  //     changeRecord.indexSplices.forEach(function(s) {
+  //       s.removed.forEach(function(user) {
+  //         console.log(user.name + ' was removed');
+  //       });
+  //       for (var i=0; i<s.addedCount; i++) {
+  //         var index = s.index + i;
+  //         var newUser = s.object[index];
+  //         console.log('User ' + newUser.name + ' added at index ' + index);
+  //       }
+  //     }, this);
+  //   }
+  // },
+
+
+
+      offerSort: function compare(a, b) {
+        return a.timestamp > b.timestamp;
+      },
+
+      newOffer: function() {
+        app.set('route.path', '/newoffer/');
+      },
+
+      toMap: function() {
+        app.set('route.path', '/map/');
+      },
+
+      toFilter: function() {
+        this.fire('to-filter');
+      },
+
+
+      _sizeview: function(){
+        switch(this.sizeview) {
+          case 'phone':
+            this.customStyle['--toppart-height'] = '15vh';
+            this.customStyle['--toppart-padding'] = '10px 20px 10px 20px';
+            this.customStyle['--container-height'] = '85vh';
+            this.customStyle['--container-padding'] = '10px 22px 5vh 22px';
+
+            this.customStyle['--avatar-size'] = '45px';
+
+            this.updateStyles();
+          break;
+          case 'desktop':
+            this.customStyle['--toppart-height'] = '14vh';
+            this.customStyle['--toppart-padding'] = '10px 20px 10px 26px';
+            this.customStyle['--container-height'] = '86vh';
+            this.customStyle['--container-padding'] = '5vh 22px 5vh 22px';
+
+            this.customStyle['--avatar-size'] = '50px';
+
+            this.updateStyles();
+          break;
+          case 'xlarge':
+            this.customStyle['--toppart-height'] = '14vh';
+            this.customStyle['--toppart-padding'] = '10px 40px 10px 40px';
+            this.customStyle['--container-height'] = '86vh';
+            this.customStyle['--container-padding'] = '5vh 44px 5vh 44px';
+
+            this.customStyle['--avatar-size'] = '60px';
+
+            this.updateStyles();
+          break;
+          default:
+          console.log('!!! ** Niks');
+        }
+      }
     });
   </script>
 </dom-module>

@@ -1,0 +1,48 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/ac-loader/ac-loader.html">
+
+<dom-module id="ac-spinner">
+  <!-- Defines the element's style and local DOM -->
+  <template>
+    <style>
+      :host {
+        display: block;
+        height: 100vw;
+      }
+
+      .spinner {
+    width: 100vw;
+    height: 100vh;
+    @apply(--base-structure);
+    /*background-color: var(--ac-yellow);*/
+    @apply(--layout-horizontal);
+    @apply(--layout-center-center);
+    box-sizing: border-box;
+    padding: 20vw;
+  }
+  .spinner h1 {
+    color: var(--ac-yellow);
+/*    font-size: 22px;
+    line-height: 28px;*/
+    text-align: center;
+  }
+  .spinnerdiv {
+    width: 100vw;
+    height: 100vh;
+    @apply(--layout-vertical);
+    @apply(--layout-center-center);
+    background-color: var(--ac-darkgrey);
+  }
+    </style>
+
+    <div class="spinner" hidden="{{routingprocess}}">
+      <ac-loader small></ac-loader>
+    </div>
+  </template>
+  <!-- Creates the element's prototype and registers it -->
+  <script>
+    Polymer({
+      is: 'ac-spinner'
+    });
+  </script>
+</dom-module>
