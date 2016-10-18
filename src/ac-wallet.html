@@ -75,7 +75,8 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
         },
         web3: {
           type: Object,
-          observer: '_web3'
+          observer: '_web3',
+          notify: true
         }
       },
 
@@ -85,7 +86,7 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
 
       _web3: function() {
         this._getARCbalance();
-        this.fire('map-update');
+        //this.fire('map-update');
       },
 
       _password: function() {

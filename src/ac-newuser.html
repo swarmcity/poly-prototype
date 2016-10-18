@@ -276,6 +276,7 @@
   }
 
     </style>
+
     <neon-animated-pages attr-for-selected="state" selected="{{state}}" entry-animation="slide-from-right-animation" exit-animation="slide-left-animation">
       <neon-animatable state="0">
 
@@ -372,6 +373,24 @@
         if(this.password && this.password===this.password1){
           this.passcheck = false;
         }
+      },
+
+      donate: function() {
+        var self = this;
+
+        self.$.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
+          console.log('send some ARC to ', self.$.helpers.fixaddress(self.account));
+          var url = 'https://eth.arcadecity.world:3000/donate/' + self.$.helpers.fixaddress(self.account) + '/' + arccontractjson.address;
+          console.log('tapping from faucet',url);
+          self.$.donaterequest.send({
+            url: url
+          }).then(function() {
+            console.log('donation requested');
+            console.log('check balance at ',self.etherscanroot + '/token/'+arccontractjson.address+'?a='+self.$.helpers.fixaddress(self.account));
+//            var btn = document.querySelector('#donatebtn');
+//            btn.hidden = true;
+          });
+        });
       },
 
       restart: function(){
