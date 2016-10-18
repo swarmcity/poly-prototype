@@ -80,7 +80,7 @@
 </template> -->
 
 
- 
+
 
          <iron-pages
             selected="[[page]]"
@@ -91,13 +91,13 @@
             <ac-newuser name="newuser"></ac-newuser>
             <ac-password name="password"></ac-password>
 
-            <ac-map name="map" blockdata="{{blockdata}}" latitude="{{latitude}}" longitude="{{longitude}}" restamp on-to-filter="firetoggle"></ac-map>
-             <ac-list name="list" restamp blockdata="[[blockdata]]" on-to-filter="firetoggle"></ac-list> 
+            <ac-map name="map" blockdata="[[blockdata]]" latitude="{{latitude}}" longitude="{{longitude}}" restamp on-to-filter="firetoggle"></ac-map>
+             <ac-list name="list" restamp blockdata="[[blockdata]]" on-to-filter="firetoggle"></ac-list>
 
-            <ac-detail name="detail" id="detail" blockdata="{{blockdata}}" key="[[subrouteData.key]]" restamp></ac-detail>
+            <ac-detail name="detail" id="detail" blockdata="[[blockdata]]" key="[[subrouteData.key]]" restamp></ac-detail>
 
-            <ac-myitems name="myitems" blockdata="{{blockdata}}" restamp></ac-myitems>
-            <ac-myitem name="myitem" blockdata="{{blockdata}}" key="[[key]]" restamp></ac-myitem>
+            <ac-myitems name="myitems" blockdata="[[blockdata]]" restamp></ac-myitems>
+            <ac-myitem name="myitem" blockdata="[[blockdata]]" key="[[key]]" restamp></ac-myitem>
 
             <ac-newoffer latitude="{{latitude}}" longitude="{{longitude}}" name="newoffer" restamp></ac-newoffer>
 
@@ -107,7 +107,7 @@
             <ac-settings name="settings" restamp></ac-settings>
 
             <ac-view404 name="view404" restamp></ac-view404>
- 
+
 <!--             <ac-locationpicker name="locationpicker" sizeview="{{sizeview}}" restamp></ac-locationpicker>
  -->
        </iron-pages>
@@ -115,7 +115,7 @@
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
 
     <ac-transact on-txhash="" on-mined="" on-error="" id="transact"></ac-transact>
-   
+
 
 </app-drawer-layout>
     <!-- location tracker -->
@@ -158,9 +158,13 @@
       ],
 
       attached: function() {
+
+        this.fire('map-update');
+
         if(localStorage.getItem("ac-user")){
           if(sessionStorage.getItem("ac-password", this.password)){
             app.set('route.path', localStorage.getItem('ac-lastroute'));
+            this.fire('map-update');
           } else {
             app.set('route.path', '/password/');
           }
@@ -179,6 +183,7 @@
 
       _routePageChanged: function(page) {
         this.page = page || 'map';
+        this.fire('map-update');
       },
 
       _pageChanged: function(page) {
@@ -204,6 +209,7 @@
 
       _route: function() {
         localStorage.setItem('ac-lastroute', this.route.path);
+        this.fire('map-update');
       }
     });
   </script>

@@ -55,24 +55,18 @@
         blockdata: {
           type: Array,
           notify: true
-            // },
-
-        },
-        blockobject: {
-            type: Object,
-
         }
       },
+
       attached: function() {
         console.log('blockdata attached');
-        //        this.password = sessionStorage.getItem('ac-password');
-this.password = sessionStorage.getItem('ac-password');
+        this.password = sessionStorage.getItem('ac-password');
 
-    this.blockobject = {};
-    this.lastblock = 1759875;
-     this.getBlockData();
+        this.blockobject = {};
+        this.blockdata = [];
+        this.lastblock = 1759875;
 
-
+        this.getBlockData();
       },
 
       detached: function() {
@@ -80,7 +74,7 @@ this.password = sessionStorage.getItem('ac-password');
           try {
             this.eventwatcher.stopWatching();
           } catch (e) {
-            console.log('ac-blockdata: error stopWatching', e);
+            //console.log('ac-blockdata: error stopWatching', e);
           }
         }
       },
@@ -96,13 +90,13 @@ this.password = sessionStorage.getItem('ac-password');
       },
 
       loadlastblock: function() {
-        console.log('CACHE: found lastblock in localstorage', this.lastblock);
+        //console.log('CACHE: found lastblock in localstorage', this.lastblock);
         this.getBlockData();
       },
 
       initblockobject: function() {
         //this.blockdata = {};
-        this.blockobject = {};
+        //this.blockobject = {};
         this.getBlockData();
       },
 
@@ -111,90 +105,72 @@ this.password = sessionStorage.getItem('ac-password');
         // for (var i = 0, len = this.blockdata.length; i < len; i++) {
         //   this.updateBlock(blockdata[i]);
         // }
-        console.log('CACHE: found blockdata in localstorage', Object.keys(this.blockobject).length, 'items');
-        this.blockdata = this.object2array(this.blockobject);
+        //console.log('CACHE: found blockdata in localstorage', Object.keys(this.blockobject).length, 'items');
+        //this.blockdata = this.object2array(this.blockobject);
         this.getBlockData();
       },
 
       updateBlock: function(blockJSON) {
+        console.log('updateblock',blockJSON);
         if (!blockJSON || !blockJSON.offerid === undefined) {
           console.log('ignoring invalid block data', blockJSON);
         }
         var block;
         if (!this.blockobject[blockJSON.offerid]) {
-          block = blockJSON;
+          block = {
+            data: blockJSON
+          };
+          this.blockobject[blockJSON.offerid] = block;
         } else {
           block = this.blockobject[blockJSON.offerid];
-          console.log('1 ',block);
           var overwrite = false;
-          if (block.timestamp < blockJSON.timestamp){
+          if (block.data.timestamp < blockJSON.timestamp) {
             overwrite = true;
           }
-          for (var key in blockJSON){
-            if (overwrite == false){
-              if (!block[key]){
-                block[key] = blockJSON[key];
+          for (var key in blockJSON) {
+            if (overwrite == false) {
+              if (!block.data[key]) {
+                block.data[key] = blockJSON[key];
               }
-            }else{
-              block[key] = blockJSON[key];
+            } else {
+              block.data[key] = blockJSON[key];
             }
           }
         }
-        this.blockobject[blockJSON.offerid] = block;
-        console.log('2 ',block);
-        this.blockdata = this.object2array(this.blockobject);
-
-      },
-
-       object2array: function(input){
-
-        var r = [];
-        var keys = Object.keys(input);
-        for (var i=0;i<keys.length;i++){
-          if (input[keys[i]].ipfsdata){
-            r[keys[i]]= input[keys[i]];
-          }
+       
+        // merge this object into the array
+        var aindex = this.blockobject[blockJSON.offerid].arrayindex;
+        if (!aindex && aindex !== 0) {
+            block.arrayindex = this.push('blockdata', block.data) - 1;
+          console.log('adding new block',block.arrayindex);
+            console.log('blockdata length is now ',this.blockdata.length,'arrayindex=',block.arrayindex,'offerid=',blockJSON.offerid);            
+        } else {
+          console.log('updating existing block arrayindex=',aindex,'offerid=',blockJSON.offerid);
+            this.splice('blockdata', aindex, 1, block.data);
         }
-        return r;
 
-  },
-
-
-
-      setFilter: function() {
-        this.fire('newblock');
-        var self = this;
-        var filter = this.web3.eth.filter('latest').watch(function(err, blockHash) {
-          self.fire('newblock');
-          var block = self.web3.eth.getBlock(blockHash);
-          console.log('ac-blockdata --> we\'re now at block',block);
-//          self.block = block;
-        });
       },
 
       getBlockData: function() {
 
 
         // check if all needed data items are in place.
-        if (!this.web3 || !this.blockobject || !this.lastblock) {
-          return;
-        }
-
-        // if already started - then just skip ( avoid listening twice to BC)
-        if (this.getblockdata === true) {
+        if (!this.web3 || !this.blockobject || !this.lastblock || this.getblockdata) {
           return;
         }
 
         this.getblockdata = true;
-        console.log('Starting getBlockData at block', this.lastblock, '(', this.web3.eth.blockNumber - this.lastblock,'blocks behind)');
+        //console.log('Starting getBlockData at block', this.lastblock, '(', this.web3.eth.blockNumber - this.lastblock,'blocks behind)');
 
         var self = this;
 
         app.helpers.getfile('/src/contracts/localsInOut.json', function(err, inoutcontractjson) {
-          console.log('<<<<< ', inoutcontractjson.address);
+          //console.log('<<<<< ', inoutcontractjson.address);
           var MyContract = self.web3.eth.contract(inoutcontractjson.abi);
           var myContractInstance = MyContract.at(inoutcontractjson.address);
 
+
+          console.log('start-filter');
           self.eventwatcher = myContractInstance.allEvents({
             fromBlock: self.lastblock,
           });
@@ -202,12 +178,14 @@ this.password = sessionStorage.getItem('ac-password');
 
           self.eventwatcher.watch(function(error, result) {
             if (error) {
-              console.error('ac-blockdata: ', error);
+              //console.error('ac-blockdata: ', error);
               return;
             }
             var event = result;
 
-            console.log('ac-blockdata --> received event ',self.web3.eth.blockNumber - event.blockNumber,'blocks back');
+
+            var oid = event.args.offerID.toNumber();
+            console.log('ac-blockdata --> received event ',event.event,oid);
             //              console.log(result.event, event.timestamp);
             // if (event.blockNumber < self.lastblock) {
             //   debugger;
@@ -220,10 +198,11 @@ this.password = sessionStorage.getItem('ac-password');
 
                   var ipfsdata = JSON.parse(data);
                   // resolve avatar URL
-                  if (ipfsdata && ipfsdata.userdata && ipfsdata.userdata.avatar){
+                  if (ipfsdata && ipfsdata.userdata && ipfsdata.userdata.avatar) {
                     ipfsdata.userdata.avatarurl = self.$.ipfs.geturl(ipfsdata.userdata.avatar);
                   }
 
+                  console.log('GOT IPFS'),
                   self.updateBlock({
                     escrowaddress: event.args.escrowaddress,
                     offerid: event.args.offerID.toNumber(),

@@ -158,6 +158,7 @@
     <leaflet-map
       id="leafletmap"
       draggable
+      on-map-ready="mapready"
       latitude="{{latitude}}"
       longitude="{{longitude}}"
       no-Zoom-Control="true"
@@ -184,7 +185,7 @@
       <ac-button on-tap="newOffer" icon="ac-plus" bg="red" txtcolor="white"></ac-button>
     </div>
 
-    <ac-blockdata name="blockdata" blockdata="{{blockdata}}"></ac-blockdata>
+    <!-- <ac-blockdata name="blockdata" blockdata="{{blockdata}}"></ac-blockdata> -->
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
 
   </template>
@@ -219,6 +220,27 @@
 
       attached: function() {
         this.locationunknown = true;
+        this.fire('mapp-ready');
+
+        console.log('map attached');
+
+        this.addEventListener('map-ready', function() {
+          console.log('map ready ac map');
+        }.bind(this));
+
+        document.addEventListener('map-update', function() {
+          this.$.leafletmap.map.invalidateSize();
+        }.bind(this));
+      },
+
+      mapready: function() {
+        console.log('map ready ac map');
+        window.setTimeout(this.leafletfix, 5000);
+      },
+
+      leafletfix: function() {
+        var mapp = document.querySelector('#leafletmap').map;
+        mapp.invalidateSize();
       },
 
       _blockdata: function() {
@@ -257,6 +279,7 @@
 
       locationfound: function() {
         this.locationunknown = false;
+        this.$.leafletmap.map.invalidateSize();
         // this.$.spinner.hidden = true;
          //console.log('location found: ', this.locationunknown);
         // this.$.leafletmap.hidden = false;
