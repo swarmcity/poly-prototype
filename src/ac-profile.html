@@ -9,15 +9,14 @@
 <link rel="import" href="./ac-helpers.html">
 <link rel="import" href="./ac-config.html">
 
-
 <dom-module id="ac-profile">
   <!-- Defines the element's style and local DOM -->
   <template>
     <style>
       :host {
         display: block;
-        --toppart-height: 15vh;
-        --toppart-padding: 10px 20px 10px 20px;
+        /*--toppart-height: 15vh;
+        --toppart-padding: 10px 20px 10px 20px;*/
         --container-height: 85vh;
         --avatar-size: 40px;
         --flex-align1:end;
@@ -39,7 +38,6 @@
       }
 
       .userinfosmall {
-        margin-top: -50px;
         width: 100%;
         @apply(--layout-horizontal);
         @apply(--layout-center);
@@ -93,7 +91,7 @@
 
       .main {
         overflow-y: scroll;
-        height: 88vh;
+        height: 100vh;
         width: 100%;
         @apply(--base-structure);
 
@@ -169,17 +167,17 @@
           margin: 0px 2px 0px 2px;
         }
 
+        ac-wallet {
+          display: none;
+        }
+
     </style>
     <ac-helpers id="helpers"></ac-helpers>
     <ac-config etherscanroot="{{etherscanroot}}"></ac-config>
     <iron-request id="donaterequest"></iron-request>
-    
-    <template is="dom-if" if="{{accountlocked}}">
-      <p>Account locked</p>
-    </template>
 
     <template is="dom-if" if="{{!accountlocked}}">
-      <ac-wallet id="acwallet" balance="{{balance}}" arcbalance="{{arcbalance}}"></ac-wallet>
+
       <!-- no profile view -->
       <template is="dom-if" if="{{_is(viewstate, 'none')}}">
       </template>
@@ -213,13 +211,12 @@
             <h2>{{account}}</h2>
             <div class="offeramount">
               <h1>{{arcbalance}}</h1>
-              <p>
-                ARC
-              </p>
+              <p>ARC</p>
             </div>
             <!-- <p>ETH Balance: {{balance}}</p> -->
-            <ac-button on-tap="donate" txtbtn bg="red" txtcolor="base" small>Give me test-ARC</ac-button>
-
+            <template is="dom-if" if="{{donateview}}">
+              <ac-button on-tap="donate" txtbtn bg="red" txtcolor="base" small>Give me test-ARC</ac-button>
+            </template>
 
           <!-- <ac-button on-tap="toEdit" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button> -->
         </div>
@@ -270,7 +267,7 @@
     </iron-localstorage>
 
     <ac-ipfs id="ipfs" ipfs="{{ipfs}}"></ac-ipfs>
-
+    <ac-wallet id="acwallet" balance="{{balance}}" arcbalance="{{arcbalance}}"></ac-wallet>
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>
@@ -303,10 +300,16 @@
         account: {
           type: String,
           notify: true
+        },
+        arcbalance: {
+          type: Number,
+          observer: '_arcbalance'
         }
+
       },
 
       attached: function() {
+        this.donateview = false;
         this.accountlocked = true;
         this.password = sessionStorage.getItem('ac-password');
 
@@ -325,6 +328,12 @@
 
       viewstatehome: function() {
         this.viewstate = 'overview';
+      },
+
+      _arcbalance: function() {
+        if(this.arcbalance < 1){
+          this.donateview = true;
+        }
       },
 
       donate: function() {

@@ -14,27 +14,29 @@
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="./ac-sizeview.html">
-<link rel="import" href="./ac-locationpicker.html">
-<link rel="import" href="./ac-locationtracker.html">
-<link rel="import" href="./ac-profile.html">
-<link rel="import" href="./ac-list.html">
-<link rel="import" href="./ac-myitem.html">
-<link rel="import" href="./ac-myitems.html">
-<link rel="import" href="./ac-newuser.html">
-<link rel="import" href="./ac-map.html">
-<link rel="import" href="./ac-detail.html">
-<link rel="import" href="./ac-ipfsupload.html">
-<link rel="import" href="./ac-wallet.html">
-<link rel="import" href="./ac-settings.html">
-<link rel="import" href="./ac-view404.html">
+<!-- <link rel="import" href="./ac-locationpicker.html"> -->
+<!-- <link rel="import" href="./ac-locationtracker.html"> -->
+<!-- <link rel="import" href="./ac-profile.html"> -->
+<!-- <link rel="import" href="./ac-list.html"> -->
+<!-- <link rel="import" href="./ac-myitem.html"> -->
+<!-- <link rel="import" href="./ac-myitems.html"> -->
+<!-- <link rel="import" href="./ac-newuser.html"> -->
+<!-- <link rel="import" href="./ac-map.html"> -->
+<!-- <link rel="import" href="./ac-detail.html"> -->
+<!-- <link rel="import" href="./ac-ipfsupload.html"> -->
+<!-- <link rel="import" href="./ac-wallet.html"> -->
+<!-- <link rel="import" href="./ac-settings.html"> -->
+<!-- <link rel="import" href="./ac-view404.html"> -->
 <link rel="import" href="./ac-transact.html">
-<link rel="import" href="./ac-password.html">
+<!-- <link rel="import" href="./ac-password.html"> -->
+<!-- <link rel="import" href="./ac-spinner.html"> -->
 
 <dom-module id="ac-app">
   <template>
     <style>
       :host {
       --app-drawer-width: 290px;
+      @apply(--base-structure);
       }
 
       #drawer {
@@ -50,6 +52,7 @@
 
 
     </style>
+
 <app-drawer-layout force-narrow>
   <app-drawer align="right" id="drawer">
     <div class="drawercontent">
@@ -88,6 +91,8 @@
             fallback-selection="view404"
             role="main">
 
+
+
             <ac-newuser name="newuser"></ac-newuser>
             <ac-password name="password"></ac-password>
 
@@ -108,29 +113,13 @@
 
             <ac-view404 name="view404" restamp></ac-view404>
 
-<!--             <ac-locationpicker name="locationpicker" sizeview="{{sizeview}}" restamp></ac-locationpicker>
- -->
        </iron-pages>
 
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
 
     <ac-transact on-txhash="" on-mined="" on-error="" id="transact"></ac-transact>
 
-
 </app-drawer-layout>
-    <!-- location tracker -->
-    <!-- <template is="dom-if" if="{{online}}" restamp>
-      <ac-password name="password"></ac-password>
-      <ac-locationtracker
-        id="locationtracker"
-        online="{{online}}"
-        on-location-changed="locationchanged"
-      ></ac-locationtracker>
-    </template> -->
-
-
-
-
 
   </template>
 
@@ -159,31 +148,9 @@
       ],
 
       attached: function() {
-
         window.app = this;
-
         this.fire('map-update');
-
         app.set('route.path', '/map');
-
-        // if(localStorage.getItem("ac-user")){
-        //   if(sessionStorage.getItem("ac-password", this.password)){
-        //     app.set('route.path', localStorage.getItem('ac-lastroute'));
-        //     this.fire('map-update');
-        //   } else {
-        //     app.set('route.path', '/password/');
-        //   }
-        // } else {
-        //   app.set('route.path', '/newuser/');
-        // }
-
-        // debug code - remove me..
-        // var self= this;
-        // setInterval(function(){
-        //   console.log('setting online to true');
-        //   self.online = !self.online;
-        // },15*1000);
-
       },
 
       _routePageChanged: function(page) {

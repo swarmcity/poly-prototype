@@ -10,6 +10,7 @@
 <link rel="import" href="../bower_components/ac-input/ac-input.html">
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
+<link rel="import" href="./ac-spinner.html">
 
 <script src="../bower_components/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
 
@@ -204,6 +205,12 @@
 
   }
 
+  ac-spinner {
+    width: 100vw;
+    height: 100vh;
+    z-index: 5;
+  }
+
       .grey {
         background-color: var(--ac-grey1);
       }
@@ -381,17 +388,19 @@
     <template id="zerotemp" is="dom-if" if="{{_is(offerview, 'zero')}}"></template>
 
     <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'first')}}">
-      <div class="container">
+      <ac-spinner hidden$="{{locationbound}}"></ac-spinner>
+      <div class="container" hidden$="{{!locationbound}}">
 
-      <!-- <div hidden="{{locationbound}}" class="spinnerdiv">
-        <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
-      </div> -->
-
-        <ac-locationpicker latitude="{{latitude}}" longitude="{{longitude}}" locationbound="{{locationbound}}" current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}" displayaddress="{{displayaddress}}" on-dragend="checkfrom"></ac-locationpicker>
+        <ac-locationpicker
+          locationbound="{{locationbound}}"
+          current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}"
+          on-address-found="fromaddressfound">
+        </ac-locationpicker>
 
         <div class="fixedplace">
           <p>From</p>
-          <h1>{{displayaddress}}</h1>
+          <!-- <h1>{{fromdisplay}}</h1> -->
+          <h1>testing <span>{{fromdisplay}}</span></h1>
         </div>
 
         <div class="confirmbtns">
@@ -404,7 +413,7 @@
 
       <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'second')}}">
         <div class="container">
-        <ac-locationpicker latitude="{{latitude}}" longitude="{{longitude}}" current-geo="{{tolatlon}}" resolved-address="{{toaddress}}"></ac-locationpicker>
+        <!-- <ac-locationpicker current-geo="{{tolatlon}}" resolved-address="{{toaddress}}"></ac-locationpicker> -->
 
         <div class="fixedplace">
           <p>To</p>
@@ -504,8 +513,11 @@ Polymer({
       type: Array,
       value: []
     },
-    displayaddress: {
-      type: String
+    fromlatlon: {
+      observer: '_fromaddress'
+    },
+    fromaddress: {
+      type: Object
     }
   },
 
@@ -517,8 +529,16 @@ Polymer({
     app.set('route.path', '/myitems/');
   },
 
-  checkfrom: function() {
-    console.log(this.displayaddress);
+  _fromaddress: function() {
+    //this.fromdisplay = this.fromaddress.display_address;
+    //console.log(this.fromdisplay);
+  },
+
+  fromaddressfound: function(e) {
+    console.log(JSON.parse(e.detail));
+    var parsed = JSON.parse(e.detail);
+    this.fromdisplay = parsed.place_id;
+    //this.fromdisplay = 'hallo '+ Date.now();
   },
 
   attached: function() {
@@ -526,6 +546,7 @@ Polymer({
     console.log('given lon',this.longitude);
     this.offerview = 'first';
     this.routingprocess = false;
+    this.fromdisplay = '123';
   },
 
   toSecond: function() {
