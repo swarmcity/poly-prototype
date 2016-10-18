@@ -23,25 +23,22 @@
     "neon-elements": "PolymerElements/neon-elements#^1.0.0",
     "leaflet-map": "^1.2.0",
     "geo-location": "^1.0.6",
-    "jsencrypt": "^2.2.0",
+    "jsencrypt": "^2.3.0",
     "node-uuid": "^1.4.7",
     "web3-wallet": "https://github.com/BlockTube/web3-wallet.git",
-    "ipfs-upload": "https://github.com/sponnet/ipfs-upload.git#^0.0.26",
     "ac-style": "https://github.com/ArcadeCity/ac-style.git",
     "ac-button": "https://github.com/ArcadeCity/ac-button.git",
     "ac-loader": "https://github.com/ArcadeCity/ac-loader.git",
     "ac-input": "https://github.com/ArcadeCity/ac-input.git",
     "moment-js": "^0.4.1",
     "iron-ajax": "PolymerElements/iron-ajax#^1.4.3",
-    "locals-whisperer": "https://github.com/locals-world/locals-whisperer.git",
-    "iron-collapse": "^1.2.1"
+    "iron-collapse": "^1.2.1",
+    "cryptojslib": "^3.1.2"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
   },
   "resolutions": {
-    "web3-wallet": "^0.0.13",
-    "ipfs-upload": "^0.0.26",
     "polymer": "^1.6.0"
   }
 }

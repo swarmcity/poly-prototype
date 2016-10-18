@@ -13,10 +13,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/ac-input/ac-input.html">
 <link rel="import" href="../bower_components/ac-button/ac-button.html">
 <link rel="import" href="../bower_components/ac-icon/ac-icon.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="./ac-helpers.html">
 <link rel="import" href="./ac-sizeview.html">
-<link rel="import" href="../bower_components/locals-whisperer/locals-whisperer.html">
-<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="./ac-whisperer.html">
 <link rel="import" href="./ac-config.html">
 
 
@@ -228,13 +228,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
     <ac-config web3host="{{web3host}}" ipfs="{{ipfs}}" etherscanroot="{{etherscanroot}}"></ac-config>
 
-    <locals-whisperer
+    <ac-whisperer
     web3="{{web3}}"
     topic="{{topic}}"
     progress="{{progress}}"
     decimals="5"
     on-message-received="handlewhispermessage"
-    id="whisper"></locals-whisperer>
+    id="whisper"></ac-whisperer>
 
     <div class="total">
       <div class="totalpart">

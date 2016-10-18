@@ -1,0 +1,388 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<script type="text/javascript" src="../bower_components/jsencrypt/bin/jsencrypt.min.js"></script>
+<script type="text/javascript" src="../bower_components/cryptojslib/rollups/aes.js"></script>
+
+<!--
+Whisper listener component
+
+Example:
+
+    <ac-whisperer></ac-whisperer>
+
+@element ac-whisperer
+@demo demo/index.html
+-->
+<dom-module id="ac-whisperer">
+  <template>  
+  </template>
+</dom-module>
+
+<script>
+Polymer({
+
+  is: 'ac-whisperer',
+
+  properties: {
+
+    web3: {
+      type: Object,
+      observer: '_web3'
+    },
+    // the current topic we're listening to
+    topic: {
+      type: Number,
+      observer: '_topic',
+      value: null,
+      notify: true
+    },
+    // progress is a value between 0 and 100 denoting how much time until next topic will be generated
+    // 0 = period start ; 100 = period is over
+    progress: {
+      type: Number,
+      notify: true
+    },
+
+    // How many decimals should the topic have ( min 2 )
+    decimals: {
+      type: Number,
+      value: 5
+    },
+
+    identity: {
+      type: String,
+      notify: true
+    },
+
+  },
+
+  // Element Lifecycle
+
+  ready: function() {
+    // `ready` is called after all elements have been configured, but
+    // propagates bottom-up. This element's children are ready, but parents
+    // are not.
+    //
+    // This is the point where you should make modifications to the DOM (when
+    // necessary), or kick off any processes the element wants to perform.
+    this.mode = 'view';
+    this.timerval = 0;
+    this.holding = false;
+
+    this.localchannels = {};
+    this.remotechannels = {};
+
+    setInterval(this.timer.bind(this), 1000);
+
+  },
+
+
+
+  _getpincode: function(decimals) {
+
+    if (decimals < 2) {
+      decimals = 2;
+    }
+
+    var chars = "0123456789";
+    var randomstring = '';
+
+    for (var i = 0; i < decimals; i++) {
+      var rnum = Math.floor(Math.random() * chars.length);
+      randomstring += chars.substring(rnum, rnum + 1);
+    }
+    return randomstring;
+  },
+
+  // Triggering this function holds on to the current value for 5 minutes.
+  hold: function() {
+    if (!this.holding) {
+      this.holding = true;
+      this.timerval -= 5 * 60;
+    }
+  },
+
+  timer: function() {
+    if (this.topic == null) {
+      this.topic = this._getpincode(this.decimals);
+    }
+    this.timerval++;
+
+    if (this.timerval < 0) {
+      this.progress = 0;
+    } else {
+      this.progress = Math.floor(this.timerval / 60 * 100);
+    }
+
+    if (this.timerval >= 5 * 60) {
+      this.topic = this._getpincode(this.decimals);
+      this.timerval = 0;
+    }
+  },
+
+  openchannel: function() {
+    var _pin = this._getpincode(20);
+
+    if (this.web3 && this.topic) {
+
+      this.localchannels[_pin] = {
+        filter: this.web3.shh.filter({
+          "topics": [this.web3.fromAscii(_pin)],
+        }),
+        status: 'handshake'
+      };
+
+      console.log("ac-whisperer: channelswitch, creating channel ", _pin);
+
+      this.localchannels[_pin].filter.watch(function(error, result) {
+        if (!error) {
+          var payload = JSON.parse(this.web3.toAscii(result.payload));
+          this.fire('msg-received', {
+            topic: payload.topic,
+            payload: JSON.parse(payload.input)
+          });
+        }else{
+          console.log('error watching',error);
+        }
+      }.bind(this));
+
+      return _pin;
+    } else {
+      return;
+    }
+  },
+
+  closechannel: function(_pin){
+    if (this.localchannels[_pin]){
+       this.localchannels[_pin].filter.stopWatching();
+    }
+  },
+
+  attached: function() {
+
+  },
+
+  detached: function() {
+    this.stopfilter();
+  },
+
+  stopfilter: function() {
+    if (this.filter) {
+      console.log('ac-whisperer: stop watching current channel')
+      this.filter.stopWatching();
+    }
+  },
+
+  // Element Behavior
+
+  _is: function(a, b) {
+    if (b === undefined) {
+      b = true;
+    }
+    return a === b;
+  },
+
+  _web3: function() {
+    var self = this;
+    console.log('web3 started');
+  },
+
+  _topic: function() {
+    var self = this;
+
+    if (this.web3 && this.topic) {
+
+      this.stopfilter();
+
+      var topic = this.topic.toString();
+      this.filter = this.web3.shh.filter({
+        "topics": [this.web3.fromAscii(topic)],
+      });
+
+      console.log("ac-whisperer: channelswitch, start listening to", this.topic);
+
+      this.filter.watch(this._processmessage.bind(this));
+    }
+  },
+
+  // processinging of channel setup messages.
+  _processmessage: function(error, result) {
+
+      var self = this;
+        if (!error) {
+          var payload = JSON.parse(self.web3.toAscii(result.payload));
+
+          switch (payload.command) {
+
+            case 'requestaes':
+
+              // Create and encrypt an AES key
+              var crypt = new JSEncrypt({
+                default_key_size: 512
+              });
+              crypt.setPublicKey(payload.pubkey);
+
+              var aeskey = self._generateKey(50);
+              console.log('myAES=',aeskey);
+
+              var encryptedkey = crypt.encrypt(aeskey);
+              console.log('myAES encrypted=',encryptedkey);                    
+
+              // create a new channel
+              var datatopic = this._getpincode(10);
+              this.localchannels[datatopic] = {
+                aes: aeskey
+              };
+
+              this.localchannels[datatopic].filter = this.web3.shh.filter({
+                "topics": [this.web3.fromAscii(datatopic)],
+              });
+              self.localchannels[datatopic].filter.watch(this._processmessage.bind(this));
+           
+              this.remotechannels[payload.from] = {
+                aes: aeskey
+              };
+
+              self.raw_whisperpost(payload.from, {
+                command: 'aes',
+                encryptedaes: encryptedkey,
+                from: datatopic,
+                to : payload.from
+              });
+
+              break;
+           case 'aes':
+              console.log('encrypted AES recieved',payload.encryptedaes);
+              var hisAES = self.localchannels[payload.to].crypt.decrypt(payload.encryptedaes);
+              console.log('decrypted AES',hisAES);
+              self.remotechannels[payload.from]= {
+                aes : hisAES
+              };
+              self.localchannels[payload.to].aes = hisAES;
+              // self.localchannels[payload.to].from = payload.from;
+              this.encryptandsend(payload.to,payload.from,self.localchannels[payload.to].messagequeue[0]);
+              // now send the queue
+              break;
+            case 'message':
+              console.log('encrypted message recieved from ',payload.from,payload.msg);
+              easKey = this.remotechannels[payload.from].aes;
+              var decryptedmsg = CryptoJS.AES.decrypt(payload.msg,easKey).toString(CryptoJS.enc.Utf8);
+              console.log('decrypted message:',decryptedmsg);
+
+              // save recepient
+              this.remotechannels[payload.from].to = payload.to;
+
+              self.fire('message-received', {
+                from: payload.from,
+                message: decryptedmsg
+              });
+          }
+
+        }
+      },
+
+  _generateKey: function(keyLength) {
+    var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz*&-%/!?*+=()";
+    var randomstring = '';
+
+    for (var i = 0; i < keyLength; i++) {
+      var rnum = Math.floor(Math.random() * chars.length);
+      randomstring += chars.substring(rnum, rnum + 1);
+    }
+    return randomstring;
+  },
+
+  _web3: function() {
+    var self = this;
+    console.log('web3 started');
+  },
+
+  whisperpost: function(topic, input) {
+
+    topic = topic.toString();
+
+    if (!this.remotechannels[topic] || !this.remotechannels[topic].aes ){
+      // Create a secure tunnel
+
+      var c = new JSEncrypt({
+        default_key_size: 512
+      });
+
+      var datatopic = this._getpincode(30);
+      this.localchannels[datatopic] = {
+        crypt: c,
+        messagequeue: [input]
+      };
+
+      this.localchannels[datatopic].filter = this.web3.shh.filter({
+        "topics": [this.web3.fromAscii(datatopic)],
+      });
+      this.localchannels[datatopic].filter.watch(this._processmessage.bind(this));
+
+
+      // this.localchannels[topic] = {
+      //   crypt: c,
+      //   messagequeue: [input]     
+      // };
+
+      this.raw_whisperpost(topic,{
+        command: 'requestaes',
+        pubkey: this.localchannels[datatopic].crypt.getPublicKey(),
+        from: datatopic
+      });
+    }
+
+    if (this.remotechannels[topic] && !this.remotechannels[topic].aes){
+      this.localchannels[topic].messagequeue.push(input);
+    }
+    if (this.remotechannels[topic] && this.remotechannels[topic].aes){
+        this.encryptandsend(this.remotechannels[topic].to,topic,input);
+    }
+  },
+
+  encryptandsend: function(from,topic,input){
+      var aeskey = this.remotechannels[topic].aes;
+      console.log('Encrypting message to ',topic,'with key',aeskey);
+      var encrypted_objectdata = CryptoJS.AES.encrypt(input, aeskey).toString();
+      this.raw_whisperpost(topic,{
+        command: 'message',
+        msg: encrypted_objectdata,
+        from: from,
+        to: topic
+      });
+  },
+
+  // unencrypted whisper post..
+  raw_whisperpost: function(topic, input) {
+    if (!this.identity) {
+      this.identity = this.web3.shh.newIdentity();
+    }
+    var options = {
+      "from": this.identity,
+      "topics": [this.web3.fromAscii(topic)],
+      "payload": this.web3.fromAscii(JSON.stringify(input)),
+      "ttl": 100,
+      "priority": 1000
+    };
+
+    return this.web3.shh.post(options, function(err, res) {
+      console.log(err, res);
+    });
+  }
+
+
+});
+
+</script>
+
+
+
+
