@@ -466,13 +466,17 @@
         width: 100%;
       }
 
+      /* remove route instructions inlay */
+      div.leaflet-control-container {
+          display: none;
+      }
 
 
 </style>
 
-      <!-- <div class="spinner" id="spinner" hidden$="{{routefound}}">
+      <div class="spinner" id="spinner" hidden$="{{routefound}}">
         <ac-loader small>Your offer is being prepared</ac-loader>
-      </div> -->
+      </div>
 
       <div class="overviewtotal">
 
@@ -497,7 +501,7 @@
           <p>From</p>
         </div>
         <div class="overviewinfoitem">
-          <p>{{fromaddress.display_name}}</p>
+          <p>{{fromaddress}}</p>
         </div>
       </div>
       <div class="overviewinfoitemtotal">
@@ -505,7 +509,7 @@
           <p>To</p>
         </div>
         <div class="overviewinfoitem">
-          <p>{{toaddress.display_name}}</p>
+          <p>{{toaddress}}</p>
         </div>
       </div>
       <div class="overviewinfoitemtotal">
@@ -543,6 +547,12 @@
           type: Boolean,
           value: false,
           notify: true
+        },
+        fromaddress: {
+          type: String
+        },
+        toaddress: {
+          type: String
         }
       },
       ready: function() {

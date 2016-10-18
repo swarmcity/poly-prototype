@@ -21,10 +21,6 @@
       }
     </style>
 
-    <div hidden="{{locationbound}}" class="spinnerdiv">
-      <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
-    </div>
-
     <leaflet-map
       id="leaflet"
       draggable="true"
@@ -35,8 +31,8 @@
       min-zoom="8"
       max-zoom="19"
       on-map-ready="mapready"
-      hidden="{{!locationbound}}">
-      <template is="dom-if" if="{{dogeolocation}}">
+      >
+      <!-- <template is="dom-if" if="{{dogeolocation}}"> -->
         <leaflet-geolocation
           on-locationfound="locationfound"
           enable-high-accuracy
@@ -44,8 +40,10 @@
           longitude="{{longitude}}"
           accuracy="3">
         </leaflet-geolocation>
+      <!-- </template> -->
+      <template is="dom-if" if="{{location}}">
+        <leaflet-marker draggable="true" on-dragend="markerdragend" latitude="{{location.latlng.lat}}" longitude="{{location.latlng.lng}}"></leaflet-marker>
       </template>
-
       <leaflet-tilelayer
         url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
       </leaflet-tilelayer>
@@ -59,20 +57,11 @@
       is: 'ac-locationpicker',
 
       properties: {
-        locationbound: {
-          type: Boolean,
-          value: false,
-          notify: true
-        },
         zoom: {
           type: Number,
           value: 17
         },
-        resolvedAddress: {
-          type: Object,
-          notify: true
-        },
-        currentGeo: {
+        location: {
           type: Object,
           notify: true
         },
@@ -82,20 +71,14 @@
         longitude: {
           type: Number,
         },
-        dogeolocation: {
-          type: Boolean,
-          value: false
-        },
-        displayaddress: {
-          type: String,
-          notify: true
-        }
+      },
+
+      ready: function(){
+        console.log('ac-locationpicker --> LOADED');
       },
 
       mapready: function(){
-        // try to init the map with given lat/lon
-        // when we arrive here, the attach event is passed already.
-
+        
         this.initmap();
         // if nothing was inited now - the lat/lng were not given.
         // so enable our own geolocation component
@@ -121,58 +104,55 @@
         }
       },
 
-      setcurrentGeo: function(lat, lng) {
-        this.currentGeo = {
-          'lat': lat,
-          'lng': lng
-        };
-      },
+    
 
-      // this triggers when DIY geolocation is done
-      locationfound: function(e) {
-        //console.log('location found ready, ', Date.now(), e.detail);
+      // this triggers when geolocation is done
+      locationfound: function(e) {        
         this.setmapgeo(e.detail.latitude,e.detail.longitude);
       },
 
-      setmapgeo: function(lat,lon){
-        this.$.leaflet.map.invalidateSize();
-        this.$.leaflet.map.addEventListener('moveend', function() {
-          this.$.leaflet.map.invalidateSize();
-        }.bind(this));
-        this.locationbound = true;
-        this.setcurrentGeo(lat, lon);
-        var self = this;
-        this.getAddress(this.currentGeo).then(function(response) {
-          self.set('resolvedAddress', JSON.parse(response));
-          self.fire('address-found', response);
-          self.displayaddress = self.resolvedAddress.display_name;
-        }, function(error) {});
-        this.appendMarker(lat, lon);
+      // triggered when dropping the marker somewhere
+      markerdragend: function(e){
+        this.setmapgeo(e.detail.target._latlng.lat,e.detail.target._latlng.lng);
       },
 
-      appendMarker: function(lat, lng) {
-        marker = document.createElement('leaflet-marker');
-        marker.latitude = lat;
-        marker.longitude = lng;
-        marker.draggable = "true";
+      setmapgeo: function(lat, lng) {
+
+        // fit the map to the newly shown container...
+        // this.$.leaflet.map.invalidateSize();
+        // this.$.leaflet.map.addEventListener('moveend', function() {
+        //   this.$.leaflet.map.invalidateSize();
+        // }.bind(this));
+
+        console.log('setting lat/lon');
+        this.latitude = lat;
+        this.longitude = lng;
+        //this.$.leaflet.map.invalidateSize();
+
         var self = this;
-        //this.setmapgeo(lat, lng);
-        marker.addEventListener('dragend', function(e) {
-          this.getAddress(e.detail.target._latlng).then(function(response) {
-            self.resolvedAddress = JSON.parse(response);
-            self.displayaddress = self.resolvedAddress.display_name;
-            self.fire('address-found', response);
-            self.fire('dragend', {
-              'resolvedaddress': response,
-              'lat': e.detail.target._latlng.lat,
-              'lng': e.detail.target._latlng.lng
-            });
-            self.setcurrentGeo(e.detail.target._latlng.lat, e.detail.target._latlng.lng);
-          }, function(error) {
-            self.fire('error', error);
+        this.getAddress({
+          lat: lat,
+          lng: lng
+        }).then(function(response) {
+          // received address response
+          //self.$.leaflet.map.invalidateSize();
+          var address = JSON.parse(response)
+          self.set('location', {
+            latlng: {
+              lat: lat,
+              lng: lng
+            },
+            address: address
           });
-        }.bind(this));
-        this.$.leaflet.appendChild(marker);
+        }, function(error) {
+          console.log('Error resolving addres...');
+          self.set('location', {
+            latlng: {
+              lat: lat,
+              lng: lng
+            },
+          });
+        });
       },
 
       getAddress: function(latlng) {

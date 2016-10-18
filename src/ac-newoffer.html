@@ -379,45 +379,40 @@
 
 
 </style>
-<ac-profile id="profile" account="{{account}}" userdata="{{userdata}}" viewstate="none"></ac-profile>
-  <ac-helpers id="helpers"></ac-helpers>
-  <div class="main">
+    <ac-profile id="profile" account="{{account}}" userdata="{{userdata}}" viewstate="none"></ac-profile>
+    <ac-helpers id="helpers"></ac-helpers>
+    <div class="main">
 
-    <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
+      <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
 
-    <template id="zerotemp" is="dom-if" if="{{_is(offerview, 'zero')}}"></template>
+      <template id="zerotemp" is="dom-if" if="{{_is(offerview, 'zero')}}"></template>
 
-    <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'first')}}">
-      <ac-spinner hidden$="{{locationbound}}"></ac-spinner>
-      <div class="container" hidden$="{{!locationbound}}">
+      <template is="dom-if" if="{{_is(offerview, 'first')}}">
+        <ac-spinner hidden$="{{!showfromspinner}}"></ac-spinner>
+        <div class="container" hidden$="{{showfromspinner}}">
+          <div class="fixedplace">
+            <p>From</p>
+            <!-- hier loopt iets mis met de style... -->
+            <h1>{{from.address.display_name}}</h1>
+          </div>
 
-        <ac-locationpicker
-          locationbound="{{locationbound}}"
-          current-geo="{{fromlatlon}}" resolved-address="{{fromaddress}}"
-          on-address-found="fromaddressfound">
-        </ac-locationpicker>
+          <div class="confirmbtns">
+            <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="yellow"></ac-icon>
+            <ac-button on-tap="toSecond" bg="yellow" txtcolor="big" icon="ac-arrowright"></ac-button>
+          </div>
 
-        <div class="fixedplace">
-          <p>From</p>
-          <!-- <h1>{{fromdisplay}}</h1> -->
-          <h1>testing <span>{{fromdisplay}}</span></h1>
         </div>
+        <ac-locationpicker location="{{from}}"></ac-locationpicker>
 
-        <div class="confirmbtns">
-          <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="yellow"></ac-icon>
-          <ac-button on-tap="toSecond" bg="yellow" txtcolor="big" icon="ac-arrowright"></ac-button>
-        </div>
-
-      </div>
       </template>
 
-      <template id="firsttemp" is="dom-if" if="{{_is(offerview, 'second')}}">
-        <div class="container">
-        <!-- <ac-locationpicker current-geo="{{tolatlon}}" resolved-address="{{toaddress}}"></ac-locationpicker> -->
+      <template is="dom-if" if="{{_is(offerview, 'second')}}">
+        <ac-spinner hidden$="{{!showtospinner}}"></ac-spinner>
+        <div class="container" hidden$="{{showtospinner}}">
 
         <div class="fixedplace">
           <p>To</p>
-          <h1>{{toaddress.display_name}}</h1>
+          <h1>{{to.address.display_name}}</h1>
         </div>
         <div class="confirmbtns">
           <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="base"></ac-icon>
@@ -425,56 +420,58 @@
         </div>
 
       </div>
-      </template>
+      <ac-locationpicker location="{{to}}"></ac-locationpicker>
 
-      <template is="dom-if" if="{{_is(offerview, 'third')}}">
+    </template>
 
-        <h1>{{routefound}}</h1>
-      <ac-routeplanner id="routeplanner" routedetails="{{routedetails}}" on-route-available="routeAvailable" fromlatlon="{{fromlatlon}}" tolatlon="{{tolatlon}}" fromaddress="{{fromaddress}}" toaddress="{{toaddress}}" routefound="{{routefound}}"></ac-routeplanner>
+    <template is="dom-if" if="{{_is(offerview, 'third')}}">
 
-        <div class="confirmbtns" hidden="{{routingprocess}}">
-          <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="yellow"></ac-icon>
-          <ac-button id="toFourth" on-tap="toFourth" bg="yellow" txtcolor="base" icon="ac-v"></ac-button>
-        </div>
+      <h1>{{routefound}}</h1>
+      <ac-routeplanner id="routeplanner" routedetails="{{routedetails}}" on-route-available="routeAvailable" fromlatlon="[[from.latlng]]" tolatlon="[[to.latlng]]" fromaddress="[[from.address.display_name]]" toaddress="[[to.address.display_name]]" routefound="{{routefound}}"></ac-routeplanner>
 
-</template>
+      <div class="confirmbtns" hidden="{{routingprocess}}">
+        <ac-icon icon="ac-decline" on-tap="toHome" small class="confirmbtn" iconcolor="yellow"></ac-icon>
+        <ac-button id="toFourth" on-tap="toFourth" bg="yellow" txtcolor="base" icon="ac-v"></ac-button>
+      </div>
 
-<template is="dom-if" if="{{_is(offerview, 'fourth')}}" >
+    </template>
 
-    <div class="offerview">
-    <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
+    <template is="dom-if" if="{{_is(offerview, 'fourth')}}" >
 
-    <h1>Publishing offer</h1>
-    <div class="logger" on-tap="logCollapse">
-      <!-- <template is="dom-if" if="{{!logshown}}">
-        <p class="loggercollapse">show log</p>
-      </template>
-      <template is="dom-if" if="{{logshown}}">
-        <p class="loggercollapse">hide log</p>
-      </template> -->
+      <div class="offerview">
+        <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
 
-      <!-- <iron-collapse id="logcollapser">
-        <div class="log"> -->
+        <h1>Publishing offer</h1>
+        <div class="logger" on-tap="logCollapse">
+          <!-- <template is="dom-if" if="{{!logshown}}">
+          <p class="loggercollapse">show log</p>
+        </template>
+        <template is="dom-if" if="{{logshown}}">
+          <p class="loggercollapse">hide log</p>
+        </template>
+        -->
+        <!-- <iron-collapse id="logcollapser">
+        <div class="log">
+          -->
           <template is="dom-repeat" items="{{log}}" >
             <p class="small">{{item.message}}</p>
           </template>
         </div>
-      <!-- </iron-collapse> -->
+        <!-- </iron-collapse>--></div>
+
     </div>
+  </template>
 
-  </div>
-</template>
+  <template is="dom-if" if="{{_is(offerview, 'fifth')}}">
+    <div class="offerview">
 
-<template is="dom-if" if="{{_is(offerview, 'fifth')}}">
-  <div class="offerview">
-
-    <ac-icon icon="ac-v" iconcolor="yellow"></ac-icon>
-    <h1>Your offer is published.</h1>
-    <div class="whitespace"></div>
-    <ac-button on-tap="toMyoffers" small txtbtn txtcolor="base" bg="blue">Go to My Offers</ac-button>
-  </div>
-</template>
-  </div>
+      <ac-icon icon="ac-v" iconcolor="yellow"></ac-icon>
+      <h1>Your offer is published.</h1>
+      <div class="whitespace"></div>
+      <ac-button on-tap="toMyoffers" small txtbtn txtcolor="base" bg="blue">Go to My Offers</ac-button>
+    </div>
+  </template>
+</div>
 
 </template>
 <!-- Creates the element's prototype and registers it -->
@@ -487,12 +484,20 @@ Polymer({
       type: String,
       value: 'zero'
     },
-    fromlatlon: {
-      type: Object,
+    from: {
+      type:Object,
+      observer: '_from'
     },
-    tolatlon: {
-      type: Object,
+    to: {
+      type:Object,
+      observer: '_to'
     },
+    // fromlatlon: {
+    //   type: Object,
+    // },
+    // tolatlon: {
+    //   type: Object,
+    // },
     /* if latitide is given - start new offer from this location */
     latitude: {
       type: Number
@@ -505,20 +510,30 @@ Polymer({
       type: String,
       observer: '_sizeview'
     },
-    routingprocess: {
-      type: Boolean,
-      value: false
-    },
+    // routingprocess: {
+    //   type: Boolean,
+    //   value: false
+    // },
     log: {
       type: Array,
       value: []
     },
-    fromlatlon: {
-      observer: '_fromaddress'
-    },
-    fromaddress: {
-      type: Object
-    }
+    // fromlatlon: {
+    //   observer: '_fromaddress'
+    // },
+    // fromaddress: {
+    //   type: Object
+    // }
+  },
+
+  _from: function(){
+    
+    console.log('received From',this.from.address.display_name);
+    this.showfromspinner = false;
+  },
+  _to: function(){
+    console.log('received To',this.to.address.display_name);
+    this.showtospinner = false;
   },
 
   toPlaceoffer: function(){
@@ -529,24 +544,28 @@ Polymer({
     app.set('route.path', '/myitems/');
   },
 
-  _fromaddress: function() {
-    //this.fromdisplay = this.fromaddress.display_address;
-    //console.log(this.fromdisplay);
-  },
+  // _fromaddress: function() {
+  //   //this.fromdisplay = this.fromaddress.display_address;
+  //   //console.log(this.fromdisplay);
+  // },
 
-  fromaddressfound: function(e) {
-    console.log(JSON.parse(e.detail));
-    var parsed = JSON.parse(e.detail);
-    this.fromdisplay = parsed.place_id;
-    //this.fromdisplay = 'hallo '+ Date.now();
-  },
+  // fromaddressfound: function(e) {
+  //   console.log(JSON.parse(e.detail));
+  //   var parsed = JSON.parse(e.detail);
+  //   this.fromdisplay = parsed.place_id;
+  //   //this.fromdisplay = 'hallo '+ Date.now();
+  // },
 
   attached: function() {
-    console.log('given lat',this.latitude);
-    console.log('given lon',this.longitude);
+
+    this.showfromspinner = true;
+    this.showtospinner = true;
+
+//    console.log('given lat',this.latitude);
+//    console.log('given lon',this.longitude);
     this.offerview = 'first';
-    this.routingprocess = false;
-    this.fromdisplay = '123';
+//    this.routingprocess = false;
+//    this.fromdisplay = '123';
   },
 
   toSecond: function() {
@@ -570,10 +589,10 @@ Polymer({
 
     var account = self.$.helpers.fixaddress(app.$.acwallet.account);
     var offer = {
-        from: this.fromlatlon,
-        to: this.tolatlon,
-        fromaddress: this.fromaddress,
-        toaddress: this.toaddress,
+        from: this.from.latlon,
+        to: this.to.latlon,
+        fromaddress: this.from.address.display_name,
+        toaddress: this.to.address.display_name,
         offeramount: this.routedetails.costestimate,
         distance: this.routedetails.routedistance,
         pubkey: account,
