@@ -448,11 +448,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             break;
           case 'sendpubkey':
             console.log('Send ARC to ', message.pubkey);
-            this.transfer(this.amount * 100, this.$.helpers.fixaddress(message.pubkey), function(err, result) {
+            this.transfer(this.amount * 1e18, this.$.helpers.fixaddress(message.pubkey), function(err, result) {
               console.log('Transfer started. Sending confirmation to ',m.from);
               self.$.whisper.whisperpost(m.from, JSON.stringify({
                 'command': 'confirmtransfer',
-                'amount': self.amount * 100
+                'amount': self.amount * 1e18
               }));
             });
             //var username = //self._getUsername(message.pubkey,function(username, avatarurl){
@@ -525,6 +525,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         //debugger;
         // we gaan dan wat geld versjassen
         //this.amount = 1;
+
         var self = this;
 
         this.contracturl = this.resolveUrl('./contracts/ARCToken.json');
@@ -535,7 +536,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log('gasprice: ', gasPrice);
 
           var MyContract = self.web3.eth.contract(self.contractjson.abi);
-          var myContractInstance = MyContract.at(self.contractaddr);
+          var myContractInstance = MyContract.at(self.contractjson.address);
             console.log('doing transfer of ',amount,' LC to: ', pubkey, 'from: ', self.account);
             myContractInstance.transfer.sendTransaction(pubkey, amount, {
               from: self.$.helpers.fixaddress(self.account),
@@ -552,15 +553,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
 
           });
-          //this.web3.send(this.partnerpubkey, this.amount);
         });
-
 
         this.clearInputs();
         var sendcoins = self.$.sendcoins;
         sendcoins.toggle();
         this.collsclosed=!this.collsclosed;
-
         this.sendcoinstate = 'first';
       },
 
