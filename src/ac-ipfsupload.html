@@ -106,10 +106,10 @@
                     self.push('hashes', {
                       hash: ipfsfile.hash
                     });
-                  }
+                  } 
                   if (!self.multi){
-                    self.hash = ipfsfile.hash;
-                    self.url = self.$.ipfs.geturl(self.hash);
+                    self.hash = ipfsfile.hash; 
+                    self.url = self.$.ipfs.geturl(self.hash);                
                   }
                   self.fire('ipfs-hash-received', {
                     file: file,

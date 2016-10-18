@@ -6,6 +6,9 @@
 <link rel="import" href="./ac-wallet.html">
 
 <link rel="import" href="./ac-ipfs.html">
+<link rel="import" href="./ac-helpers.html">
+<link rel="import" href="./ac-config.html">
+
 
 <dom-module id="ac-profile">
   <!-- Defines the element's style and local DOM -->
@@ -167,7 +170,10 @@
         }
 
     </style>
-
+    <ac-helpers id="helpers"></ac-helpers>
+    <ac-config etherscanroot="{{etherscanroot}}"></ac-config>
+    <iron-request id="donaterequest"></iron-request>
+    
     <template is="dom-if" if="{{accountlocked}}">
       <p>Account locked</p>
     </template>
@@ -322,7 +328,21 @@
       },
 
       donate: function() {
+        var self = this;
 
+        self.$.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
+          console.log('send some ARC to ', self.$.helpers.fixaddress(self.account));
+          var url = 'https://eth.arcadecity.world:3000/donate/' + self.$.helpers.fixaddress(self.account) + '/' + arccontractjson.address;
+          console.log('tapping from faucet',url);
+          self.$.donaterequest.send({
+            url: url
+          }).then(function() {
+            console.log('donation requested');
+            console.log('check balance at ',self.etherscanroot + '/token/'+arccontractjson.address+'?a='+self.$.helpers.fixaddress(self.account));
+//            var btn = document.querySelector('#donatebtn');
+//            btn.hidden = true;
+          });
+        });
       },
 
       initprofile: function() {

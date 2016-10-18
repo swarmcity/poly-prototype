@@ -127,8 +127,6 @@
           'lat': lat,
           'lng': lng
         };
-        this.fire('geo-set', {'display_address': this.displayaddress, 'address': this.resolvedAddress })
-
       },
 
       // this triggers when DIY geolocation is done
@@ -171,7 +169,6 @@
               'lat': e.detail.target._latlng.lat,
               'lng': e.detail.target._latlng.lng
             });
-
             self.setcurrentGeo(e.detail.target._latlng.lat, e.detail.target._latlng.lng);
           }, function(error) {
             self.fire('error', error);
