@@ -75,14 +75,13 @@
         data="{{subrouteData}}"
         pattern="/:offerid"></app-route>
 
- <ac-blockdata blockdata="{{blockdata}}" blockobject="{{blockobject}}"></ac-blockdata>
+        <ac-blockdata blockdata="{{blockdata}}" blockobject="{{blockobject}}"></ac-blockdata>
 
 <!--  <h1>OFFERS</h1>
 <template is="dom-repeat" items="{{blockdata}}">
   <p>Block</p>
   <p>{{item.offerid}}</p>
 </template> -->
-
 
 
 
@@ -114,7 +113,8 @@
 
             <ac-view404 name="view404" restamp></ac-view404>
 
-            <!-- <ac-tokentransfer name="tokentransfer" restamp></ac-tokentransfer> -->
+
+
 
        </iron-pages>
 
@@ -155,6 +155,7 @@
       observers: [
         '_routePageChanged(routeData.page)'
       ],
+
 
       attached: function() {
         window.app = this;
