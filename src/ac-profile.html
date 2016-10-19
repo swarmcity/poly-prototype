@@ -19,14 +19,14 @@
         /*--toppart-height: 15vh;
         --toppart-padding: 10px 20px 10px 20px;*/
         --container-height: 85vh;
-        --avatar-size: 40px;
+        --avatar-size: 44px;
         --flex-align1:end;
         --flex-align2:flex-end;
       }
 
       .avatar {
-        width:140px;
-        height: 140px;
+        width:130px;
+        height: 130px;
         border-radius: 50%;
         overflow: hidden;
         background-color: transparent;
@@ -62,15 +62,27 @@
       }
 
       .usernamesmall {
-        margin: 0px 0px 0px -5px;
+        margin: 0px 0px 0px -8px;
+        padding: 5px 8px 6px 18px;
+        @apply(--montserrat-light);
+        color:var(--ac-blue);
+        font-size: 20px;
+        background-color: transparent;
+        z-index: 1;
+        /*background-color: rgba(31,23,66,0.05);*/
+        /*text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);*/
+      }
+
+      .usernamesmallmap {
+        margin: 0px 0px 0px -8px;
         padding: 5px 8px 6px 18px;
         @apply(--montserrat-reg);
-        color:#4CACF5;
+        color:var(--ac-blue);
         font-size: 20px;
         background-color: white;
         z-index: 1;
         /*background-color: rgba(31,23,66,0.05);*/
-        /*text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);*/
+        /*text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);*/        
       }
 
       .topbar {
@@ -81,8 +93,10 @@
         @apply(--layout-center);
         box-sizing: border-box;
         padding: 10px 20px 0px 25px;
-        @apply(--base-structure);
         border-bottom:1px solid transparent;
+        position: fixed;
+        top: 0px;
+        background-color: transparent;
       }
 
       .flex {
@@ -103,11 +117,12 @@
         @apply(--layout-vertical);
         @apply(--layout-center);
         @apply(--base-structure);
+        box-sizing: border-box;
+        padding: 16vh 0px 0px 0px;
       }
 
       h1 {
         @apply(--ac-font-h1);
-        color:var(--ac-turquoise);
       }
 
       h2 {
@@ -145,8 +160,8 @@
         color: var(--ac-red);
         @apply(--montserrat-ultralight);
         margin: 0px;
-        font-size: 46px;
-        line-height: 52px;
+        font-size: 56px;
+        line-height: 64px;
       }
       .offeramount p {
         color: var(--ac-red);
@@ -172,6 +187,25 @@
           display: none;
         }
 
+      .usernamebig {
+        @apply(--montserrat-hairline);
+        color:var(--ac-blue);
+        margin: 0px; 
+        font-size: 40px;
+        line-height: 48px;
+        }
+
+        .pubkey {
+          width: 150px;
+        }
+
+        .pubkey p {
+          @apply(--ac-font-nowrap);
+          color:var(--ac-blue);
+          @apply(--montserrat-hairline);
+          font-size: 16px;
+        }
+
     </style>
     <ac-helpers id="helpers"></ac-helpers>
     <ac-config etherscanroot="{{etherscanroot}}"></ac-config>
@@ -185,6 +219,21 @@
       </template>
 
       <!-- small profile view -->
+      <template is="dom-if" if="{{_is(viewstate, 'smallviewmap')}}">
+
+
+           <div class="userinfosmall"  on-tap="toProfile">
+            <div class="avatarsmall" id="avatar">
+              <ac-ipfsupload hidefileinput hash="{{avatarhash}}" url="{{avatarurl}}" id="ipfsupload"></ac-ipfsupload>
+              <img src="{{avatarurl}}">
+            </div>
+            <p class="usernamesmallmap">{{username}}</p>
+
+            </div>
+
+      </template>
+
+
       <template is="dom-if" if="{{_is(viewstate, 'smallview')}}">
 
 
@@ -203,19 +252,16 @@
       <template is="dom-if" if="{{_is(viewstate, 'overview')}}">
         <div class="topbar">
          <p class="flex" on-tap="change"></p>
-         <ac-button  bg="base" icon="declinenew" on-tap="toHome" small id="exitbtn" txtcolor="turquoise"></ac-button>
+         <ac-button bg="base" icon="declinenew" on-tap="toHome" small id="exitbtn" txtcolor="turquoise"></ac-button>
         </div>
         <div class="main">
           <div class="content">
-            <div class="whitespace"></div>
-            <div class="whitespace"></div>
-
             <div class="avatar" on-tap="toEdit">
               <img src="{{avatarurl}}" alt="" />
             </div>
             <div class="whitespace"></div>
-            <h1>{{username}}</h1>
-            <h2>{{account}}</h2>
+            <h1 class="usernamebig">{{username}}</h1>
+            <div class="pubkey"><p>{{account}}</p></div>
             <div class="offeramount">
               <h1>{{arcbalance}}</h1>
               <p>ARC</p>
@@ -224,13 +270,13 @@
             <ac-tokentransfer web3="{{web3}}" account="{{acount}}"></ac-tokentransfer>
             <!-- <p>ETH Balance: {{balance}}</p> -->
             <template is="dom-if" if="{{donateview}}">
-              <ac-button on-tap="donate" txtbtn bg="red" txtcolor="base" small>Give me test-ARC</ac-button>
+              <ac-button on-tap="donate" txtbtn bg="yellow" txtcolor="base" small>Give me test-ARC</ac-button>
             </template>
 
           <!-- <ac-button on-tap="toEdit" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button> -->
+          </div>
         </div>
-      </div>
-      </template>
+        </template>
 
       <!-- Edit profile view -->
       <template is="dom-if" if="{{_is(viewstate, 'edit')}}">

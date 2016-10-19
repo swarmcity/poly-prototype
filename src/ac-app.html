@@ -8,6 +8,7 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
@@ -51,6 +52,10 @@
         @apply(--layout-center-center);
       }
 
+      neon-animated-pages {
+        height: 100%;
+      }
+
 
     </style>
 
@@ -85,13 +90,11 @@
 
 
 
-         <iron-pages
+<neon-animated-pages
             selected="[[page]]"
             attr-for-selected="name"
             fallback-selection="view404"
             role="main">
-
-
 
             <ac-newuser name="newuser"></ac-newuser>
             <ac-password name="password"></ac-password>
@@ -116,7 +119,7 @@
 
 
 
-       </iron-pages>
+       </neon-animated-pages>
 
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
     <ac-helpers id="helpers"></ac-helpers>
