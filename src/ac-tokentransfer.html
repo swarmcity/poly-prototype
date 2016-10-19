@@ -33,6 +33,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         --code-h2: 32px;
         --code-lineheight: 36px;
         --code-small: 10px;
+        width: 100%;
 
       }
 
@@ -49,7 +50,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         @apply(--opensans-semibold);
         font-size: var(--code-h2);
         line-height: var(--code-lineheight);
-        color:var(--ac-yellow);
       }
 
       p {
@@ -59,19 +59,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       small {
         @apply(--ac-font-small);
         @apply(--opensans-semibold);
-        color:var(--ac-blue);
         font-size: var(--code-small);
-
       }
 
 
       .total {
+        width: 100%;
         @apply(--layout-vertical);
       }
 
       .totalpart {
+        width: 100%;
         box-sizing: border-box;
-        padding: 0px 10vw 0px 10vw;
+        @apply(--layout-vertical);
+        @apply(--layout-center-center);
+      
+      }
+
+      .sendcoiners {
+        width: 80%;
+        max-width: 600px;
+        box-sizing: border-box;
+        @apply(--layout-vertical);
+        @apply(--layout-center-center);        
       }
 
 
@@ -122,6 +132,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       width: 100%;
       max-width: 500px;
       box-sizing: border-box;
+      @apply(--layout-horizontal);
+      @apply(--layout-center-center);
      }
 
      .announce {
@@ -141,10 +153,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      }
 
      .code {
-      @apply(--layout-vertical);
-      @apply(--layout-start);
-      margin: 0px 20px 0px 0px;
+      margin: 0px 0px 0px 0px;
+     }
 
+     .code h2 {
+      padding: 10px;
+      box-sizing: border-box;
+      background-color: var(--ac-red);
+      color: var(--ac-base);
      }
 
      .announce p {
@@ -211,7 +227,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         border: none;
       }
 
-      .btns {
+/*      .btns {
         width: 100%;
         margin-top: 15px;
         @apply(--layout-horizontal);
@@ -221,6 +237,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .btns ac-button {
         margin: 5px;
       }
+*/
+      .initbtns {
+        width: 100%;
+        @apply(--layout-vertical);
+        @apply(--layout-center-center);
+      }
+
+      .initbtns ac-button {
+        width: 200px;
+      }
+
+
+      .initbtns p {
+        color: var(--ac-red);
+        border-bottom: 1px solid dashed var(--ac-red);
+      }
+
+      .confirmbtns {
+          @apply(--layout-horizontal);
+          @apply(--layout-center-center);
+        margin-top: 15px;
+        }
+
+        .confirmbtn {
+          margin: 0px 2px 0px 2px;
+        }
+
+        .sender {
+          margin-bottom: 15px;
+        }
+
+
 
     </style>
 
@@ -239,20 +287,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div class="total">
       <div class="totalpart">
         <template is="dom-if" if="{{collsclosed}}">
-            <ac-button small txtbtn txtcolor="base" on-tap="togglesendcoins"><div class="inbutton">send</div></ac-button>
-            <ac-button small txtbtn txtcolor="base" on-tap="togglereceivecoins"><div class="inbutton">receive</div></ac-button>
+        <div class="initbtns">
+        <div class="whitespace"></div>
+
+            <ac-button txtbtn txtcolor="red" bg="base" on-tap="togglesendcoins" class="sender">send ARC</ac-button>
+
+            <ac-button txtbtn txtcolor="red" bg="base" on-tap="togglereceivecoins">shortcode</ac-button>
+
+            <!-- <ac-button txtbtn txtcolor="base" bg="red" on-tap="togglereceivecoins"><div class="inbutton">receive</div></ac-button> -->
+            </div>
         </template>
+        <div class="sendcoiners">
+
         <iron-collapse id="sendcoins">
         <template is="dom-if" if="{{_is(sendcoinstate,'first')}}">
-          <div class="whitespace"></div>
-          <ac-input color="yellow" class="sendinput" autofocus type="number" inputvalue="{{amount}}" bind-value="{{amount}}" label="Amount"></ac-input>
-          <ac-input color="yellow" class="sendinput" autofocus type="number" inputvalue="{{pincode}}" bind-value="{{pincode}}" label="To"></ac-input>
+          
+          <ac-input color="red" class="sendinput" autofocus type="number" inputvalue="{{amount}}" bind-value="{{amount}}" label="Amount"></ac-input>
+          <ac-input color="red" class="sendinput" type="number" inputvalue="{{pincode}}" bind-value="{{pincode}}" label="Shortcode receiver"></ac-input>
 
-          <div class="btns">
+<!--           <div class="btns">
             <ac-button small icon="declinenew" confirmsmall on-tap="togglesendcoins" class="closebtn"></ac-button>
             <ac-button small icon="ac-v" confirmsmall on-tap="toWaiting" class="closebtn"></ac-button>
-          </div>
+          </div> -->
 
+          <div class="confirmbtns">
+         <ac-button icon="ac-decline" on-tap="togglesendcoins" small class="confirmbtn" bg="base" txtcolor="red"></ac-button>
+            <ac-button on-tap="toWaiting" bg="red" txtcolor="big" icon="ac-v"></ac-button>
+          </div>
 
         </template>
 
@@ -266,11 +327,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </iron-collapse>
         <iron-collapse id="receivecoins">
           <div class="code">
-            <small>Temporary code</small>
+            <!-- <small>Temporary code</small> -->
             <h2>{{topic}}</h2>
           </div>
-          <ac-button small icon="declinenew" confirmsmall on-tap="togglereceivecoins" class="closebtn"></ac-button>
+          <ac-button icon="ac-decline" on-tap="togglereceivecoins" small class="confirmbtn" bg="base" txtcolor="red"></ac-button>
         </iron-collapse>
+        </div>
+
         <div class="whitespace"></div>
         <div class="whitespace"></div>
 
