@@ -535,6 +535,10 @@ Polymer({
       this.publishedtime = moment(this.data.timestamp*1000).fromNow();
     }
 
+    window.setInterval(function() {
+      this.publishedtime = moment(this.data.timestamp*1000).fromNow();
+    }.bind(this), 60000);
+
     if(this.data.status === 'released'){
       this.customStyle['--transparency-item'] = '0.5';
       this.updateStyles();
@@ -542,6 +546,10 @@ Polymer({
       this.customStyle['--transparency-item'] = '1';
       this.updateStyles();
     }
+  },
+
+  setTimeinterval: function() {
+
   },
 
   godetail: function() {

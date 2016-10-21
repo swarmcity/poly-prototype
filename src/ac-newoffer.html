@@ -3,6 +3,7 @@
 <link rel="import" href="./ac-routeplanner.html">
 <link rel="import" href="./ac-profile.html">
 <link rel="import" href="./ac-helpers.html">
+<link rel="import" href="./ac-statusitem.html">
 
 <link rel="import" href="../bower_components/ac-button/ac-button.html">
 <link rel="import" href="../bower_components/ac-loader/ac-loader.html">
@@ -377,6 +378,10 @@
            to {transform: rotate(360deg);}
        }
 
+       .status {
+         @apply(--layout-start-justified);
+       }
+
 
 </style>
     <ac-profile id="profile" account="{{account}}" userdata="{{userdata}}" viewstate="none"></ac-profile>
@@ -440,25 +445,17 @@
     <template is="dom-if" if="{{_is(offerview, 'fourth')}}" >
 
       <div class="offerview">
-        <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
+        <!-- <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon> -->
+        <ac-loader small>Publishing offer</ac-loader>
 
-        <h1>Publishing offer</h1>
-        <div class="logger" on-tap="logCollapse">
-          <!-- <template is="dom-if" if="{{!logshown}}">
-          <p class="loggercollapse">show log</p>
-        </template>
-        <template is="dom-if" if="{{logshown}}">
-          <p class="loggercollapse">hide log</p>
-        </template>
-        -->
-        <!-- <iron-collapse id="logcollapser">
-        <div class="log">
-          -->
-          <template is="dom-repeat" items="{{log}}" >
-            <p class="small">{{item.message}}</p>
-          </template>
+        <div class="whitespace"></div>
+        
+        <div class="status">
+          <ac-statusitem id="s1" done="{{done1}}" msg="Saved on IPFS"></ac-statusitem>
+          <ac-statusitem id="s2" done="{{done2}}" msg="Allowance granted"></ac-statusitem>
+          <ac-statusitem id="s3" done="{{done3}}" msg="Escrow I/O"></ac-statusitem>
+          <ac-statusitem id="s4" done="{{done4}}" msg="Escrow done"></ac-statusitem>
         </div>
-        <!-- </iron-collapse>--></div>
 
     </div>
   </template>
@@ -542,7 +539,7 @@ Polymer({
   },
 
   toMyoffers: function() {
-    app.set('route.path', '/myitems/');
+    app.set('route.path', '/list/');
   },
 
   // _fromaddress: function() {
@@ -567,6 +564,10 @@ Polymer({
     this.offerview = 'first';
 //    this.routingprocess = false;
 //    this.fromdisplay = '123';
+    this.done1 = false;
+    this.done2 = false;
+    this.done3 = false;
+    this.done4 = false;
   },
 
   toSecond: function() {
@@ -608,12 +609,25 @@ Polymer({
 
     app.$.transact.newOffer(offer, function(e){
       console.log('new offer saved.', e);
+
       self.offerview = 'fifth';
+
     });
 
     app.$.transact.addEventListener('log-event', function(e) {
       console.log(e.detail);
-      self.push('log',e.detail);
+      switch(e.detail.message){
+        case 'ipfsdone':
+          self.done1 = true;
+          break;
+        case 'allowancedone':
+          self.done2 = true;
+          break;
+        case 'escrowstart':
+          self.done3 = true;
+          break;
+      }
+      //self.push('log',e.detail);
     });
   },
 

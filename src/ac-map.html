@@ -5,7 +5,6 @@
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="../bower_components/ac-button/ac-button.html">
 
-<link rel="import" href="./ac-blockdata.html">
 <link rel="import" href="./ac-profile.html">
 <link rel="import" href="./ac-spinner.html">
 
@@ -180,9 +179,9 @@
         accuracy="3">
       </leaflet-geolocation>
 
-      <leaflet-tilelayer
-        url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
-      </leaflet-tilelayer>
+      <!-- <leaflet-tilelayer
+        url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.dark/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
+      </leaflet-tilelayer> -->
 
     </leaflet-map>
 
@@ -190,7 +189,6 @@
       <ac-button on-tap="newOffer" icon="ac-plus" bg="red" txtcolor="white"></ac-button>
     </div>
 
-    <!-- <ac-blockdata name="blockdata" blockdata="{{blockdata}}"></ac-blockdata> -->
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
 
   </template>
@@ -251,9 +249,17 @@
           if (!this.$.leafletmap.map) {
             console.log('fix this: leaflet.map not here yet.');
             return;
+          } else {
+            this.leafletfix();
           }
           //this.$.leafletmap.map.invalidateSize();
         }.bind(this));
+
+        this.$.leafletmap.map.invalidateSize();
+
+        var layer = L.mapbox.tileLayer('https://api.mapbox.com/v3/mapbox.dark.json');
+
+        this.$.leafletmap.map.tileLayer = layer; 
 
         // TODO : remove this hack ?
         //window.setTimeout(this.leafletfix, 5000);
@@ -265,13 +271,15 @@
       },
 
       _blockdata: function() {
-        //console.log(this.blockdata);
-        for (var i = 0; i < this.blockdata.length; i++) {
-          var o = this.blockdata[i];
-          // if(o.status == 'added'){
-          //   this.appendMarker(o.ipfsdata.fromaddress.lat, o.ipfsdata.fromaddress.lon, o.ipfshash, o.offerid);
-          // }
-        }
+        console.log('map blockdata: ',this.blockdata);
+        // for (var i = 0; i < this.blockdata.length; i++) {
+        //   var o = this.blockdata[i];
+        //   debugger;
+        //
+        //   if(o.status == 'added'){
+        //     this.appendMarker(o.ipfsdata.fromaddress.lat, o.ipfsdata.fromaddress.lon, o.ipfshash, o.offerid);
+        //   }
+        // }
       },
 
       appendMarker: function(lat, lng, title, key) {

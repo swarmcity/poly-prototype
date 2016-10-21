@@ -13,6 +13,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 	var app;
 
+  if(window.location.pathname != '/'){
+    window.location.href = '/';
+  }
+
+  console.log(window.location.pathname);
+
   //window.location = '/';
 
   // Grab a reference to our auto-binding template

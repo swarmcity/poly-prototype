@@ -1,6 +1,6 @@
 z<link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-request.html">
-<link rel="import" href="../bower_components/web3-wallet/web3-wallet.html">
+<link rel="import" href="./ac-web3wallet.html">
 
 <link rel="import" href="./ac-ipfs.html">
 <link rel="import" href="./ac-password.html">
@@ -22,7 +22,8 @@ z<link rel="import" href="../bower_components/polymer/polymer.html">
 
      <!-- faucet stuff -->
     <ac-helpers id="helpers"></ac-helpers>
-    <web3-wallet
+
+    <ac-web3wallet
       id="web3wallet"
       account="{{account}}"
       password="{{password}}"
@@ -30,7 +31,7 @@ z<link rel="import" href="../bower_components/polymer/polymer.html">
       keystore="{{keystore}}"
       walletname="ac-wallet"
       host="{{web3host}}"
-      web3="{{web3}}"></web3-wallet>
+      web3="{{web3}}"></ac-web3wallet>
 
     <ac-config web3host="{{web3host}}"></ac-config>
    <!--  <ac-password password="{{password}}"></ac-password> -->
@@ -89,12 +90,20 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
         //this.fire('map-update');
       },
 
+      ready: function() {
+        window.setInterval(function() {
+          this._getARCbalance();
+        }.bind(this), 5000);
+      },
+
       _password: function() {
         //console.log('Wallet: ',this.password);
       },
 
       // HIER TOKEN BALANCE OPVRAGEN EN TONEN
       _getARCbalance: function() {
+
+        if(!this.web3) { return; }
 
         this.contracturl = this.resolveUrl('./contracts/ARCToken.json');
 

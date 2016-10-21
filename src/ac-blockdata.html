@@ -1,6 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
-<link rel="import" href="../bower_components/web3-wallet/web3-wallet.html">
+<link rel="import" href="./ac-web3wallet.html">
 <link rel="import" href="./ac-ipfs.html">
 <link rel="import" href="./ac-config.html">
 <link rel="import" href="./ac-helpers.html">
@@ -28,7 +28,7 @@
     on-iron-localstorage-load="loadlastblock"
     ></iron-localstorage> -->
 
-    <web3-wallet
+    <ac-web3wallet
       id="web3wallet"
       account="{{account}}"
       password="{{password}}"
@@ -36,7 +36,7 @@
       keystore="{{keystore}}"
       walletname="ac-wallet"
       host="{{web3host}}"
-      web3="{{web3}}"></web3-wallet>
+      web3="{{web3}}"></ac-web3wallet>
 
     <ac-config web3host="{{web3host}}"></ac-config>
     <!-- <ac-password password="{{password}}"></ac-password> -->
@@ -72,7 +72,7 @@
         this.blockdata = [];
         this.lastblock = 1759875;
 
-        this.getBlockData();
+        //this.getBlockData();
       },
 
       detached: function() {
@@ -147,13 +147,13 @@
 
         // update blockdata object
         this.set('blockobject.' + blockJSON.offerid,block);
-       
+
         // and merge this object into the array
         var aindex = this.blockobject[blockJSON.offerid].arrayindex;
         if (!aindex && aindex !== 0) {
             block.arrayindex = this.push('blockdata', block.data) - 1;
           //console.log('adding new block',block.arrayindex);
-            //console.log('blockdata length is now ',this.blockdata.length,'arrayindex=',block.arrayindex,'offerid=',blockJSON.offerid);            
+            //console.log('blockdata length is now ',this.blockdata.length,'arrayindex=',block.arrayindex,'offerid=',blockJSON.offerid);
         } else {
           //console.log('updating existing block arrayindex=',aindex,'offerid=',blockJSON.offerid);
             this.splice('blockdata', aindex, 1, block.data);

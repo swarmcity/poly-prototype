@@ -352,6 +352,7 @@
         var encrypted = CryptoJS.AES.encrypt(this.password, this.password).toString();
         console.log('encr: ', encrypted);
         localStorage.setItem("ac-password", encrypted);
+        sessionStorage.setItem("ac-password", this.password);
         localStorage.setItem("ac-init", "1");
         this.restart();
       },
