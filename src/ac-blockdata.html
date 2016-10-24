@@ -56,25 +56,32 @@
         },
         blockdata: {
           type: Array,
-          notify: true
+          notify: true,
+          observer: '_blockdata'
         },
         blockobject: {
           type: Object,
-          notify: true
+          notify: true,
+          observer: '_blockobject'
         }
+      },
+
+      ready: function() {
+        window.addEventListener('web3-ready', function() {
+          console.log('blockdata knows web3?');
+          this.web3 = window.web3;
+          this.getBlockData();
+        }.bind(this));
       },
 
       attached: function() {
         console.log('blockdata attached');
         this.password = sessionStorage.getItem('ac-password');
-
         this.blockobject = {};
         this.blockdata = [];
         this.lastblock = 1759875;
-
-        this.web3 = window.web3;
-
-        //this.getBlockData();
+        this.getblockdata = false;
+        this.getBlockData();
       },
 
       detached: function() {
@@ -87,8 +94,15 @@
         }
       },
 
+      _blockdata: function() {
+        console.log('blockdata: ', this.blockdata);
+      },
+
+      _blockobject: function() {
+        console.log('blockobject: ', this.blockobject);
+      },
+
       _web3: function() {
-        //        console.log('got web3');
         this.getBlockData();
       },
 
@@ -165,7 +179,7 @@
 
       getBlockData: function() {
 
-
+        //console.log('getBlockData called');
         // check if all needed data items are in place.
         if (!this.web3 || !this.blockobject || !this.lastblock || this.getblockdata) {
           return;
@@ -180,7 +194,6 @@
           //console.log('<<<<< ', inoutcontractjson.address);
           var MyContract = self.web3.eth.contract(inoutcontractjson.abi);
           var myContractInstance = MyContract.at(inoutcontractjson.address);
-
 
           console.log('start-filter');
           self.eventwatcher = myContractInstance.allEvents({
@@ -225,7 +238,6 @@
               case 'OfferClaimed':
               // from inout.sol
               //  event OfferClaimed(uint offerID, address creator, string ipfsdescr, address claimer, address escrowaddress, address repaddress,uint timestamp);
-
 
                 self.updateBlock({
                   offerid: event.args.offerID.toNumber(),

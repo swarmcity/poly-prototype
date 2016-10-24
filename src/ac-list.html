@@ -6,6 +6,7 @@
 <script src="../bower_components/underscore/underscore.js"></script>
 <link rel="import" href="./ac-listitem.html">
 <link rel="import" href="./ac-profile.html">
+<link rel="import" href="./ac-spinner.html">
 
 <dom-module id="ac-list">
   <!-- Defines the element's style and local DOM -->
@@ -153,9 +154,17 @@
     <div class="main">
       <div class="container">
         <!-- <div class="alloffers"> -->
+        <template is="dom-if" if="{{!fetchdone}}">
+          <ac-spinner></ac-spinner>
+        </template>
+
+        <template is="dom-if" if="{{fetchdone}}">
+
           <template is="dom-repeat" items="[[blockdata]]" sort="sortblockdata">
             <ac-listitem data="[[item]]" sizeview="{{sizeview}}"></ac-listitem>
           </template>
+
+        </template>
         <!-- </div> -->
       </div>
     </div>
@@ -173,13 +182,23 @@
       is: 'ac-list',
       properties: {
           blockdata: {
-            type: Array
+            type: Array,
+            observer: '_blockdata'
           },
           sizeview: {
             type: String,
             observer: '_sizeview'
           }
 
+      },
+
+      ready: function() {
+        this.fetchdone = false;
+      },
+
+      _blockdata: function() {
+        //console.log('Blockdata: ', this.blockdata);
+        this.fetchdone = true;
       },
 
       sortblockdata: function(a, b) {
