@@ -18,6 +18,8 @@
         display: block;
         margin: 0px;
         padding: 0px;
+        --title-big: 40px;
+        --title-bigheight: 46px;
       }
       .total {
         width: 100vw;
@@ -26,7 +28,15 @@
         padding: 10vw;
         margin: 0px;
         /*background-color: white;*/
-        @apply(--base-structure);
+        /*@apply(--base-structure);*/
+        background: url(../images/AC-intro-bg2.png) #1d143f;
+        background-repeat: no-repeat;
+        background-position: bottom;
+        background-size: auto 100%;
+      }
+
+      neon-animated-pages {
+        height: 100%;
       }
 
       .horiz {
@@ -40,6 +50,10 @@
       }
       .vertic h1 {
         color: var(--ac-yellow);
+      }
+
+      .flex {
+        @apply(--layout-flex);
       }
       .blueback {
 /*        background-color: var(--locals-blue);*/
@@ -72,62 +86,29 @@
        @apply(--ac-font-small);
       }
 
+      .maintitle {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+      }
+
       .maintitle h1 {
-      @apply(--montserrat-light);
-      color: var(--ac-yellow);
-      -webkit-margin-before:0px;
-      -webkit-margin-after:0px;
-      -webkit-margin-start:0em;
-      -webkit-margin-end:0em;
-      margin: 0px 20px 0px 20px;
-      padding: 0px;
-      font-size: 70px;
-      line-height: 126px;
-/*      animation: titleglow 25s linear 10s infinite;*/
+        font-size: var(--title-big);
+        line-height: var(--title-bigheight);
+        @apply(--montserrat-semibold);
+        color: white;
+        margin: 9px 0px 0px 0px;
       }
 
-      @-webkit-keyframes titleglow {
-        0% {
-          opacity: 1;
-          }
-        50% {
-          opacity: 0;
-        }
-        100% {
-          opacity: 1;
-        }
-      }
-
-      @-moz-keyframes titleglow {
-        0% {
-          opacity: 1;
-          }
-        50% {
-          opacity: 0;
-        }
-        100% {
-          opacity: 1;
-        }
-      }
-
-      @keyframes titleglow {
-        0% {
-          opacity: 1;
-          }
-        50% {
-          opacity: 0;
-        }
-        100% {
-          opacity: 1;
-        }
-      }
 
     .intro {
-      width: 90%;
-      @apply(--layout-horizontal);
+      width: 100%;
+      height: 70%;
+      @apply(--layout-vertical);
       @apply(--layout-center);
-      @apply(--layout-wrap);
+      @apply(--layout-start-justified);
+      /*@apply(--layout-wrap);*/
       box-sizing: border-box;
+      /*background-color: red;*/
     }
 
     .syncuser {
@@ -160,141 +141,32 @@
       max-width: 500px;
     }
 
+    ac-button {
+      margin-top: 6vh;
+      @apply(--base-shadow-and-inset);
+    }
 
-
-  /* phone */
-  @media all and (min-width: 0) and (max-width: 400px) and (orientation: portrait) {
-
-    .maintitle h1 {
-    -webkit-margin-before:20px;
-    -webkit-margin-after:0px;
-    -webkit-margin-start:10em;
-    -webkit-margin-end:0em;
-    margin: 20px 0px 10px 0px;
-    padding: 0px;
-    width: 100%;
-    text-align: center;
-    font-size: 50px;
-    line-height: 56px;
+    .version {
+      font-size: 12px;
+      color: white;
+      opacity: 0.25;
     }
 
 
-      .intro {
-      padding-bottom:30px;
-      @apply(--layout-horizontal);
-      @apply(--layout-center-center);
-
-      }
-    .syncuser {
-      @apply(--layout-horizontal);
-      @apply(--layout-center-center);
-      margin-top:50px;
-      box-sizing: border-box;
-      padding-top: 10px;
-    }
-
-  .maintitle {
-      @apply(--layout-vertical);
-      @apply(--layout-center-center);
-    }
-
-  }
-
-  /* between phone and desktop */
-
-  @media all and (min-width: 401px) and (max-width: 950px) {
-
-      .intro {
-      padding-bottom:30px;
-      @apply(--layout-horizontal);
-      @apply(--layout-center-center);
-
-      }
-    .syncuser {
-      @apply(--layout-horizontal);
-      @apply(--layout-center-center);
-      margin-top:50px;
-      box-sizing: border-box;
-      padding: 10px 20px 20px 20px;
-      width: 100%;
-    }
-
-  .maintitle {
-      @apply(--layout-vertical);
-      @apply(--layout-center-center);
-    }
-
-}
-
-  /* desktop-large */
-  @media all and (min-width: 951px) and (max-width: 1600px) {
-    .maintitle h1 {
-    -webkit-margin-before:0px;
-    -webkit-margin-after:0px;
-    -webkit-margin-start:0em;
-    -webkit-margin-end:0em;
-    margin: 0px 60px 0px 0px;
-    padding: 0px;
-    font-size: 90px;
-    line-height: 106px;
-    }
-
-    .intro {
-      @apply(--layout-vertical);
-      @apply(--layout-start);
-    }
-    .syncuser {
-      @apply(--layout-vertical);
-      @apply(--layout-start);
-    }
-
-
-  }
-  /* desktop-xlarge */
-  @media all and (min-width: 1601px) {
-    .maintitle h1 {
-      @apply(--opensans-light);
-
-    -webkit-margin-before:0px;
-    -webkit-margin-after:0px;
-    -webkit-margin-start:0em;
-    -webkit-margin-end:0em;
-    margin: 0px 0px 0px 0px;
-    padding: 0px;
-    font-size: 110px;
-    line-height: 116px;
-    }
-    .intro {
-      @apply(--layout-vertical);
-      @apply(--layout-start);
-    }
-    .syncuser {
-      @apply(--layout-vertical);
-      @apply(--layout-start);
-    }
-
-  }
 
     </style>
 
-    <neon-animated-pages attr-for-selected="state" selected="{{state}}" entry-animation="slide-from-right-animation" exit-animation="slide-left-animation">
-      <neon-animatable state="0">
-
-
-    <div class="total blueback horiz">
-
+    <neon-animated-pages id="pages" selected="0" entry-animation="{{entryAnimation}}" exit-animation="{{exitAnimation}}">
+    <neon-animatable state="0">
+    <div class="total horiz">
       <div class="intro">
         <div class="maintitle">
-          <h1>Welcome</h1>
-        <div class="whitespace"></div>
-        <div class="whitespace"></div>
-
-        <ac-button on-tap="newuser" bg="yellow" txtcolor="base" txtbtn>Let's go!</ac-button>
+          <ac-icon icon="ac-brandlogo-color" big></ac-icon>
+          <h1>arcade.city</h1>
         </div>
-        <div class="whitespace"></div>
-
-    </div>
-
+          <p class="version">v0.0.1</p>
+        <ac-button on-tap="newuser" bg="red" txtcolor="white" txtbtn>Play!</ac-button>
+      </div>
     </div>
     </neon-animatable>
 
@@ -326,7 +198,9 @@
   <script>
     Polymer({
       is: 'ac-newuser',
-
+  behaviors: [
+    Polymer.NeonAnimationRunnerBehavior
+  ],
       properties: {
         password: {
           type: String,
@@ -339,6 +213,16 @@
         passcheck: {
           type: Boolean,
           value: true
+        },
+
+        entryAnimation: {
+          type: String,
+          value: 'slide-from-right-animation'
+        },
+
+        exitAnimation: {
+          type: String,
+          value: 'slide-left-animation'
         }
       },
 
