@@ -40,6 +40,7 @@
           longitude="{{longitude}}"
           accuracy="3">
         </leaflet-geolocation>
+
       <!-- </template> -->
       <template is="dom-if" if="{{location}}">
         <leaflet-marker draggable="true" on-dragend="markerdragend" latitude="{{location.latlng.lat}}" longitude="{{location.latlng.lng}}"></leaflet-marker>
@@ -78,7 +79,7 @@
       },
 
       mapready: function(){
-        
+
         this.initmap();
         // if nothing was inited now - the lat/lng were not given.
         // so enable our own geolocation component
@@ -104,10 +105,10 @@
         }
       },
 
-    
+
 
       // this triggers when geolocation is done
-      locationfound: function(e) {        
+      locationfound: function(e) {
         this.setmapgeo(e.detail.latitude,e.detail.longitude);
       },
 
@@ -135,7 +136,8 @@
           lng: lng
         }).then(function(response) {
           // received address response
-          //self.$.leaflet.map.invalidateSize();
+          self.$.leaflet.map.invalidateSize();
+
           var address = JSON.parse(response)
           self.set('location', {
             latlng: {
