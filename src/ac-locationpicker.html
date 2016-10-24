@@ -138,7 +138,11 @@
           // received address response
           self.$.leaflet.map.invalidateSize();
 
-          var address = JSON.parse(response)
+          var address = JSON.parse(response);
+
+          this.latitude = lat;
+          this.longitude = lng;
+          
           self.set('location', {
             latlng: {
               lat: lat,
