@@ -1,6 +1,6 @@
 z<link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-request.html">
-<link rel="import" href="../bower_components/web3-wallet/web3-wallet.html">
+<link rel="import" href="./ac-web3wallet.html">
 
 <link rel="import" href="./ac-ipfs.html">
 <link rel="import" href="./ac-password.html">
@@ -22,7 +22,8 @@ z<link rel="import" href="../bower_components/polymer/polymer.html">
 
      <!-- faucet stuff -->
     <ac-helpers id="helpers"></ac-helpers>
-    <web3-wallet
+
+    <!-- <ac-web3wallet
       id="web3wallet"
       account="{{account}}"
       password="{{password}}"
@@ -30,9 +31,9 @@ z<link rel="import" href="../bower_components/polymer/polymer.html">
       keystore="{{keystore}}"
       walletname="ac-wallet"
       host="{{web3host}}"
-      web3="{{web3}}"></web3-wallet>
+      web3="{{web3}}"></ac-web3wallet>
 
-    <ac-config web3host="{{web3host}}"></ac-config>
+    <ac-config web3host="{{web3host}}"></ac-config> -->
    <!--  <ac-password password="{{password}}"></ac-password> -->
     <!-- <h1 on-tap="donate">GEEF HIER DIE TOKENS</h1> -->
 
@@ -84,9 +85,18 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
         this.password = sessionStorage.getItem('ac-password');
       },
 
+
       _web3: function() {
         this._getARCbalance();
         //this.fire('map-update');
+        this.web3 = window.web3;
+
+      },
+
+      ready: function() {
+        window.setInterval(function() {
+          this._getARCbalance();
+        }.bind(this), 5000);
       },
 
       _password: function() {
@@ -95,6 +105,8 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
 
       // HIER TOKEN BALANCE OPVRAGEN EN TONEN
       _getARCbalance: function() {
+
+        if(!this.web3) { return; }
 
         this.contracturl = this.resolveUrl('./contracts/ARCToken.json');
 
@@ -105,7 +117,8 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
           var tokenContract = self.web3.eth.contract(contractjson.abi);
           var tokenContractInstance = tokenContract.at(contractjson.address);
           var account = self.$.helpers.fixaddress(self.account);
-          self.arcbalance = tokenContractInstance.balanceOf(account) / 1e18;
+          var arcbalance = tokenContractInstance.balanceOf(account) / 1e18;
+          self.arcbalance = arcbalance.toFixed(2);
           self.balanceloaded = true;
           self.fire('balance-loaded');
           self.fire('map-update');

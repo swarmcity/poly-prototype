@@ -1,5 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/web3-wallet/web3-wallet.html">
+<link rel="import" href="./ac-web3wallet.html">
 <link rel="import" href="./ac-config.html">
 <link rel="import" href="./ac-ipfs.html">
 <link rel="import" href="./ac-password.html">
@@ -8,7 +8,7 @@
 <dom-module id="ac-transact">
 
 <template>
-      <web3-wallet
+      <ac-web3wallet
       id="web3wallet"
       account="{{account}}"
       password="{{password}}"
@@ -16,7 +16,7 @@
       keystore="{{keystore}}"
       walletname="ac-wallet"
       host="{{web3host}}"
-      web3="{{web3}}"></web3-wallet>
+      web3="{{web3}}"></ac-web3wallet>
 
       <ac-config web3host="{{web3host}}"></ac-config>
      <!--  <ac-password password="{{password}}"></ac-password> -->
@@ -48,7 +48,7 @@
 
           self.ipfshash = offer_ipfshash;
           self.fire('log-event', {
-            message: 'Created IPFS: ' + offer_ipfshash
+            message: 'ipfsdone'
           });
           console.log('Offer saved in IPFS', offer_ipfshash);
           self.createAllowance(function() {
@@ -62,9 +62,9 @@
 
         var self = this;
 
-        self.fire('log-event', {
-          message: 'Creating allowance.'
-        });
+        // self.fire('log-event', {
+        //   message: 'Creating allowance'
+        // });
 
         self.$.helpers.getfile('./contracts/localsInOut.json', function(err, localsinoutcontractjson) {
         self.$.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
@@ -74,6 +74,7 @@
             //console.log(err, contractjson);
             self.web3.eth.getGasPrice(function(err, result) {
               var gasPrice = result.toNumber(10);
+              console.log(gasPrice);
               // self.fire('statusupdate', {
               //   message: 'creating allowance'
               // });
@@ -83,8 +84,8 @@
               result = myContractInstance.allowance.sendTransaction(self.$.helpers.fixaddress(self.account), localsinoutcontractjson.address, {
                   from: account,
                   gasPrice: gasPrice,
-                  gasLimit: 600000,
-                  gas: 600000,
+                  gasLimit: 1200000,
+                  gas: 1200000,
                   data: arccontractjson.bytecode
                 },
                 function(err, result) {
@@ -97,14 +98,19 @@
                     console.log('Create Allowance');
                   } else {
                     console.log('Create Allowance');
-                    console.log('allowance Transaction Successful! ', result);
-                    self.fire('log-event', {
-                      message: 'done creating allowance. TxHash=' + result,
-                      error: err
-                    });
+                    console.log('Allowance TX: ', result);
+
+
+                    // self.fire('log-event', {
+                    //   message: 'Allowance TX: ' + result,
+                    //   error: err
+                    // });
 
                     self.waitTx(result,function(){
                       console.log('allowance created. Next step...');
+                      self.fire('log-event', {
+                        message: 'allowancedone'
+                      });
                       cb();
                     });
                   }
@@ -136,8 +142,8 @@
             result = myContractInstance.newOffer.sendTransaction(self.hashtag, self.offeramount * 1e18, self.ipfshash, {
                 from: account,
                 gasPrice: gasPrice,
-                gasLimit: 600000,
-                gas: 600000,
+                gasLimit: 1200000,
+                gas: 1200000,
                 data: contractjson.bytecode
               },
               function(err, result) {
@@ -151,16 +157,15 @@
                   console.log('NewOffer called on contract',contractjson.address);
                   console.log('Transaction Successful!');
                   self.fire('log-event', {
-                    message: 'NewOffer called on contract ' + contractjson.address
+                    message: 'escrowstart'
                   });
                   // self.push('statuslog', {
                   //   'msg': 'Creating escrow.'
                   // });
                   //self.progress = 'addedtoindex';
                   console.log('Tx hash=', result);
-                  self.fire('log-event', {
-                    message: 'Tx hash=' + result
-                  });
+
+
                   // self.push('statuslog', {
                   //   'msg': result
                   // });
@@ -234,6 +239,8 @@
           }
           // Get info about latest Ethereum block
           var block = this.web3.eth.getBlock(blockHash);
+          console.log('block: ', block.number);
+
           --blockCounter;
           // Found tx hash?
           if (block.transactions.indexOf(txHash) > -1) {
@@ -263,6 +270,9 @@
 
       claimContract: function(offerid, cb) {
         var self = this;
+        self.fire('log-event', {
+          message: 'claimstart'
+        });
         self.$.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
           console.log(err, contractjson);
           self.web3.eth.getGasPrice(function(err, result) {
@@ -277,8 +287,8 @@
             result = myContractInstance.claim.sendTransaction(offerid, {
                 from: account,
                 gasPrice: gasPrice,
-                gasLimit: 600000,
-                gas: 600000,
+                gasLimit: 1200000,
+                gas: 1200000,
                 data: contractjson.bytecode
               },
               function(err, result) {
@@ -299,6 +309,9 @@
                 // TODO : actually wait for completion...
 
                 self.waitTx(result,function(){
+                  self.fire('log-event', {
+                    message: 'claimdone'
+                  });
                   console.log('escrow claimed. Next step...');
                 });
 
@@ -310,6 +323,9 @@
 
       releaseContract: function(offerid, cb) {
         var self = this;
+        self.fire('log-event', {
+          message: 'releasestart'
+        });
         self.$.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
           console.log(err, contractjson);
           self.web3.eth.getGasPrice(function(err, result) {
@@ -324,8 +340,8 @@
             result = myContractInstance.confirm(offerid, {
                 from: account,
                 gasPrice: gasPrice,
-                gasLimit: 600000,
-                gas: 600000,
+                gasLimit: 1200000,
+                gas: 1200000,
                 data: contractjson.bytecode
               },
               function(err, result) {
@@ -337,6 +353,12 @@
                   console.log('Transaction Successful!');
 
                   console.log('Tx hash=', result);
+
+                  self.fire('log-event', {
+                    message: 'releasedone'
+                  });
+
+
                   cb();
                   // set vote status to TxHash received
                   //self.votestatus = 2;
@@ -354,7 +376,6 @@
           });
         });
       }
-
 
 
     });

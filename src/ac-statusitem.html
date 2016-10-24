@@ -1,0 +1,61 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/ac-style/ac-style.html">
+
+<dom-module id="ac-statusitem">
+  <!-- Defines the element's style and local DOM -->
+  <template>
+    <style>
+      :host {
+        display: block;
+        padding: 8px;
+        --item-opacity: 0.5;
+      }
+
+      p {
+        @apply(--ac-font-body1);
+        font-size: 12px;
+        color: var(--ac-blue);
+        margin-left: 10px;
+      }
+
+      .statusdiv {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        color: var(--ac-blue);
+        opacity: var(--item-opacity);
+      }
+
+
+    </style>
+    <div class="statusdiv">
+      <ac-icon icon="ac-v" small iconcolor="ac-blue"></ac-icon>
+      <p>{{msg}}</p>
+    </div>
+  </template>
+  <!-- Creates the element's prototype and registers it -->
+  <script>
+    Polymer({
+      is: 'ac-statusitem',
+      properties: {
+        done: {
+          type: Boolean,
+          value: false,
+          observer: '_done'
+        },
+        msg: {
+          type: String
+        }
+      },
+
+      _done: function() {
+        if(this.done) {
+          this.customStyle['--item-opacity'] = '1';
+          this.updateStyles();
+        } else {
+          this.customStyle['--item-opacity'] = '0.3';
+          this.updateStyles();
+        }
+      }
+    });
+  </script>
+</dom-module>

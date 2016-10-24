@@ -5,6 +5,7 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <script src="../bower_components/underscore/underscore.js"></script>
 <link rel="import" href="./ac-listitem.html">
+<link rel="import" href="./ac-profile.html">
 
 <dom-module id="ac-list">
   <!-- Defines the element's style and local DOM -->
@@ -52,7 +53,9 @@
         position: absolute;
       }
 
-
+      ::-webkit-scrollbar {
+          display: none;
+      }
       .toppart {
         width: 100%;
         height: var(--toppart-height);
@@ -146,7 +149,6 @@
       <ac-button icon="ac-filter" bg="yellow" txtcolor="base" on-tap="toFilter" small></ac-button>
     </div>
     </div>
-
 
     <div class="main">
       <div class="container">

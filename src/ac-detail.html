@@ -5,6 +5,7 @@
 <link rel="import" href="./ac-ipfs.html">
 <link rel="import" href="./ac-wallet.html">
 <link rel="import" href="./ac-helpers.html">
+<link rel="import" href="./ac-statusitem.html">
 
 <dom-module id="ac-detail">
   <!-- Defines the element's style and local DOM -->
@@ -433,6 +434,14 @@
         to {transform: rotate(360deg);}
     }
 
+    ac-wallet {
+      padding: 0px;
+    }
+
+    .status {
+      @apply(--layout-start-justified);
+    }
+
   </style>
 
     <div class="topbar">
@@ -454,14 +463,14 @@
            <img src="{{data.ipfsdata.userdata.avatarurl}}">
          </div>
          <div class="offerername_detail">
-           <p><span>{{data.ipfsdata.userdata.aka}} {{data.offerid}}</span></p>
+           <p><span>{{data.ipfsdata.userdata.aka}}</span></p>
          </div>
        </div>
 
        <div class="offercontenttxt_detail">
-           <p>Need a ride to<br><span class="detail_addresses">{{data.ipfsdata.toaddress.display_name}}</span></p>
+           <p>Need a ride to<br><span class="detail_addresses">{{data.ipfsdata.toaddress}}</span></p>
            <br>
-           <p class="pickmeup">Pick me up at<br><span class="detail_addresses">{{data.ipfsdata.fromaddress.display_name}}</span></p>
+           <p class="pickmeup">Pick me up at<br><span class="detail_addresses">{{data.ipfsdata.fromaddress}}</span></p>
        </div>
 
        <div class="amountandclaimer">
@@ -521,10 +530,12 @@
        <div class="offercontent_detail someheight centeredtxt certainwidth">
          <ac-loader small>Sending ARC tokens to offer</ac-loader>
          <div class="whitespace"></div>
-         <template is="dom-repeat" items="{{log}}">
-           <p class="small">{{item.message}}</p>
-         </template>
-         <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
+         <div class="status">
+           <ac-statusitem id="s2" done="{{done2}}" msg="Allowance granted"></ac-statusitem>
+           <ac-statusitem id="s3" done="{{done3}}" msg="Claim start"></ac-statusitem>
+           <ac-statusitem id="s4" done="{{done4}}" msg="Claim  done"></ac-statusitem>
+         </div>
+         <!-- <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon> -->
        </div>
      </template>
      <template is="dom-if" if="{{_is(claimstep,'fourth')}}">
@@ -566,14 +577,12 @@
          <div class="offercontent_detail someheight centeredtxt certainwidth">
            <ac-loader small>Doing payout now</ac-loader>
            <div class="whitespace"></div>
-
-           <ac-icon class="refresher" icon="refresh1" iconcolor="yellow"></ac-icon>
          </div>
        </template>
+
        <template is="dom-if" if="{{_is(claimstep,'relfourth')}}">
          <div class="offercontent_detail someheight">
          <h1>Payment Successful.</h1>
-
          <div class="whitespace"></div>
          <div class="whitespace"></div>
          <ac-button txtbtn on-tap="toCurrent" bg="turquoise">Thanks</ac-button>
@@ -617,6 +626,9 @@
         this.claimstep = 'first';
         this.thisismyoffer = false;
         this.log = [];
+        this.done2 = false;
+        this.done3 = false;
+        this.done4 = false;
       },
 
       _offerid: function() {
@@ -665,7 +677,19 @@
 
         app.$.transact.addEventListener('log-event', function(e) {
           console.log(e.detail);
-          self.push('log',e.detail);
+          switch(e.detail.message){
+            case 'allowancedone':
+              self.done2 = true;
+              break;
+            case 'claimstart':
+              self.done3 = true;
+              break;
+              case 'claimdone':
+                self.done3 = true;
+                break;
+
+          }
+          //self.push('log',e.detail);
         });
         this.claimstep = 'third';
       },

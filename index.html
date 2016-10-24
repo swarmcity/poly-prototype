@@ -1,21 +1,33 @@
 <!doctype html>
 <html>
   <head>
-    <title>Arcade City</title>
+    <title>arcade.city</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="/manifest.json">
     <script src="/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+
+
     <link rel="import" href="/bower_components/iron-localstorage/iron-localstorage.html">
     <link rel="import" href="./ac-spinner.html">
     <style>
       body {
         margin: 0px;
         padding: 0px;
+        background-color: #09041C;
+        background-image: url(../images/AC.png);
+        background-repeat: no-repeat;
+        background-position: 50% -100%;
+      }
+      ::-webkit-scrollbar { 
+          display: none; 
       }
     </style>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web-animations/2.2.2/web-animations-next-lite.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web-animations/2.2.2/web-animations.min.js"></script>
   </head>
+
   <body unresolved class="fullbleed layout vertical">
     <template is="dom-bind" id="stage">
       <iron-localstorage
