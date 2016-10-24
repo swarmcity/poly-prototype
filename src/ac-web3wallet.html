@@ -121,6 +121,11 @@ Example:
      * Initialize a new wallet
     */
     initWallet: function() {
+      // web3 is a singleton object. bailout if already exists
+      if(window.web3){
+        return;
+      }
+
       var self = this;
       if (!this.password){
         return;
@@ -149,6 +154,11 @@ Example:
     },
 
     _loadWallet: function() {
+      // web3 is a singleton object. bailout if already exists
+      if(window.web3){
+        return;
+      }
+
       this.keystore = new lightwallet.keystore.deserialize(this.walletData);
       this._configureWeb3();
     },
@@ -163,21 +173,18 @@ Example:
         transaction_signer: this.keystore
       });
 
-      if(!window.web3){
-        var web3 = new Web3();
-        web3.setProvider(web3Provider);
-        //debugger;
-        this.keystore.passwordProvider = function(callback) {
-          callback(null, self.password);
-        };
+    
+      var web3 = new Web3();
+      web3.setProvider(web3Provider);
+      //debugger;
+      this.keystore.passwordProvider = function(callback) {
+        callback(null, self.password);
+      };
 
-        this.web3 = web3;
-        window.web3 = web3;
-      } else {
-        this.web3 = window.web3;
-      }
-
-
+      this.web3 = web3;
+     
+      window.web3 = web3;
+     
       this.updateBalance();
 
       this.fire('web3-ready');
