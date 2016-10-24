@@ -37,6 +37,7 @@
 <dom-module id="ac-app">
   <template>
     <style>
+
       :host {
       --app-drawer-width: 290px;
       @apply(--base-structure);
@@ -57,80 +58,140 @@
         height: 100%;
       }
 
-
     </style>
 
-<app-drawer-layout force-narrow>
-  <app-drawer align="right" id="drawer">
-    <div class="drawercontent">
-    <h1>here be filters</h1>
-    </div>
-  </app-drawer>
+    <app-drawer-layout force-narrow>
+      <app-drawer align="right" id="drawer">
+        <div class="drawercontent">
+          <h1>here be filters</h1>
+        </div>
+      </app-drawer>
 
-    <app-location route="{{route}}"></app-location>
+      <app-location
+        route="{{route}}">
+      </app-location>
 
-
-    <app-route
+      <app-route
         route="{{route}}"
         pattern="/:page"
         data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
+        tail="{{subroute}}">
+      </app-route>
 
-    <app-route
+      <app-route
         route="{{subroute}}"
         data="{{subrouteData}}"
-        pattern="/:offerid"></app-route>
+        pattern="/:offerid">
+      </app-route>
 
+      <neon-animated-pages
+        selected="[[page]]"
+        attr-for-selected="name"
+        fallback-selection="view404"
+        role="main">
 
-<!--  <h1>OFFERS</h1>
-<template is="dom-repeat" items="{{blockdata}}">
-  <p>Block</p>
-  <p>{{item.offerid}}</p>
-</template> -->
+      <ac-newuser
+        name="newuser">
+      </ac-newuser>
 
+      <ac-password
+        name="password">
+      </ac-password>
 
+      <ac-map
+        name="map"
+        blockdata="[[blockdata]]"
+        latitude="{{latitude}}"
+        longitude="{{longitude}}"
+        on-to-filter="firetoggle"
+        id="acmap">
+      </ac-map>
 
-<neon-animated-pages
-            selected="[[page]]"
-            attr-for-selected="name"
-            fallback-selection="view404"
-            role="main">
+      <ac-list
+        name="list"
+        blockdata="[[blockdata]]"
+        on-to-filter="firetoggle">
+      </ac-list>
 
-            <ac-newuser name="newuser"></ac-newuser>
-            <ac-password name="password"></ac-password>
+      <ac-detail
+        name="detail"
+        id="detail"
+        blockdata="[[blockdata]]"
+        blockobject="[[blockobject]]"
+        offerid="[[subrouteData.offerid]]"
+        restamp>
+      </ac-detail>
 
-            <ac-map name="map"
-            blockdata="[[blockdata]]"   latitude="{{latitude}}" longitude="{{longitude}}" on-to-filter="firetoggle" id="acmap"></ac-map>
+      <ac-myitems
+        name="myitems"
+        blockdata="[[blockdata]]"
+        restamp>
+      </ac-myitems>
 
-            <ac-list name="list" blockdata="[[blockdata]]" on-to-filter="firetoggle"></ac-list>
+      <ac-myitem
+        name="myitem"
+        blockdata="[[blockdata]]"
+        key="[[key]]"
+        restamp>
+      </ac-myitem>
 
-            <ac-detail name="detail" id="detail" blockdata="[[blockdata]]" blockobject="[[blockobject]]" offerid="[[subrouteData.offerid]]" restamp></ac-detail>
+      <ac-newoffer
+        latitude="{{latitude}}"
+        longitude="{{longitude}}"
+        name="newoffer"
+        restamp>
+      </ac-newoffer>
 
-            <ac-myitems name="myitems" blockdata="[[blockdata]]" restamp></ac-myitems>
-            <ac-myitem name="myitem" blockdata="[[blockdata]]" key="[[key]]" restamp></ac-myitem>
+      <ac-profile
+        name="profile"
+        account="[[account]]"
+        restamp>
+      </ac-profile>
 
-            <ac-newoffer latitude="{{latitude}}" longitude="{{longitude}}" name="newoffer" restamp></ac-newoffer>
+      <ac-wallet
+        id="acwallet"
+        name="wallet"
+        account="{{account}}"
+        arcbalance={{arcbalance}}
+        balance="{{balance}}"
+        restamp>
+      </ac-wallet>
 
-            <ac-profile name="profile" account="[[account]]" restamp></ac-profile>
-            
-            <ac-wallet id="acwallet" name="wallet" account="{{account}}" arcbalance={{arcbalance}} balance="{{balance}}" restamp></ac-wallet>
+      <ac-settings
+        name="settings"
+        restamp>
+      </ac-settings>
 
-            <ac-settings name="settings" restamp></ac-settings>
+      <ac-view404
+        name="view404"
+        restamp>
+      </ac-view404>
 
-            <ac-view404 name="view404" restamp></ac-view404>
+    </neon-animated-pages>
 
-       </neon-animated-pages>
+    <ac-sizeview
+      sizeview="{{sizeview}}">
+    </ac-sizeview>
 
-    <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
-    <ac-helpers id="helpers"></ac-helpers>
-    <iron-request id="donaterequest"></iron-request>
+    <ac-helpers id="helpers">
+    </ac-helpers>
 
-    <ac-transact on-txhash="" on-mined="" on-error="" id="transact"></ac-transact>
+    <iron-request id="donaterequest">
+    </iron-request>
 
-    <ac-blockdata blockdata="{{blockdata}}" blockobject="{{blockobject}}"></ac-blockdata>
+    <ac-transact
+      on-txhash=""
+      on-mined=""
+      on-error=""
+      id="transact">
+    </ac-transact>
 
+    <ac-blockdata
+      blockdata="{{blockdata}}"
+      blockobject="{{blockobject}}">
+    </ac-blockdata>
 
-</app-drawer-layout>
+  </app-drawer-layout>
 
   </template>
 

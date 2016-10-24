@@ -4,7 +4,6 @@
 <link rel="import" href="../bower_components/iron-ajax/iron-request.html">
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="./ac-wallet.html">
-
 <link rel="import" href="./ac-ipfs.html">
 <link rel="import" href="./ac-helpers.html">
 <link rel="import" href="./ac-config.html">
@@ -82,7 +81,7 @@
         background-color: white;
         z-index: 1;
         /*background-color: rgba(31,23,66,0.05);*/
-        /*text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);*/        
+        /*text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);*/
       }
 
       .topbar {
@@ -190,7 +189,7 @@
       .usernamebig {
         @apply(--montserrat-hairline);
         color:var(--ac-blue);
-        margin: 0px; 
+        margin: 0px;
         font-size: 40px;
         line-height: 48px;
         }
@@ -363,6 +362,10 @@
 
       },
 
+      ready: function() {
+        
+      },
+
       attached: function() {
         this.donateview = false;
         this.accountlocked = true;
@@ -370,7 +373,7 @@
 
         // document.addEventListener('web3-ready', function() {
         //   console.log('web3');
-        //   //this.account = app.$.wallet.account;
+        //   this.account = app.$.wallet.account;
         // }.bind(this));
       },
 
