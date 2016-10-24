@@ -28,7 +28,7 @@
     on-iron-localstorage-load="loadlastblock"
     ></iron-localstorage> -->
 
-    <ac-web3wallet
+    <!-- <ac-web3wallet
       id="web3wallet"
       account="{{account}}"
       password="{{password}}"
@@ -38,7 +38,7 @@
       host="{{web3host}}"
       web3="{{web3}}"></ac-web3wallet>
 
-    <ac-config web3host="{{web3host}}"></ac-config>
+    <ac-config web3host="{{web3host}}"></ac-config> -->
     <!-- <ac-password password="{{password}}"></ac-password> -->
 
     <ac-ipfs id="ipfs"></ac-ipfs>
@@ -71,6 +71,8 @@
         this.blockobject = {};
         this.blockdata = [];
         this.lastblock = 1759875;
+
+        this.web3 = window.web3;
 
         //this.getBlockData();
       },

@@ -73,7 +73,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         box-sizing: border-box;
         @apply(--layout-vertical);
         @apply(--layout-center-center);
-      
+
       }
 
       .sendcoiners {
@@ -81,7 +81,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         max-width: 600px;
         box-sizing: border-box;
         @apply(--layout-vertical);
-        @apply(--layout-center-center);        
+        @apply(--layout-center-center);
       }
 
 
@@ -274,7 +274,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <ac-helpers id="helpers"></ac-helpers>
     <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
-    <ac-config web3host="{{web3host}}" ipfs="{{ipfs}}" etherscanroot="{{etherscanroot}}"></ac-config>
+    <!-- <ac-config web3host="{{web3host}}" ipfs="{{ipfs}}" etherscanroot="{{etherscanroot}}"></ac-config> -->
 
     <ac-whisperer
     web3="{{web3}}"
@@ -301,7 +301,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <iron-collapse id="sendcoins">
         <template is="dom-if" if="{{_is(sendcoinstate,'first')}}">
-          
+
           <ac-input color="red" class="sendinput" autofocus type="number" inputvalue="{{amount}}" bind-value="{{amount}}" label="Amount"></ac-input>
           <ac-input color="red" class="sendinput" type="number" inputvalue="{{pincode}}" bind-value="{{pincode}}" label="Shortcode receiver"></ac-input>
 
@@ -483,6 +483,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       ready: function(){
+        this.web3 = window.web3;
         this._getARCbalance();
         var self = this;
 

@@ -179,9 +179,9 @@
         accuracy="3">
       </leaflet-geolocation>
 
-      <!-- <leaflet-tilelayer
-        url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.dark/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
-      </leaflet-tilelayer> -->
+      <leaflet-tilelayer
+        url="//1.base.maps.cit.api.here.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?app_id=s6z9incVaWY1oE3SoBol&app_code=iJKI11eGupM_wnz2_EQ2Kg" max-zoom="19">
+      </leaflet-tilelayer>
 
     </leaflet-map>
 
@@ -256,10 +256,6 @@
         }.bind(this));
 
         this.$.leafletmap.map.invalidateSize();
-
-        var layer = L.mapbox.tileLayer('https://api.mapbox.com/v3/mapbox.dark.json');
-
-        this.$.leafletmap.map.tileLayer = layer; 
 
         // TODO : remove this hack ?
         //window.setTimeout(this.leafletfix, 5000);
