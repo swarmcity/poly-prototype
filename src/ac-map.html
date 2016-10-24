@@ -206,6 +206,10 @@
           type: Array,
           observer: '_blockdata'
         },
+        blockobject: {
+          type: Object,
+          observer: '_blockobject'
+        },
         sizeview: {
           type: String,
           observer: '_sizeview'
@@ -268,14 +272,18 @@
 
       _blockdata: function() {
         console.log('map blockdata: ',this.blockdata);
-        // for (var i = 0; i < this.blockdata.length; i++) {
-        //   var o = this.blockdata[i];
-        //   debugger;
-        //
-        //   if(o.status == 'added'){
-        //     this.appendMarker(o.ipfsdata.fromaddress.lat, o.ipfsdata.fromaddress.lon, o.ipfshash, o.offerid);
-        //   }
-        // }
+        for (var i = 0; i < this.blockdata.length; i++) {
+          var o = this.blockdata[i];
+          //debugger;
+
+          if(o.status == 'added'){
+            this.appendMarker(o.ipfsdata.fromaddress.lat, o.ipfsdata.fromaddress.lon, o.ipfshash, o.offerid);
+          }
+        }
+      },
+
+      _blockobject: function() {
+        console.log(this.blockobject);
       },
 
       appendMarker: function(lat, lng, title, key) {

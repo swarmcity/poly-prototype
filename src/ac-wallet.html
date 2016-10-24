@@ -35,22 +35,10 @@ z<link rel="import" href="../bower_components/polymer/polymer.html">
 
     <ac-config web3host="{{web3host}}"></ac-config>
     <ac-password password="{{password}}"></ac-password>
-    <!-- <h1 on-tap="donate">GEEF HIER DIE TOKENS</h1> -->
 
     <ac-ipfsupload hidefileinput hash="{{hash}}" url="{{imgurl}}" id="ipfsupload">
       <img src="{{imgurl}}">
     </ac-ipfsupload>
-<!--
-      <ac-locationtracker
-        latitude="{{latitude}}"
-        longitude="{{longitude}}"
-        address="{{address}}"
-        one-shot
-        reverse-geocode
-      ></ac-locationtracker> -->
-<!--
-Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
- -->
 
   </template>
   <!-- Creates the element's prototype and registers it -->
@@ -81,14 +69,12 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
         }
       },
 
-
-
       attached: function(){
         this.password = sessionStorage.getItem('ac-password');
       },
 
       _web3: function() {
-        this._getARCbalance();
+        //this._getARCbalance();
         //this.fire('map-update');
         //this.web3 = window.web3;
       },
@@ -98,39 +84,11 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
         window.addEventListener('web3-ready', function() {
           console.log('wallet knows web3?');
           this.web3 = window.web3;
-          //this.getBlockData();
         }.bind(this));
-
-        window.setInterval(function() {
-          this._getARCbalance();
-        }.bind(this), 5000);
       },
 
       _password: function() {
         //console.log('Wallet: ',this.password);
-      },
-
-      // HIER TOKEN BALANCE OPVRAGEN EN TONEN
-      _getARCbalance: function() {
-        //debugger;
-        if(!this.web3) { return; }
-
-        this.contracturl = this.resolveUrl('./contracts/ARCToken.json');
-
-        var self = this;
-
-        this.importHref(this.contracturl, function(e) {
-          var contractjson = JSON.parse(e.target.import.body.innerText);
-          var tokenContract = self.web3.eth.contract(contractjson.abi);
-          var tokenContractInstance = tokenContract.at(contractjson.address);
-          var account = self.$.helpers.fixaddress(self.account);
-          var arcbalance = tokenContractInstance.balanceOf(account) / 1e18;
-          self.arcbalance = arcbalance.toFixed(2);
-          self.balanceloaded = true;
-          self.fire('balance-loaded');
-          self.fire('map-update');
-        });
-
       }
 
     });

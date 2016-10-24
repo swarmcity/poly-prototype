@@ -63,6 +63,10 @@
           type: Object,
           notify: true,
           observer: '_blockobject'
+        },
+        listen: {
+          type: Boolean,
+          observer: '_listen'
         }
       },
 
@@ -81,10 +85,14 @@
         this.blockdata = [];
         this.lastblock = 1759875;
         this.getblockdata = false;
-        this.getBlockData();
+        //this.getBlockData();
       },
 
       detached: function() {
+        this.stopListening();
+      },
+
+      stopListening: function() {
         if (this.eventwatcher) {
           try {
             this.eventwatcher.stopWatching();
@@ -92,6 +100,10 @@
             //console.log('ac-blockdata: error stopWatching', e);
           }
         }
+      },
+
+      startListening: function() {
+        this.getBlockData();
       },
 
       _blockdata: function() {
@@ -103,23 +115,23 @@
       },
 
       _web3: function() {
-        this.getBlockData();
+        //this.getBlockData();
       },
 
       initlastblock: function() {
-        this.lastblock = 1759875;
-        this.getBlockData();
+        //this.lastblock = 1759875;
+        //this.getBlockData();
       },
 
       loadlastblock: function() {
         //console.log('CACHE: found lastblock in localstorage', this.lastblock);
-        this.getBlockData();
+        //this.getBlockData();
       },
 
       initblockobject: function() {
         //this.blockdata = {};
         //this.blockobject = {};
-        this.getBlockData();
+        //this.getBlockData();
       },
 
       loadblockobject: function() {
@@ -129,7 +141,7 @@
         // }
         //console.log('CACHE: found blockdata in localstorage', Object.keys(this.blockobject).length, 'items');
         //this.blockdata = this.object2array(this.blockobject);
-        this.getBlockData();
+        //this.getBlockData();
       },
 
       updateBlock: function(blockJSON) {
@@ -179,7 +191,7 @@
 
       getBlockData: function() {
 
-        //console.log('getBlockData called');
+        console.log('getBlockData called');
         // check if all needed data items are in place.
         if (!this.web3 || !this.blockobject || !this.lastblock || this.getblockdata) {
           return;
@@ -199,7 +211,7 @@
           self.eventwatcher = myContractInstance.allEvents({
             fromBlock: self.lastblock,
           });
-
+//debugger;
           self.eventwatcher.watch(function(error, result) {
             if (error) {
               return;

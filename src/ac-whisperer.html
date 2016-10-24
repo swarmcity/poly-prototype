@@ -22,7 +22,7 @@ Example:
 @demo demo/index.html
 -->
 <dom-module id="ac-whisperer">
-  <template>  
+  <template>
   </template>
 </dom-module>
 
@@ -208,8 +208,8 @@ Polymer({
       });
 
       console.log("ac-whisperer: channelswitch, start listening to", this.topic);
-
-      this.filter.watch(this._processmessage.bind(this));
+//debugger;
+      //this.filter.watch(this._processmessage.bind(this));
     }
   },
 
@@ -234,7 +234,7 @@ Polymer({
               console.log('myAES=',aeskey);
 
               var encryptedkey = crypt.encrypt(aeskey);
-              console.log('myAES encrypted=',encryptedkey);                    
+              console.log('myAES encrypted=',encryptedkey);
 
               // create a new channel
               var datatopic = this._getpincode(10);
@@ -245,8 +245,9 @@ Polymer({
               this.localchannels[datatopic].filter = this.web3.shh.filter({
                 "topics": [this.web3.fromAscii(datatopic)],
               });
+              debugger;
               self.localchannels[datatopic].filter.watch(this._processmessage.bind(this));
-           
+
               this.remotechannels[payload.from] = {
                 aes: aeskey
               };
@@ -330,7 +331,7 @@ Polymer({
 
       // this.localchannels[topic] = {
       //   crypt: c,
-      //   messagequeue: [input]     
+      //   messagequeue: [input]
       // };
 
       this.raw_whisperpost(topic,{
@@ -382,7 +383,3 @@ Polymer({
 });
 
 </script>
-
-
-
-

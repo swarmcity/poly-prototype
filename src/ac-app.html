@@ -25,14 +25,15 @@
 <!-- <link rel="import" href="./ac-myitems.html"> -->
 <link rel="import" href="./ac-map.html">
 <link rel="import" href="./ac-detail.html">
-<!-- <link rel="import" href="./ac-ipfsupload.html"> -->
-<!-- <link rel="import" href="./ac-wallet.html"> -->
-<!-- <link rel="import" href="./ac-settings.html"> -->
-<!-- <link rel="import" href="./ac-view404.html"> -->
+<link rel="import" href="./ac-ipfsupload.html">
+<link rel="import" href="./ac-wallet.html">
+<link rel="import" href="./ac-settings.html">
+<link rel="import" href="./ac-view404.html">
 <link rel="import" href="./ac-transact.html">
 <link rel="import" href="./ac-helpers.html">
-<!-- <link rel="import" href="./ac-password.html"> -->
+<link rel="import" href="./ac-password.html">
 <link rel="import" href="./ac-spinner.html">
+<link rel="import" href="./ac-blockdata.html">
 
 <dom-module id="ac-app">
   <template>
@@ -101,13 +102,14 @@
       <ac-map
         name="map"
         blockdata="[[blockdata]]"
+        blockobject="[[blockobject]]"
         latitude="{{latitude}}"
         longitude="{{longitude}}"
         on-to-filter="firetoggle"
         id="acmap">
       </ac-map>
 
-      <ac-list
+       <ac-list
         name="list"
         blockdata="[[blockdata]]"
         on-to-filter="firetoggle">
@@ -122,19 +124,6 @@
         restamp>
       </ac-detail>
 
-      <ac-myitems
-        name="myitems"
-        blockdata="[[blockdata]]"
-        restamp>
-      </ac-myitems>
-
-      <ac-myitem
-        name="myitem"
-        blockdata="[[blockdata]]"
-        key="[[key]]"
-        restamp>
-      </ac-myitem>
-
       <ac-newoffer
         latitude="{{latitude}}"
         longitude="{{longitude}}"
@@ -145,6 +134,8 @@
       <ac-profile
         name="profile"
         account="[[account]]"
+        arcbalance="[[arcbalance]]"
+        balance="[[balance]]"
         restamp>
       </ac-profile>
 
@@ -152,7 +143,7 @@
         id="acwallet"
         name="wallet"
         account="{{account}}"
-        arcbalance={{arcbalance}}
+        arcbalance="{{arcbalance}}"
         balance="{{balance}}"
         restamp>
       </ac-wallet>
@@ -165,7 +156,7 @@
       <ac-view404
         name="view404"
         restamp>
-      </ac-view404>
+      </ac-view404> -->
 
     </neon-animated-pages>
 
@@ -179,7 +170,7 @@
     <iron-request id="donaterequest">
     </iron-request>
 
-    <ac-transact
+     <ac-transact
       on-txhash=""
       on-mined=""
       on-error=""

@@ -321,7 +321,7 @@
     </iron-localstorage>
 
     <ac-ipfs id="ipfs" ipfs="{{ipfs}}"></ac-ipfs>
-    <ac-wallet id="acwallet" web3="{{web3}}" account="{{acount}}" balance="{{balance}}" arcbalance="{{arcbalance}}"></ac-wallet>
+    <!-- <ac-wallet id="acwallet" web3="{{web3}}" account="{{acount}}" balance="{{balance}}" arcbalance="{{arcbalance}}"></ac-wallet> -->
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>
@@ -351,19 +351,23 @@
           type: Object,
           notify: true
         },
-        account: {
-          type: String,
-          notify: true
-        },
-        arcbalance: {
-          type: Number,
-          observer: '_arcbalance'
-        }
+        // account: {
+        //   type: String,
+        //   notify: true
+        // },
+        // arcbalance: {
+        //   type: Number,
+        //   observer: '_arcbalance'
+        // }
 
       },
 
       ready: function() {
-        
+        window.addEventListener('arc-there', function() {
+          console.log('profile knows arc there?');
+          this.account = window.account;
+          this.arcbalance = window.arcbalance;
+        }.bind(this));
       },
 
       attached: function() {
@@ -394,23 +398,23 @@
         }
       },
 
-      donate: function() {
-        var self = this;
-
-        self.$.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
-          console.log('send some ARC to ', self.$.helpers.fixaddress(self.account));
-          var url = 'https://eth.arcadecity.world:3000/donate/' + self.$.helpers.fixaddress(self.account) + '/' + arccontractjson.address;
-          console.log('tapping from faucet',url);
-          self.$.donaterequest.send({
-            url: url
-          }).then(function() {
-            console.log('donation requested');
-            console.log('check balance at ',self.etherscanroot + '/token/'+arccontractjson.address+'?a='+self.$.helpers.fixaddress(self.account));
-//            var btn = document.querySelector('#donatebtn');
-//            btn.hidden = true;
-          });
-        });
-      },
+//       donate: function() {
+//         var self = this;
+//
+//         self.$.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
+//           console.log('send some ARC to ', self.$.helpers.fixaddress(self.account));
+//           var url = 'https://eth.arcadecity.world:3000/donate/' + self.$.helpers.fixaddress(self.account) + '/' + arccontractjson.address;
+//           console.log('tapping from faucet',url);
+//           self.$.donaterequest.send({
+//             url: url
+//           }).then(function() {
+//             console.log('donation requested');
+//             console.log('check balance at ',self.etherscanroot + '/token/'+arccontractjson.address+'?a='+self.$.helpers.fixaddress(self.account));
+// //            var btn = document.querySelector('#donatebtn');
+// //            btn.hidden = true;
+//           });
+//         });
+//       },
 
       initprofile: function() {
         var userobject = {avatar: 'QmPh72SvymjpgSiYhguSbWi4hDLSuq9xuAfyys5eFjb8P6', aka: 'Mr. AC'};

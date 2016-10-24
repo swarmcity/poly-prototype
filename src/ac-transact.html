@@ -15,10 +15,9 @@
       balance="{{balance}}"
       keystore="{{keystore}}"
       walletname="ac-wallet"
-      host="{{web3host}}"
-      web3="{{web3}}"></ac-web3wallet>
+      ></ac-web3wallet>
 
-      <ac-config web3host="{{web3host}}"></ac-config>
+      <!-- <ac-config web3host="{{web3host}}"></ac-config> -->
      <!--  <ac-password password="{{password}}"></ac-password> -->
       <ac-ipfs id="ipfs"></ac-ipfs>
       <ac-helpers id="helpers"></ac-helpers>
@@ -28,6 +27,9 @@
     Polymer({
       is: 'ac-transact',
       properties: {
+        account: {
+          type: String
+        }
       },
       attached: function(){
         this.password = sessionStorage.getItem('ac-password');
@@ -36,14 +38,22 @@
         // console.log('ac-transact -> web3host=',this.password);
       },
 
+      ready: function() {
+        window.addEventListener('web3-ready', function() {
+          console.log('transact knows web3? ', this.web3);
+          //this.getBlockData();
+        }.bind(this));
+      },
+
 
       newOffer: function(offer, cb) {
+        //debugger;
         self = this;
         self.fire('log-event', {
           message: 'Creating new offer'
         });
         self.offeramount = offer.offeramount;
-        this.$.ipfs.add(new this.$.ipfs.ipfs.Buffer(JSON.stringify(offer)), function(err, result) {
+        self.$.ipfs.add(new this.$.ipfs.ipfs.Buffer(JSON.stringify(offer)), function(err, result) {
           var offer_ipfshash = result[0].hash;
 
           self.ipfshash = offer_ipfshash;
@@ -69,19 +79,19 @@
         self.$.helpers.getfile('./contracts/localsInOut.json', function(err, localsinoutcontractjson) {
         self.$.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
 
-
+          //debugger;
             //var allowance = _ARCCoin.allowance('0xe4d11ca64f35a909ccfd9076ac4f700133eb8cfb', _localsInOut.address).then(function(a) {
             //console.log(err, contractjson);
-            self.web3.eth.getGasPrice(function(err, result) {
+            window.web3.eth.getGasPrice(function(err, result) {
               var gasPrice = result.toNumber(10);
-              console.log(gasPrice);
+              //console.log(gasPrice);
               // self.fire('statusupdate', {
               //   message: 'creating allowance'
               // });
-              var MyContract = self.web3.eth.contract(arccontractjson.abi);
+              var MyContract = window.web3.eth.contract(arccontractjson.abi);
               var myContractInstance = MyContract.at(arccontractjson.address);
-              var account = self.$.helpers.fixaddress(self.account);
-              result = myContractInstance.allowance.sendTransaction(self.$.helpers.fixaddress(self.account), localsinoutcontractjson.address, {
+              var account = self.$.helpers.fixaddress(window.account);
+              result = myContractInstance.allowance.sendTransaction(self.$.helpers.fixaddress(window.account), localsinoutcontractjson.address, {
                   from: account,
                   gasPrice: gasPrice,
                   gasLimit: 1200000,
@@ -130,15 +140,15 @@
         });
         self.$.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
           console.log(err, contractjson);
-          self.web3.eth.getGasPrice(function(err, result) {
+          window.web3.eth.getGasPrice(function(err, result) {
             var gasPrice = result.toNumber(10);
             // self.push('statuslog', {
             //   'msg': 'Got gasprice'
             // });
             self.hashtag = "0x88c80a97cc95015662124a2069e51c706cbf3e80";
-            var MyContract = self.web3.eth.contract(contractjson.abi);
+            var MyContract = window.web3.eth.contract(contractjson.abi);
             var myContractInstance = MyContract.at(contractjson.address);
-            var account = self.$.helpers.fixaddress(self.account);
+            var account = self.$.helpers.fixaddress(window.account);
             result = myContractInstance.newOffer.sendTransaction(self.hashtag, self.offeramount * 1e18, self.ipfshash, {
                 from: account,
                 gasPrice: gasPrice,
@@ -227,7 +237,8 @@
 
         var blockCounter = 15;
         // Wait for tx to be finished
-        var filter = this.web3.eth.filter('latest').watch(function(err, blockHash) {
+        //debugger;
+        var filter = window.web3.eth.filter('latest').watch(function(err, blockHash) {
           if (blockCounter <= 0) {
             filter.stopWatching();
             filter = null;
@@ -238,7 +249,7 @@
             return false;
           }
           // Get info about latest Ethereum block
-          var block = this.web3.eth.getBlock(blockHash);
+          var block = window.web3.eth.getBlock(blockHash);
           console.log('block: ', block.number);
 
           --blockCounter;
@@ -275,14 +286,14 @@
         });
         self.$.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
           console.log(err, contractjson);
-          self.web3.eth.getGasPrice(function(err, result) {
+          window.web3.eth.getGasPrice(function(err, result) {
             var gasPrice = result.toNumber(10);
             // self.push('statuslog', {
             //   'msg': 'Got gasprice'
             // });
-            var MyContract = self.web3.eth.contract(contractjson.abi);
+            var MyContract = window.web3.eth.contract(contractjson.abi);
             var myContractInstance = MyContract.at(contractjson.address);
-            var account = self.$.helpers.fixaddress(self.account);
+            var account = self.$.helpers.fixaddress(window.account);
 
             result = myContractInstance.claim.sendTransaction(offerid, {
                 from: account,
@@ -328,14 +339,14 @@
         });
         self.$.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
           console.log(err, contractjson);
-          self.web3.eth.getGasPrice(function(err, result) {
+          window.web3.eth.getGasPrice(function(err, result) {
             var gasPrice = result.toNumber(10);
             // self.push('statuslog', {
             //   'msg': 'Got gasprice'
             // });
-            var MyContract = self.web3.eth.contract(contractjson.abi);
+            var MyContract = window.web3.eth.contract(contractjson.abi);
             var myContractInstance = MyContract.at(contractjson.address);
-            var account = self.$.helpers.fixaddress(self.account);
+            var account = self.$.helpers.fixaddress(window.account);
 
             result = myContractInstance.confirm(offerid, {
                 from: account,
