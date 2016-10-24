@@ -8,6 +8,9 @@
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="../bower_components/ac-input/ac-input.html">
 <link rel="import" href="../bower_components/ac-button/ac-button.html">
+<link rel="import" href="ac-sizeview/ac-sizeview.html">
+
+
 <script type="text/javascript" src="../bower_components/crypto-js/crypto-js.js"></script>
 
 <dom-module id="ac-newuser">
@@ -87,7 +90,7 @@
       }
 
       .maintitle {
-        @apply(--layout-horizontal);
+        @apply(--layout-vertical);
         @apply(--layout-center-center);
       }
 
@@ -193,6 +196,7 @@
 
 
     </neon-animated-pages>
+    <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>
@@ -223,6 +227,11 @@
         exitAnimation: {
           type: String,
           value: 'slide-left-animation'
+        },
+
+        sizeview: {
+          type: String,
+          observer: '_sizeview'
         }
       },
 
@@ -280,7 +289,27 @@
 
       restart: function(){
         location.reload();
+      },
+
+      _sizeview: function(){
+        switch(this.sizeview) {
+          case 'phone':
+            // this.customStyle['--avatar-size'] = '45px';
+            // this.updateStyles();
+          break;
+          case 'desktop':
+            // this.customStyle['--avatar-size'] = '50px';
+            // this.updateStyles();
+          break;
+          case 'xlarge':
+            // this.customStyle['--avatar-size'] = '60px';
+            // this.updateStyles();
+          break;
+          default:
+          console.log('!!! ** Niks');
+        }
       }
+
     });
   </script>
 </dom-module>
