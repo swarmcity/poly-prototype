@@ -23,7 +23,7 @@ z<link rel="import" href="../bower_components/polymer/polymer.html">
      <!-- faucet stuff -->
     <ac-helpers id="helpers"></ac-helpers>
 
-    <ac-web3wallet
+    <!-- <ac-web3wallet
       id="web3wallet"
       account="{{account}}"
       password="{{password}}"
@@ -33,7 +33,7 @@ z<link rel="import" href="../bower_components/polymer/polymer.html">
       host="{{web3host}}"
       web3="{{web3}}"></ac-web3wallet>
 
-    <ac-config web3host="{{web3host}}"></ac-config>
+    <ac-config web3host="{{web3host}}"></ac-config> -->
    <!--  <ac-password password="{{password}}"></ac-password> -->
     <!-- <h1 on-tap="donate">GEEF HIER DIE TOKENS</h1> -->
 
@@ -85,9 +85,12 @@ Ich zen op {{latitude}},{{longitude}} oftewel op {{address}}
         this.password = sessionStorage.getItem('ac-password');
       },
 
+
       _web3: function() {
         this._getARCbalance();
         //this.fire('map-update');
+        this.web3 = window.web3;
+
       },
 
       ready: function() {
