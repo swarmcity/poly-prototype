@@ -40,8 +40,8 @@
   provider = new HookedWeb3Provider({
     //host: 'http://109.123.70.141:8545',
     //host: 'http://localhost:8545',
-//    host: 'https://morden.infura.io/fNrdKYnEHWqldP4JnWZp',
-    host: 'https://eth.arcadecity.world:8545',
+    host: 'https://morden.infura.io/fNrdKYnEHWqldP4JnWZp',
+    //host: 'https://eth.arcadecity.world:8545',
     ////host: 'https://mainnet.infura.io/fNrdKYnEHWqldP4JnWZp',
     transaction_signer: global_keystore
   });
@@ -62,6 +62,6 @@
       //verbose: true,
       from: account,
       //gasPrice: 400000000000,
-      gas: 2500000
+      gas: 3058283
     }
   }
