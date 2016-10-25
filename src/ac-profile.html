@@ -267,9 +267,9 @@
 
             <ac-tokentransfer web3="{{web3}}" account="{{acount}}"></ac-tokentransfer>
             <!-- <p>ETH Balance: {{balance}}</p> -->
-            <template is="dom-if" if="{{donateview}}">
+            <!-- <template is="dom-if" if="{{donateview}}"> -->
               <ac-button on-tap="donate" txtbtn bg="yellow" txtcolor="base" small>Give me test-ARC</ac-button>
-            </template>
+            <!-- </template> -->
 
           <!-- <ac-button on-tap="toEdit" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button> -->
           </div>
@@ -411,23 +411,23 @@
         }
       },
 
-//       donate: function() {
-//         var self = this;
-//
-//         self.$.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
-//           console.log('send some ARC to ', self.$.helpers.fixaddress(self.account));
-//           var url = 'https://eth.arcadecity.world:3000/donate/' + self.$.helpers.fixaddress(self.account) + '/' + arccontractjson.address;
-//           console.log('tapping from faucet',url);
-//           self.$.donaterequest.send({
-//             url: url
-//           }).then(function() {
-//             console.log('donation requested');
-//             console.log('check balance at ',self.etherscanroot + '/token/'+arccontractjson.address+'?a='+self.$.helpers.fixaddress(self.account));
-// //            var btn = document.querySelector('#donatebtn');
-// //            btn.hidden = true;
-//           });
-//         });
-//       },
+      donate: function() {
+        var self = this;
+
+        self.$.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
+          console.log('send some ARC to ', self.$.helpers.fixaddress(self.account));
+          var url = 'https://eth.arcadecity.world:3000/donate/' + self.$.helpers.fixaddress(self.account) + '/' + arccontractjson.address;
+          console.log('tapping from faucet',url);
+          self.$.donaterequest.send({
+            url: url
+          }).then(function() {
+            console.log('donation requested');
+            console.log('check balance at ',self.etherscanroot + '/token/'+arccontractjson.address+'?a='+self.$.helpers.fixaddress(self.account));
+//            var btn = document.querySelector('#donatebtn');
+//            btn.hidden = true;
+          });
+        });
+      },
 
       initprofile: function() {
         var userobject = {avatar: 'QmPh72SvymjpgSiYhguSbWi4hDLSuq9xuAfyys5eFjb8P6', aka: 'Mr. AC'};
