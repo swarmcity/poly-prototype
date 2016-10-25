@@ -178,6 +178,13 @@
           @apply(--layout-center-center);
         }
 
+      .confirmbtnszz {
+          z-index: 3;
+          @apply(--layout-horizontal);
+          @apply(--layout-center-center);
+        }
+
+
         .confirmbtn {
           margin: 0px 2px 0px 2px;
         }
@@ -292,15 +299,18 @@
             <!-- </div> -->
 
             <div>
+            <div class="whitespace"></div>
 
-              <ac-input color="yellow" on-bind-value-changed="inputchanged" id="newusername" bind-value="{{newusername}}" value="{{username}}" placeholder="{{username}}"></ac-input>
+              <ac-input center color="blue" on-bind-value-changed="inputchanged" id="newusername" bind-value="{{newusername}}" inputvalue="{{username}}" placeholder="{{username}}" autofocus></ac-input>
 
             </div>
+            <div class="whitespace"></div>
+            <div class="whitespace"></div>
 
-            <div class="confirmbtns">
+            <div class="confirmbtnszz">
 
               <ac-icon icon="ac-decline" on-tap="toCancel" small class="confirmbtn" iconcolor="yellow"></ac-icon>
-              <ac-button on-tap="toSave" bg="yellow" txtcolor="big" icon="ac-arrowright"></ac-button>
+              <ac-button on-tap="toSave" bg="yellow" txtcolor="big" icon="ac-v"></ac-button>
 
           </div>
 
@@ -430,7 +440,7 @@
       },
 
       initprofile: function() {
-        var userobject = {avatar: 'QmPh72SvymjpgSiYhguSbWi4hDLSuq9xuAfyys5eFjb8P6', aka: 'Mr. AC'};
+        var userobject = {avatar: 'Qmf9u5L5cZiYY3DNWeWkG5ybyu7H1UPZnXxoDroy4HyeMs', aka: 'Mr. AC'};
         localStorage.setItem('ac-profile', JSON.stringify(userobject));
       },
 
