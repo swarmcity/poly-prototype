@@ -208,8 +208,19 @@
         .pubkey p {
           @apply(--ac-font-nowrap);
           color:var(--ac-blue);
-          @apply(--montserrat-hairline);
+          @apply(--montserrat-light);
           font-size: 16px;
+        }
+
+        .faucetview {
+          box-sizing: border-box;
+          margin-top:2vh; 
+
+          padding:5vh; 
+          border-top: 1px solid rgba(255,255,255,0.1);
+          width: 100%;
+          @apply(--layout-horizontal);
+          @apply(--layout-center-center);
         }
 
     </style>
@@ -265,20 +276,30 @@
               <img src="{{avatarurl}}" alt="" />
             </div>
             <div class="whitespace"></div>
-            <h1 class="usernamebig">{{username}}</h1>
             <div class="pubkey"><p>{{account}}</p></div>
+
+            <h1 class="usernamebig">{{username}}</h1>
+            <div class="whitespace"></div>
+
             <div class="offeramount">
               <h1>{{arcbalance}}</h1>
               <p>ARC</p>
             </div>
 
+
+
+
             <ac-tokentransfer web3="{{web3}}" account="{{acount}}"></ac-tokentransfer>
             <!-- <p>ETH Balance: {{balance}}</p> -->
-            <template is="dom-if" if="{{!faucetview}}">
-              <ac-button id="donatebtn" on-tap="donate" txtbtn bg="yellow" txtcolor="base" small>Give me test-ARC</ac-button>
-            </template>
 
           <!-- <ac-button on-tap="toEdit" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button> -->
+
+            <template is="dom-if" if="{{!faucetview}}">
+            <div class="faucetview">
+              <ac-button id="donatebtn" on-tap="donate" txtbtn bg="blue" txtcolor="base" small>Give me test-ARC</ac-button>
+            </div>
+            </template>
+
           </div>
         </div>
         </template>

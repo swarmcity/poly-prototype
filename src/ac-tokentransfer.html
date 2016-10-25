@@ -66,6 +66,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .total {
         width: 100%;
         @apply(--layout-vertical);
+        /*border-top: 1px solid rgba(255,255,255,0.1);*/
+        padding-top: 3vh;
       }
 
       .totalpart {
@@ -159,8 +161,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      .code h2 {
       padding: 10px;
       box-sizing: border-box;
-      background-color: var(--ac-red);
-      color: var(--ac-base);
+      color: var(--ac-yellow);
+      @apply(--montserrat-reg);
+
      }
 
      .announce p {
@@ -242,6 +245,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         width: 100%;
         @apply(--layout-vertical);
         @apply(--layout-center-center);
+
       }
 
       .initbtns ac-button {
@@ -250,8 +254,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
       .initbtns p {
-        color: var(--ac-red);
-        border-bottom: 1px solid dashed var(--ac-red);
+        color: var(--ac-yellow);
+        @apply(--montserrat-semibold);
+        margin-top:10px; 
+        border-bottom: 1px dashed var(--ac-yellow);
+        font-size: 16px;
       }
 
       .confirmbtns {
@@ -286,24 +293,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="total">
       <div class="totalpart">
-        <template is="dom-if" if="{{collsclosed}}">
+        <template is="dom-if" if="{{sendcollsclosed}}">
         <div class="initbtns">
         <div class="whitespace"></div>
 
-            <ac-button txtbtn txtcolor="red" bg="base" on-tap="togglesendcoins" class="sender">send ARC</ac-button>
+            <ac-button txtbtn txtcolor="base" bg="yellow" on-tap="togglesendcoins" class="sender">send ARC</ac-button>
+        <template is="dom-if" if="{{receivecollsclosed}}">
 
-            <ac-button txtbtn txtcolor="red" bg="base" on-tap="togglereceivecoins">shortcode</ac-button>
+            <p on-tap="togglereceivecoins">shortcode</p>
+          </template>
+<!--             <ac-button txtbtn txtcolor="red" bg="base" on-tap="togglereceivecoins">shortcode</ac-button> -->
 
             <!-- <ac-button txtbtn txtcolor="base" bg="red" on-tap="togglereceivecoins"><div class="inbutton">receive</div></ac-button> -->
-            </div>
+        <div class="whitespace"></div>
+
+          </div>
         </template>
         <div class="sendcoiners">
 
         <iron-collapse id="sendcoins">
         <template is="dom-if" if="{{_is(sendcoinstate,'first')}}">
 
-          <ac-input color="red" class="sendinput" autofocus type="number" inputvalue="{{amount}}" bind-value="{{amount}}" label="Amount"></ac-input>
-          <ac-input color="red" class="sendinput" type="number" inputvalue="{{pincode}}" bind-value="{{pincode}}" label="Shortcode receiver"></ac-input>
+          <ac-input color="yellow" class="sendinput" autofocus type="number" inputvalue="{{amount}}" bind-value="{{amount}}" label="Amount"></ac-input>
+          <ac-input color="yellow" class="sendinput" type="number" inputvalue="{{pincode}}" bind-value="{{pincode}}" label="Shortcode receiver"></ac-input>
 
 <!--           <div class="btns">
             <ac-button small icon="declinenew" confirmsmall on-tap="togglesendcoins" class="closebtn"></ac-button>
@@ -311,8 +323,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div> -->
 
           <div class="confirmbtns">
-         <ac-button icon="ac-decline" on-tap="togglesendcoins" small class="confirmbtn" bg="base" txtcolor="red"></ac-button>
-            <ac-button on-tap="toWaiting" bg="red" txtcolor="big" icon="ac-v"></ac-button>
+         <ac-button icon="ac-decline" on-tap="togglesendcoins" small class="confirmbtn" bg="base" txtcolor="yellow"></ac-button>
+            <ac-button on-tap="toWaiting" bg="yellow" txtcolor="big" icon="ac-v"></ac-button>
           </div>
 
         </template>
@@ -330,7 +342,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <!-- <small>Temporary code</small> -->
             <h2>{{topic}}</h2>
           </div>
-          <ac-button icon="ac-decline" on-tap="togglereceivecoins" small class="confirmbtn" bg="base" txtcolor="red"></ac-button>
+          <ac-button icon="ac-decline" on-tap="togglereceivecoins" small class="confirmbtn" bg="base" txtcolor="yellow"></ac-button>
         </iron-collapse>
         </div>
 
@@ -402,6 +414,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         collsclosed: {
+          type: Boolean,
+          value: true
+        },
+
+        sendcollsclosed: {
+          type: Boolean,
+          value: true
+        },
+
+        receivecollsclosed: {
           type: Boolean,
           value: true
         },
@@ -677,7 +699,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       togglesendcoins: function() {
         var sendcoins = this.$.sendcoins;
         sendcoins.toggle();
-        this.collsclosed=!this.collsclosed;
+        this.sendcollsclosed=!this.sendcollsclosed;
         this.sendcoinstate = 'first';
       },
 
@@ -687,7 +709,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // console.log("******** topic in wallet: ****",this.topic)
         var receivecoins = this.$.receivecoins;
         receivecoins.toggle();
-        this.collsclosed=!this.collsclosed;
+        this.receivecollsclosed=!this.receivecollsclosed;
       },
 
 
