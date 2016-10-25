@@ -96,6 +96,9 @@
                     message: 'escrowstart'
                   });
 
+
+                  cb();
+
                   console.log('Tx hash=', result);
                 }
 
@@ -105,7 +108,7 @@
                     message: 'escrow created. Next step...'
                   });
                   var offeridx = myContractInstance.ipfstoid.call(self.ipfshash).toNumber();
-                  cb(offeridx);
+                  //cb(offeridx);
                 });
 
 

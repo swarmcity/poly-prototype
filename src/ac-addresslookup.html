@@ -1,0 +1,148 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/ac-input/ac-input.html">
+<link rel="import" href="../bower_components/ac-style/ac-style.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+
+<dom-module id="ac-addresslookup">
+  <!-- Defines the element's style and local DOM -->
+  <template>
+    <style>
+      :host {
+        padding-top: 160px;
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      .listitem {
+        color: var(--ac-red);
+        padding: 16px;
+        @apply(--ac-font-body1);
+        border-bottom:2px dotted var(--ac-red);
+      }
+
+      .selector {
+        padding: 32px;
+        @apply(--base-structure);
+      }
+
+      h1 {
+        @apply(--ac-font-h1);
+      }
+
+      h2 {
+        @apply(--ac-font-h2);
+      }
+
+      h3 {
+        @apply(--ac-font-h3);
+      }
+
+      p {
+        @apply(--ac-font-body1);
+      }
+
+      li {
+        @apply(--ac-font-body1);
+      }
+
+      .inputbox {
+      width: 80%;
+      max-width: 500px;
+      @apply(--layout-vertical);
+      @apply(--layout-center-center);
+     }
+
+
+
+    </style>
+
+    <div class="inputbox">
+      <ac-input color="yellow" on-change="resolveDestination" label="{{str_Destination}}" placeholder="{{toaddress.display_name}}" bind-value="{{destination}}"></ac-input>
+
+      <iron-selector class="selector" attr-for-selected="name" on-iron-select="pick" selected="non-existing">
+       <template is="dom-repeat" items="{{searchresults}}">
+         <div class="listitem" name="{{item.name}}">{{item.display_name}}</div>
+       </template>
+      </iron-selector>
+
+    </div>
+
+  </template>
+  <!-- Creates the element's prototype and registers it -->
+  <script>
+    Polymer({
+      is: 'ac-addresslookup',
+
+      ready: function() {
+        this.searchresults = [];
+      },
+
+      pick: function(e) {
+        console.log('selected: ', e.detail);
+      },
+
+      resolveDestination: function() {
+
+        console.log(this.destination);
+        var self = this;
+        this.getdestination(this.destination).then(function(response) {
+          console.log("Success!", JSON.parse(response));
+          //var toaddress = JSON.parse(response);
+          self.searchresults = JSON.parse(response);
+          // self.toaddress = toaddress[0];
+          // self.latitude = toaddress[0].lat;
+          // self.longitude = toaddress[0].lon;
+          // self.destlatitude = toaddress[0].lat;
+          // self.destlongitude = toaddress[0].lon;
+          // var fromgeo = { 'detail':
+          //                 { 'target':
+          //                   { '_latlng':
+          //                     {'lat': toaddress[0].lat ,
+          //                     'lng': toaddress[0].lon }
+          //                   }
+          //                 }
+          //               };
+          // self.setto(fromgeo);
+        }, function(error) {
+          console.error("Failed!", error);
+        });
+      },
+
+      getdestination: function(destination) {
+        var options = destination+'&format=json&polygon=1&addressdetails=1';
+        var url = '//nominatim.openstreetmap.org/search?q=' + options;
+        // Return a new promise.
+        return new Promise(function(resolve, reject) {
+          // Do the usual XHR stuff
+          var req = new XMLHttpRequest();
+          req.open('GET', url);
+
+          req.onload = function() {
+            // This is called even on 404 etc
+            // so check the status
+            if (req.status == 200) {
+              // Resolve the promise with the response text
+              resolve(req.response);
+            }
+            else {
+              // Otherwise reject with the status text
+              // which will hopefully be a meaningful error
+              reject(Error(req.statusText));
+            }
+          };
+
+          // Handle network errors
+          req.onerror = function() {
+            reject(Error("Network Error"));
+          };
+
+          // Make the request
+          req.send();
+        });
+      },
+    });
+  </script>
+</dom-module>
