@@ -105,6 +105,9 @@ Example:
       //
       // This is the point where you should make modifications to the DOM (when
       // necessary), or kick off any processes the element wants to perform.
+      window.setInterval(function() {
+        this._getARCbalance();
+      }.bind(this), 10000);
     },
 
     attached: function() {
@@ -184,12 +187,12 @@ Example:
         var contractjson = JSON.parse(e.target.import.body.innerText);
         var tokenContract = self.web3.eth.contract(contractjson.abi);
         var tokenContractInstance = tokenContract.at(contractjson.address);
-        var account = self.$.helpers.fixaddress(self.account);
+        var account = self.$.helpers.fixaddress(window.account);
         var arcbalance = tokenContractInstance.balanceOf(account) / 1e18;
         self.arcbalance = arcbalance.toFixed(2);
-        console.log('web3wallet: got ARC balance: ', self.arcbalance);
         self.balanceloaded = true;
         window.arcbalance = arcbalance.toFixed(2);
+        console.log('web3wallet: got ARC balance2: ', window.arcbalance);
         self.fire('arc-there');
         self.fire('balance-loaded');
         self.fire('map-update');

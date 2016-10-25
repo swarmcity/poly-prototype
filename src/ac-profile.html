@@ -178,6 +178,13 @@
           @apply(--layout-center-center);
         }
 
+      .confirmbtnszz {
+          z-index: 3;
+          @apply(--layout-horizontal);
+          @apply(--layout-center-center);
+        }
+
+
         .confirmbtn {
           margin: 0px 2px 0px 2px;
         }
@@ -220,14 +227,14 @@
       <!-- small profile view -->
       <template is="dom-if" if="{{_is(viewstate, 'smallviewmap')}}">
 
-           <div class="userinfosmall"  on-tap="toProfile">
-            <div class="avatarsmall" id="avatar">
-              <ac-ipfsupload hidefileinput hash="{{avatarhash}}" url="{{avatarurl}}" id="ipfsupload"></ac-ipfsupload>
-              <img src="{{avatarurl}}">
-            </div>
-            <p class="usernamesmallmap">{{username}}</p>
+        <div class="userinfosmall"  on-tap="toProfile">
+          <div class="avatarsmall" id="avatar">
+            <ac-ipfsupload hidefileinput hash="{{avatarhash}}" url="{{avatarurl}}" id="ipfsupload"></ac-ipfsupload>
+            <img src="{{avatarurl}}">
+          </div>
+          <p class="usernamesmallmap">{{username}}</p>
 
-            </div>
+        </div>
 
       </template>
 
@@ -235,22 +242,22 @@
       <template is="dom-if" if="{{_is(viewstate, 'smallview')}}">
 
 
-           <div class="userinfosmall"  on-tap="toProfile">
-            <div class="avatarsmall" id="avatar">
-              <ac-ipfsupload hidefileinput hash="{{avatarhash}}" url="{{avatarurl}}" id="ipfsupload"></ac-ipfsupload>
-              <img src="{{avatarurl}}">
-            </div>
-            <p class="usernamesmall">{{username}}</p>
+        <div class="userinfosmall"  on-tap="toProfile">
+          <div class="avatarsmall" id="avatar">
+            <ac-ipfsupload hidefileinput hash="{{avatarhash}}" url="{{avatarurl}}" id="ipfsupload"></ac-ipfsupload>
+            <img src="{{avatarurl}}">
+          </div>
+          <p class="usernamesmall">{{username}}</p>
 
-            </div>
+        </div>
 
       </template>
 
       <!-- View profile view -->
       <template is="dom-if" if="{{_is(viewstate, 'overview')}}">
         <div class="topbar">
-         <p class="flex" on-tap="change"></p>
-         <ac-button bg="base" icon="declinenew" on-tap="toHome" small id="exitbtn" txtcolor="turquoise"></ac-button>
+          <p class="flex" on-tap="change"></p>
+          <ac-button bg="base" icon="declinenew" on-tap="toHome" small id="exitbtn" txtcolor="turquoise"></ac-button>
         </div>
         <div class="main">
           <div class="content">
@@ -265,50 +272,58 @@
               <p>ARC</p>
             </div>
 
-            <ac-tokentransfer web3="{{web3}}" account="{{acount}}"></ac-tokentransfer>
+            <!-- <ac-tokentransfer web3="{{web3}}" account="{{acount}}"></ac-tokentransfer> -->
             <!-- <p>ETH Balance: {{balance}}</p> -->
-            <template is="dom-if" if="{{donateview}}">
-              <ac-button on-tap="donate" txtbtn bg="yellow" txtcolor="base" small>Give me test-ARC</ac-button>
+            <template is="dom-if" if="{{!faucetview}}">
+              <ac-button id="donatebtn" on-tap="donate" txtbtn bg="yellow" txtcolor="base" small>Give me test-ARC</ac-button>
             </template>
 
-          <!-- <ac-button on-tap="toEdit" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button> -->
+            <div class="whitespace"></div>
+
+            <!-- <template is="dom-if" if="{{!faucetview}}"> -->
+              <ac-button id="donatebtn" on-tap="giveallowance" txtbtn bg="yellow" txtcolor="base" small>Give allowance to InOutContract</ac-button>
+            <!-- </template> -->
+
+            <!-- <ac-button on-tap="toEdit" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button> -->
           </div>
         </div>
-        </template>
+      </template>
 
       <!-- Edit profile view -->
       <template is="dom-if" if="{{_is(viewstate, 'edit')}}">
         <div class="topbar">
-         <p class="flex" on-tap="change"></p>
-         <ac-button  bg="base" icon="declinenew" on-tap="viewstatehome" small id="exitbtn" txtcolor="turquoise"></ac-button>
-       </div>
-       <div class="main">
-         <div class="content">
-           <div class="whitespace"></div>
+          <p class="flex" on-tap="change"></p>
+          <ac-button  bg="base" icon="declinenew" on-tap="viewstatehome" small id="exitbtn" txtcolor="turquoise"></ac-button>
+        </div>
+        <div class="main">
+          <div class="content">
+            <div class="whitespace"></div>
             <!-- <div class="avatar"> -->
-              <ac-ipfsupload class="avatar" hidefileinput hash="{{newavatar}}" url="{{newavatarurl}}" id="ipfsupload">
-                <img src="{{newavatarurl}}">
-              </ac-ipfsupload>
+            <ac-ipfsupload class="avatar" hidefileinput hash="{{newavatar}}" url="{{newavatarurl}}" id="ipfsupload">
+              <img src="{{newavatarurl}}">
+            </ac-ipfsupload>
             <!-- </div> -->
 
             <div>
+            <div class="whitespace"></div>
 
-              <ac-input color="yellow" on-bind-value-changed="inputchanged" id="newusername" bind-value="{{newusername}}" value="{{username}}" placeholder="{{username}}"></ac-input>
+              <ac-input center color="blue" on-bind-value-changed="inputchanged" id="newusername" bind-value="{{newusername}}" inputvalue="{{username}}" placeholder="{{username}}" autofocus></ac-input>
 
             </div>
+            <div class="whitespace"></div>
+            <div class="whitespace"></div>
 
-            <div class="confirmbtns">
+            <div class="confirmbtnszz">
 
               <ac-icon icon="ac-decline" on-tap="toCancel" small class="confirmbtn" iconcolor="yellow"></ac-icon>
-              <ac-button on-tap="toSave" bg="yellow" txtcolor="big" icon="ac-arrowright"></ac-button>
-
-          </div>
-
+              <ac-button on-tap="toSave" bg="yellow" txtcolor="big" icon="ac-v"></ac-button>
 
             </div>
+
           </div>
         </div>
-      </template>
+      </div>
+    </template>
 
     </template>
 
@@ -320,6 +335,7 @@
     </iron-localstorage>
 
     <ac-ipfs id="ipfs" ipfs="{{ipfs}}"></ac-ipfs>
+
     <!-- <ac-wallet id="acwallet" web3="{{web3}}" account="{{acount}}" balance="{{balance}}" arcbalance="{{arcbalance}}"></ac-wallet> -->
   </template>
   <!-- Creates the element's prototype and registers it -->
@@ -350,6 +366,9 @@
           type: Object,
           notify: true
         },
+        faucetview: {
+          type: Boolean
+        }
         // account: {
         //   type: String,
         //   notify: true
@@ -362,6 +381,8 @@
       },
 
       ready: function() {
+
+        this.faucetview = localStorage.getItem('test-arc');
         window.addEventListener('arc-there', function() {
           console.log('profile knows arc there?');
           this.account = window.account;
@@ -394,6 +415,12 @@
         // }.bind(this));
       },
 
+      giveallowance: function() {
+        app.$.transact.createAllowance(function(e){
+          console.log('allowance created', e);
+        });
+      },
+
       _password: function() {
         this.fire('map-update');
         if(this.password) {
@@ -407,30 +434,32 @@
 
       _arcbalance: function() {
         if(this.arcbalance < 1){
-          this.donateview = true;
+          //this.faucetview = true;
         }
       },
 
-//       donate: function() {
-//         var self = this;
-//
-//         self.$.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
-//           console.log('send some ARC to ', self.$.helpers.fixaddress(self.account));
-//           var url = 'https://eth.arcadecity.world:3000/donate/' + self.$.helpers.fixaddress(self.account) + '/' + arccontractjson.address;
-//           console.log('tapping from faucet',url);
-//           self.$.donaterequest.send({
-//             url: url
-//           }).then(function() {
-//             console.log('donation requested');
-//             console.log('check balance at ',self.etherscanroot + '/token/'+arccontractjson.address+'?a='+self.$.helpers.fixaddress(self.account));
-// //            var btn = document.querySelector('#donatebtn');
-// //            btn.hidden = true;
-//           });
-//         });
-//       },
+      donate: function() {
+        var self = this;
+        
+        self.faucetview = true;
+
+        self.$.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
+          console.log('send some ARC to ', self.$.helpers.fixaddress(window.account));
+          var url = 'https://eth.arcadecity.world:3000/donate/' + self.$.helpers.fixaddress(window.account) + '/' + arccontractjson.address;
+          console.log('tapping from faucet',url);
+          self.$.donaterequest.send({
+            url: url
+          }).then(function() {
+            console.log('donation requested');
+            console.log('check balance at ',self.etherscanroot + '/token/'+arccontractjson.address+'?a='+self.$.helpers.fixaddress(window.account));
+
+           localStorage.setItem('test-arc', true);
+          });
+        });
+      },
 
       initprofile: function() {
-        var userobject = {avatar: 'QmPh72SvymjpgSiYhguSbWi4hDLSuq9xuAfyys5eFjb8P6', aka: 'Mr. AC'};
+        var userobject = {avatar: 'Qmf9u5L5cZiYY3DNWeWkG5ybyu7H1UPZnXxoDroy4HyeMs', aka: 'Mr. AC'};
         localStorage.setItem('ac-profile', JSON.stringify(userobject));
       },
 
