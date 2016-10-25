@@ -82,6 +82,11 @@ Polymer({
 
     setInterval(this.timer.bind(this), 1000);
 
+    window.addEventListener('web3-ready', function() {
+      console.log('whisperer knows web3 there?');
+      window.web3 = window.web3;
+    }.bind(this));
+
   },
 
 
@@ -131,11 +136,11 @@ Polymer({
   openchannel: function() {
     var _pin = this._getpincode(20);
 
-    if (this.web3 && this.topic) {
+    if (window.web3 && this.topic) {
 
       this.localchannels[_pin] = {
-        filter: this.web3.shh.filter({
-          "topics": [this.web3.fromAscii(_pin)],
+        filter: window.web3.shh.filter({
+          "topics": [window.web3.fromAscii(_pin)],
         }),
         status: 'handshake'
       };
@@ -144,7 +149,7 @@ Polymer({
 
       this.localchannels[_pin].filter.watch(function(error, result) {
         if (!error) {
-          var payload = JSON.parse(this.web3.toAscii(result.payload));
+          var payload = JSON.parse(window.web3.toAscii(result.payload));
           this.fire('msg-received', {
             topic: payload.topic,
             payload: JSON.parse(payload.input)
@@ -198,13 +203,13 @@ Polymer({
   _topic: function() {
     var self = this;
 
-    if (this.web3 && this.topic) {
+    if (window.web3 && this.topic) {
 
       this.stopfilter();
 
       var topic = this.topic.toString();
-      this.filter = this.web3.shh.filter({
-        "topics": [this.web3.fromAscii(topic)],
+      this.filter = window.web3.shh.filter({
+        "topics": [window.web3.fromAscii(topic)],
       });
 
       console.log("ac-whisperer: channelswitch, start listening to", this.topic);
@@ -218,7 +223,7 @@ Polymer({
 
       var self = this;
         if (!error) {
-          var payload = JSON.parse(self.web3.toAscii(result.payload));
+          var payload = JSON.parse(window.web3.toAscii(result.payload));
 
           switch (payload.command) {
 
@@ -242,8 +247,8 @@ Polymer({
                 aes: aeskey
               };
 
-              this.localchannels[datatopic].filter = this.web3.shh.filter({
-                "topics": [this.web3.fromAscii(datatopic)],
+              this.localchannels[datatopic].filter = window.web3.shh.filter({
+                "topics": [window.web3.fromAscii(datatopic)],
               });
               debugger;
               self.localchannels[datatopic].filter.watch(this._processmessage.bind(this));
@@ -323,8 +328,8 @@ Polymer({
         messagequeue: [input]
       };
 
-      this.localchannels[datatopic].filter = this.web3.shh.filter({
-        "topics": [this.web3.fromAscii(datatopic)],
+      this.localchannels[datatopic].filter = window.web3.shh.filter({
+        "topics": [window.web3.fromAscii(datatopic)],
       });
       this.localchannels[datatopic].filter.watch(this._processmessage.bind(this));
 
@@ -364,17 +369,17 @@ Polymer({
   // unencrypted whisper post..
   raw_whisperpost: function(topic, input) {
     if (!this.identity) {
-      this.identity = this.web3.shh.newIdentity();
+      this.identity = window.web3.shh.newIdentity();
     }
     var options = {
       "from": this.identity,
-      "topics": [this.web3.fromAscii(topic)],
-      "payload": this.web3.fromAscii(JSON.stringify(input)),
+      "topics": [window.web3.fromAscii(topic)],
+      "payload": window.web3.fromAscii(JSON.stringify(input)),
       "ttl": 100,
       "priority": 1000
     };
 
-    return this.web3.shh.post(options, function(err, res) {
+    return window.web3.shh.post(options, function(err, res) {
       console.log(err, res);
     });
   }

@@ -225,6 +225,11 @@
                 // resolve IPFS data
                 self.$.ipfs.cat(event.args.ipfsdescr, function(err, data) {
 
+                  if(err){
+                    console.log('ipfs cat error');
+                    return;
+                  };
+
                   var ipfsdata = JSON.parse(data);
                   // resolve avatar URL
                   if (ipfsdata && ipfsdata.userdata && ipfsdata.userdata.avatar){
