@@ -67,6 +67,10 @@
         listen: {
           type: Boolean,
           observer: '_listen'
+        },
+        lastblock: {
+          type: Number,
+          observer: '_lastblock'
         }
       },
 
@@ -74,7 +78,10 @@
         window.addEventListener('web3-ready', function() {
           console.log('blockdata knows web3?');
           this.web3 = window.web3;
-          this.getBlockData();
+          if(window.web3){
+            this.getBlockData();
+          }
+
         }.bind(this));
       },
 
@@ -83,7 +90,7 @@
         this.password = sessionStorage.getItem('ac-password');
         this.blockobject = {};
         this.blockdata = [];
-        this.lastblock = 1804134;
+        this.lastblock = 1801803;
         this.getblockdata = false;
         //this.getBlockData();
       },
@@ -100,6 +107,10 @@
             //console.log('ac-blockdata: error stopWatching', e);
           }
         }
+      },
+
+      _lastblock: function() {
+        console.log(this.lastblock);
       },
 
       startListening: function() {
