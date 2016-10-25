@@ -4,12 +4,16 @@ import "./ARCEscrow.sol";
 
 contract localsInOut is owned {
 
-  event OfferAdded(uint offerID, address creator, string ipfsdescr, address escrowaddress, address repaddress,uint timestamp);
+  event OfferAdded(uint offerID, address creator, string ipfsdescr, uint escrowID, address repaddress,uint timestamp);
   event OfferClaimed(uint offerID, address creator, string ipfsdescr, address claimer, address escrowaddress, address repaddress,uint timestamp);
   event OfferReleased(uint offerID, address creator, string ipfsdescr,uint timestamp);
   event OfferConflict(uint offerID, address creator, string ipfsdescr, address claimer, address escrowaddress, address repaddress,uint timestamp);
 
+  event EscrowCreated(uint escrowID, address ec.creator, uint ec.amount, uint ec.status);
+
   Offer[] public offers;
+  Escrow[] public escrows;
+
   mapping(string=>uint) ipfstonumber;
   uint public numOffers;
 
@@ -23,6 +27,14 @@ contract localsInOut is owned {
     uint status;
     REPToken tagcontract;
     address escrowaddress;
+  }
+
+  struct Escrow {
+    address creator;
+    address claimer;
+    uint amount;
+    uint offerid;
+    uint status;
   }
 
   struct Confirmation {
@@ -53,12 +65,21 @@ contract localsInOut is owned {
       ARCToken ARCTokencontract = ARCToken(ARCTokencontractAddress);
 
       // create the escrow
-      o.escrowaddress = address(new ARCEscrow(ARCTokencontract));
+      //o.escrowaddress = address(new ARCEscrow(ARCTokencontract));
       // put my funds in the escrow
 
-      ARCTokencontract.transferFrom(msg.sender,o.escrowaddress,_amount);
+      // KF // Create a new escrow object and set status to 1
+      uint escrowID = escrows.length++;
+      Escrow ec = escrows[escrowID];
+      ec.creator = msg.sender;
+      ec.amount = _amount;
+      ec.status = 1;
 
-      OfferAdded(offerID, o.creator, o.descriptionipfs, o.escrowaddress, o.tagcontract, now);
+      EscrowCreated(escrowID, ec.creator, ec.amount, ec.status);
+
+      ARCTokencontract.transferFrom(msg.sender,this);
+
+      OfferAdded(offerID, o.creator, o.descriptionipfs, escrowID, o.tagcontract, now);
 
   }
 

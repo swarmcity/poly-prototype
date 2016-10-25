@@ -220,7 +220,6 @@
       <!-- small profile view -->
       <template is="dom-if" if="{{_is(viewstate, 'smallviewmap')}}">
 
-
            <div class="userinfosmall"  on-tap="toProfile">
             <div class="avatarsmall" id="avatar">
               <ac-ipfsupload hidefileinput hash="{{avatarhash}}" url="{{avatarurl}}" id="ipfsupload"></ac-ipfsupload>
@@ -368,13 +367,27 @@
           this.account = window.account;
           this.arcbalance = window.arcbalance;
         }.bind(this));
+
+        window.addEventListener('profile-update', function() {
+          console.log('profile gets update');
+          //this.account = window.account;
+          //this.arcbalance = window.arcbalance;
+          this.loadprofile();
+        }.bind(this));
+
+        window.addEventListener('web3-ready', function() {
+          console.log('profile gets update');
+          //this.account = window.account;
+          //this.arcbalance = window.arcbalance;
+          this.loadprofile();
+        }.bind(this));
       },
 
       attached: function() {
         this.donateview = false;
         this.accountlocked = true;
         this.password = sessionStorage.getItem('ac-password');
-
+        this.loadprofile();
         // document.addEventListener('web3-ready', function() {
         //   console.log('web3');
         //   this.account = app.$.wallet.account;
@@ -422,6 +435,10 @@
       },
 
       loadprofile: function() {
+        if(!localStorage.getItem('ac-profile')) {
+          return;
+        }
+
         var userobject = localStorage.getItem('ac-profile');
         this.userdata = JSON.parse(userobject);
         this.currentavatar = this.userdata.avatar;
@@ -436,6 +453,7 @@
         localStorage.setItem('ac-profile', JSON.stringify(userdata));
         this.loadprofile();
         this.viewstate = 'overview';
+        this.fire('profile-update');
       },
 
       toProfile: function() {
