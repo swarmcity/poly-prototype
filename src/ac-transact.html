@@ -36,7 +36,9 @@
       ready: function() {
         window.addEventListener('web3-ready', function() {
           console.log('transact knows web3? ', this.web3);
-          this.web3 = window.web3;
+          if(window.web3.eth) {
+            this.web3 = window.web3;
+          }
         }.bind(this));
       },
 
