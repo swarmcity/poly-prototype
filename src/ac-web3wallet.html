@@ -99,12 +99,11 @@ Example:
     // Element Lifecycle
 
     ready: function() {
+      this.password = sessionStorage.getItem('ac-password');
     },
 
     attached: function() {
-      window.setInterval(function() {
-        this._getARCbalance();
-      }.bind(this), 10000);
+
     },
 
     detached: function() {
@@ -141,12 +140,12 @@ Example:
         this.balance = this.web3.eth.getBalance(this.account).toNumber();
         console.log('Web3wallet got balance ', this.balance);
         return this.balance;
-
     },
 
     _loadWallet: function() {
+      //debugger;
       // web3 is a singleton object. bailout if already exists
-      if(!this.web3){
+      if(window.web3){
         return;
       }
 
@@ -157,7 +156,7 @@ Example:
     // HIER TOKEN BALANCE OPVRAGEN EN TONEN
     _getARCbalance: function() {
       var self = this;
-      if(!self.web3 || !self.web3.eth) { return; }
+      if(!self.web3) { return; }
 
       this.contracturl = this.resolveUrl('./contracts/ARCToken.json');
 
@@ -172,7 +171,7 @@ Example:
         self.balanceloaded = true;
         window.arcbalance = arcbalance.toFixed(2);
         console.log('web3wallet: got ARC balance2: ', window.arcbalance);
-        self.fire('arc-there');
+        self.fire('arc-there', {msg: arcbalance.toFixed(2)});
         self.fire('balance-loaded');
         self.fire('map-update');
       });
@@ -200,13 +199,17 @@ Example:
 
       this.web3 = web3;
 
-      //window.web3 = web3;
+      window.web3 = web3;
 
       this.updateBalance();
 
       this._getARCbalance();
 
       this.fire('web3-ready',{web3:web3});
+
+      window.setInterval(function() {
+        this._getARCbalance();
+      }.bind(this), 10000);
     }
 
   });

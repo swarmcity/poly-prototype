@@ -214,9 +214,9 @@
 
         .faucetview {
           box-sizing: border-box;
-          margin-top:2vh; 
+          margin-top:2vh;
 
-          padding:5vh; 
+          padding:5vh;
           border-top: 1px solid rgba(255,255,255,0.1);
           width: 100%;
           @apply(--layout-horizontal);
@@ -287,7 +287,7 @@
             </div>
 
 
-            <!-- <ac-tokentransfer web3="{{web3}}" account="{{acount}}"></ac-tokentransfer> -->
+
             <!-- <ac-tokentransfer web3="{{web3}}" account="{{acount}}"></ac-tokentransfer> -->
             <!-- <p>ETH Balance: {{balance}}</p> -->
 
@@ -405,8 +405,8 @@
       ready: function() {
 
         this.faucetview = localStorage.getItem('test-arc');
-        window.addEventListener('arc-there', function() {
-          console.log('profile knows arc there?');
+        window.addEventListener('arc-there', function(e) {
+          //console.log('profile knows arc there?', e);
           this.account = window.account;
           this.arcbalance = window.arcbalance;
         }.bind(this));
@@ -462,7 +462,7 @@
 
       donate: function() {
         var self = this;
-        
+
         self.faucetview = true;
 
         self.$.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
