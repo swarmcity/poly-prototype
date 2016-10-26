@@ -159,14 +159,16 @@ Example:
      * fetches the balance of the first account - updates the property 'balance'
     */
     updateBalance: function(){
-      this.balance = this.web3.eth.getBalance(this.account).toNumber();
-      console.log('Web3wallet got balance ', this.balance);
-      return this.balance;
+      if(!this.web3){ return: }
+        this.balance = this.web3.eth.getBalance(this.account).toNumber();
+        console.log('Web3wallet got balance ', this.balance);
+        return this.balance;
+      
     },
 
     _loadWallet: function() {
       // web3 is a singleton object. bailout if already exists
-      if(window.web3){
+      if(!this.web3){
         return;
       }
 

@@ -14,6 +14,7 @@
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/ac-button/ac-button.html">
 
 <link rel="import" href="./ac-sizeview.html">
 <link rel="import" href="./ac-locationpicker.html">
@@ -65,6 +66,7 @@
       <app-drawer align="right" id="drawer">
         <div class="drawercontent">
           <h1>here be filters</h1>
+          <ac-button id="reset" on-tap="reset" txtbtn bg="red" txtcolor="base" small>Reset</ac-button>
         </div>
       </app-drawer>
 
@@ -226,6 +228,12 @@
         if(this.arcbalance < 100){
           this.donate();
         }
+      },
+
+      reset: function() {
+        localStorage.clear();
+        sessionStorage.clear();
+        location.reload();
       },
 
       donate: function() {
