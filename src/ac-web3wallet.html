@@ -137,7 +137,7 @@ Example:
      * fetches the balance of the first account - updates the property 'balance'
     */
     updateBalance: function(){
-      if(!this.web3){ return: }
+      if(!this.web3){ return; }
         this.balance = this.web3.eth.getBalance(this.account).toNumber();
         console.log('Web3wallet got balance ', this.balance);
         return this.balance;
