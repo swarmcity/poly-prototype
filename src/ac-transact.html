@@ -17,8 +17,6 @@
       walletname="ac-wallet"
       ></ac-web3wallet>
 
-      <!-- <ac-config web3host="{{web3host}}"></ac-config> -->
-     <!--  <ac-password password="{{password}}"></ac-password> -->
       <ac-ipfs id="ipfs"></ac-ipfs>
       <ac-helpers id="helpers"></ac-helpers>
 
@@ -33,15 +31,11 @@
       },
       attached: function(){
         this.password = sessionStorage.getItem('ac-password');
-        // console.log('ac-transact -> attached');
-        // console.log('ac-transact -> web3host=',this.web3host);
-        // console.log('ac-transact -> web3host=',this.password);
       },
 
       ready: function() {
         window.addEventListener('web3-ready', function() {
           console.log('transact knows web3? ', this.web3);
-          //this.getBlockData();
         }.bind(this));
       },
 
@@ -61,76 +55,11 @@
             message: 'ipfsdone'
           });
           console.log('Offer saved in IPFS', offer_ipfshash);
-          self.createAllowance(function() {
+          //self.createAllowance(function() {
             self.mkoffer(cb);
-          });
+          //});
         });
       },
-
-
-  createAllowance: function(cb) {
-
-        var self = this;
-
-        // self.fire('log-event', {
-        //   message: 'Creating allowance'
-        // });
-
-        self.$.helpers.getfile('./contracts/localsInOut.json', function(err, localsinoutcontractjson) {
-        self.$.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
-
-          //debugger;
-            //var allowance = _ARCCoin.allowance('0xe4d11ca64f35a909ccfd9076ac4f700133eb8cfb', _localsInOut.address).then(function(a) {
-            //console.log(err, contractjson);
-            window.web3.eth.getGasPrice(function(err, result) {
-              var gasPrice = result.toNumber(10);
-              //console.log(gasPrice);
-              // self.fire('statusupdate', {
-              //   message: 'creating allowance'
-              // });
-              var MyContract = window.web3.eth.contract(arccontractjson.abi);
-              var myContractInstance = MyContract.at(arccontractjson.address);
-              var account = self.$.helpers.fixaddress(window.account);
-              result = myContractInstance.allowance.sendTransaction(self.$.helpers.fixaddress(window.account), localsinoutcontractjson.address, {
-                  from: account,
-                  gasPrice: gasPrice,
-                  gasLimit: 1200000,
-                  gas: 1200000,
-                  data: arccontractjson.bytecode
-                },
-                function(err, result) {
-                  if (err !== null) {
-                    console.log(err);
-                    // self.fire('statusupdate', {
-                    //   message: 'Error creating allowance',
-                    //   error: err
-                    // });
-                    console.log('Create Allowance');
-                  } else {
-                    console.log('Create Allowance');
-                    console.log('Allowance TX: ', result);
-
-
-                    // self.fire('log-event', {
-                    //   message: 'Allowance TX: ' + result,
-                    //   error: err
-                    // });
-
-                    self.waitTx(result,function(){
-                      console.log('allowance created. Next step...');
-                      self.fire('log-event', {
-                        message: 'allowancedone'
-                      });
-                      cb();
-                    });
-                  }
-                });
-            });
-          });
-        });
-        // this.toFourth();
-      },
-
 
       mkoffer: function(cb) {
 
@@ -142,9 +71,6 @@
           console.log(err, contractjson);
           window.web3.eth.getGasPrice(function(err, result) {
             var gasPrice = result.toNumber(10);
-            // self.push('statuslog', {
-            //   'msg': 'Got gasprice'
-            // });
             self.hashtag = "0x88c80a97cc95015662124a2069e51c706cbf3e80";
             var MyContract = window.web3.eth.contract(contractjson.abi);
             var myContractInstance = MyContract.at(contractjson.address);
@@ -169,22 +95,9 @@
                   self.fire('log-event', {
                     message: 'escrowstart'
                   });
-                  // self.push('statuslog', {
-                  //   'msg': 'Creating escrow.'
-                  // });
-                  //self.progress = 'addedtoindex';
+
                   console.log('Tx hash=', result);
-
-
-                  // self.push('statuslog', {
-                  //   'msg': result
-                  // });
-                  // set vote status to TxHash received
-                  //self.votestatus = 2;
-                  //self.transactionHash = result;
                 }
-                //fn(err,result);
-                // TODO : actually wait for completion...
 
                 self.waitTx(result,function(){
                   console.log('escrow created. Next step...');
@@ -192,91 +105,23 @@
                     message: 'escrow created. Next step...'
                   });
                   var offeridx = myContractInstance.ipfstoid.call(self.ipfshash).toNumber();
-                  //app.set('route.path', '/detail/'+offeridx);
                   cb(offeridx);
-                  //self.claimstep = 'fourth';
-
-                  // self.whisperer = document.getElementById('whisper');
-                  // self.identity = self.whisperer.web3.shh.newIdentity();
-                  // self.whisperer.web3.shh.post({
-                  //   "from": self.identity,
-                  //   "topics": [self.whisperer.web3.fromAscii(self.hashtag)],
-                  //   "payload": self.whisperer.web3.fromAscii(JSON.stringify({
-                  //     type: 'offer',
-                  //     offerid: offeridx,
-                  //     version: 1,
-                  //     ipfshash: self.ipfshash,
-                  //     pubkey: self.wallet.account,
-                  //     to: self.offer.to,
-                  //     from: self.offer.from
-                  //   })),
-                  //   "ttl": 3600,
-                  //   "priority": 1000
-                  // });
-
                 });
 
 
               });
           });
         });
-
-
-      },
-
-      waitTx: function(txHash, callback) {
-        /*
-        * Watch for a particular transaction hash and call the awaiting function when done;
-        * Ether-pudding uses another method, with web3.eth.getTransaction(...) and checking the txHash;
-        * on https://github.com/ConsenSys/ether-pudding/blob/master/index.js
-        */
-        var self = this;
-        self.fire('log-event', {
-          message: 'Waiting on TX ' + txHash
-        });
-
-        var blockCounter = 15;
-        // Wait for tx to be finished
-        //debugger;
-        var filter = window.web3.eth.filter('latest').watch(function(err, blockHash) {
-          if (blockCounter <= 0) {
-            filter.stopWatching();
-            filter = null;
-            console.warn('!! Tx expired !!');
-            if (callback)
-            return callback(false);
-            else
-            return false;
-          }
-          // Get info about latest Ethereum block
-          var block = window.web3.eth.getBlock(blockHash);
-          console.log('block: ', block.number);
-
-          --blockCounter;
-          // Found tx hash?
-          if (block.transactions.indexOf(txHash) > -1) {
-            //debugger;
-            // Tx is finished
-            filter.stopWatching();
-            filter = null;
-            if (callback)
-            return callback(true);
-            else
-            return true;
-            // Tx hash not found yet?
-          } else {
-            // console.log('Waiting tx..', blockCounter);
-          }
-        }.bind(this));
       },
 
       claimOffer: function(offerid, cb) {
         var self = this;
-        this.createAllowance(function() {
-          console.log('Claim Offer: allowance created.');
-          console.log('Staring claim process.');
-          self.claimContract(offerid, cb);
-        });
+        // this.createAllowance(function() {
+        //   console.log('Claim Offer: allowance created.');
+        //   console.log('Staring claim process.');
+        //   self.claimContract(offerid, cb);
+        // });
+        self.claimContract(offerid, cb);
       },
 
       claimContract: function(offerid, cb) {
@@ -386,7 +231,97 @@
               });
           });
         });
+      },
+
+      createAllowance: function(cb) {
+
+            var self = this;
+
+            self.$.helpers.getfile('./contracts/localsInOut.json', function(err, localsinoutcontractjson) {
+            self.$.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
+
+                window.web3.eth.getGasPrice(function(err, result) {
+                  var gasPrice = result.toNumber(10);
+                  var MyContract = window.web3.eth.contract(arccontractjson.abi);
+                  var myContractInstance = MyContract.at(arccontractjson.address);
+                  var account = self.$.helpers.fixaddress(window.account);
+                  var currentarcbalance = myContractInstance.balanceOf(account);
+                  result = myContractInstance.approve.sendTransaction(localsinoutcontractjson.address, currentarcbalance, {
+                      from: account,
+                      gasPrice: gasPrice,
+                      gasLimit: 1200000,
+                      gas: 1200000,
+                      data: arccontractjson.bytecode
+                    },
+                    function(err, result) {
+                      if (err !== null) {
+                        console.log(err);
+                        console.log('Create Allowance');
+                      } else {
+                        console.log('Create Allowance');
+                        console.log('Allowance TX: ', result);
+
+                        self.waitTx(result,function(){
+                          console.log('allowance created. Next step...');
+                          self.fire('log-event', {
+                            message: 'allowancedone'
+                          });
+                          cb();
+                        });
+                      }
+                    });
+                });
+              });
+            });
+          },
+
+      waitTx: function(txHash, callback) {
+        /*
+        * Watch for a particular transaction hash and call the awaiting function when done;
+        * Ether-pudding uses another method, with web3.eth.getTransaction(...) and checking the txHash;
+        * on https://github.com/ConsenSys/ether-pudding/blob/master/index.js
+        */
+        var self = this;
+        self.fire('log-event', {
+          message: 'Waiting on TX ' + txHash
+        });
+
+        var blockCounter = 15;
+        // Wait for tx to be finished
+        //debugger;
+        var filter = window.web3.eth.filter('latest').watch(function(err, blockHash) {
+          if (blockCounter <= 0) {
+            filter.stopWatching();
+            filter = null;
+            console.warn('!! Tx expired !!');
+            if (callback)
+            return callback(false);
+            else
+            return false;
+          }
+          // Get info about latest Ethereum block
+          var block = window.web3.eth.getBlock(blockHash);
+          //console.log('block: ', block.number);
+
+          --blockCounter;
+          // Found tx hash?
+          if (block.transactions.indexOf(txHash) > -1) {
+            //debugger;
+            // Tx is finished
+            filter.stopWatching();
+            filter = null;
+            if (callback)
+            return callback(true);
+            else
+            return true;
+            // Tx hash not found yet?
+          } else {
+            // console.log('Waiting tx..', blockCounter);
+          }
+        }.bind(this));
       }
+
+
 
 
     });
