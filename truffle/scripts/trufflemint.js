@@ -5,7 +5,7 @@ module.exports = function(callback) {
 //		'0x04f9b2ded36018f7d16eba9934ce3bc86bcf9bd0',
 //		'0x57d23115826ac1367023bca52e2d28f5b0bacb2b',
 //		'0x3e3cd18d5ad62693f14be49909b89e252676533d',
-		'0x4369ae87e718964915641bd6c9bec34b9b0e20b2',
+		'0x9a05c3541593adf826cae95b924e24c2df9f7dc4',
 
 
 		// '0x5e443950acaa29b01d1493ab436e3556af1283bb',
