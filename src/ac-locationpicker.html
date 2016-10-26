@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
 <link rel="import" href="../bower_components/ac-icon/ac-icon.html">
+<link rel="import" href="../bower_components/ac-input/ac-input.html">
 
 <script src="../bower_components/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
 
@@ -19,7 +20,23 @@
       .spinnerdiv {
         height: 100vw;
       }
+
+      .searchicon {
+          position: fixed;
+          bottom: 40px;
+          left: 40px;
+          z-index: 3;
+          @apply(--layout-horizontal);
+          @apply(--layout-center-center);
+        }
+
+        .whitespace {
+          width: 100%;
+          height: 20px;
+        }
+
     </style>
+
 
     <leaflet-map
       id="leaflet"
@@ -51,6 +68,11 @@
 
     </leaflet-map>
 
+    <ac-icon bg="yellow" txtcolor="big" class="searchicon" icon="ac-arrowright" on-tap="textview"></ac-icon>
+
+
+
+
   </template>
   <!-- Creates the element's prototype and registers it -->
   <script>
@@ -71,7 +93,7 @@
         },
         longitude: {
           type: Number,
-        },
+        }
       },
 
       ready: function(){
@@ -142,7 +164,7 @@
 
           this.latitude = lat;
           this.longitude = lng;
-          
+
           self.set('location', {
             latlng: {
               lat: lat,
@@ -196,7 +218,31 @@
           // Make the request
           req.send();
         });
-      }
+      },
+
+
+
+      _addresschanged: function() {
+        console.log(this.fromaddress);
+      },
+
+      _routelog: function() {
+        console.log(this.routetime, this.routedistance);
+      },
+
+      textview: function() {
+        //this.viewstate = 'text';
+      },
+
+
+   _is: function(a, b) {
+     if (b === undefined){
+       b = true;
+     }
+     //console.log(a ,'(',typeof a,') is',b,'(',typeof b,') they are equal for ==',a == b,', they are equal for ===',a === b);
+     return a === b;
+   }
+
 
 
     });

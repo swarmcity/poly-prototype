@@ -34,8 +34,12 @@
       },
 
       ready: function() {
-        window.addEventListener('web3-ready', function() {
-          console.log('transact knows web3? ', this.web3);
+        window.addEventListener('web3-ready', function(e) {
+//          console.log('transact knows web3? ', this.web3);
+//          if(window.web3.eth) {
+//  debugger;
+            this.web3 = e.detail.web3;
+//          }
         }.bind(this));
       },
 
@@ -69,10 +73,10 @@
         });
         self.$.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
           console.log(err, contractjson);
-          window.web3.eth.getGasPrice(function(err, result) {
+          self.web3.eth.getGasPrice(function(err, result) {
             var gasPrice = result.toNumber(10);
             self.hashtag = "0x88c80a97cc95015662124a2069e51c706cbf3e80";
-            var MyContract = window.web3.eth.contract(contractjson.abi);
+            var MyContract = self.web3.eth.contract(contractjson.abi);
             var myContractInstance = MyContract.at(contractjson.address);
             var account = self.$.helpers.fixaddress(window.account);
             result = myContractInstance.newOffer.sendTransaction(self.hashtag, self.offeramount * 1e18, self.ipfshash, {
@@ -96,6 +100,8 @@
                     message: 'escrowstart'
                   });
 
+                  cb();
+
                   console.log('Tx hash=', result);
                 }
 
@@ -105,7 +111,7 @@
                     message: 'escrow created. Next step...'
                   });
                   var offeridx = myContractInstance.ipfstoid.call(self.ipfshash).toNumber();
-                  cb(offeridx);
+                  //cb(offeridx);
                 });
 
 
@@ -131,12 +137,12 @@
         });
         self.$.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
           console.log(err, contractjson);
-          window.web3.eth.getGasPrice(function(err, result) {
+          self.web3.eth.getGasPrice(function(err, result) {
             var gasPrice = result.toNumber(10);
             // self.push('statuslog', {
             //   'msg': 'Got gasprice'
             // });
-            var MyContract = window.web3.eth.contract(contractjson.abi);
+            var MyContract = self.web3.eth.contract(contractjson.abi);
             var myContractInstance = MyContract.at(contractjson.address);
             var account = self.$.helpers.fixaddress(window.account);
 
@@ -184,12 +190,12 @@
         });
         self.$.helpers.getfile('./contracts/localsInOut.json', function(err, contractjson) {
           console.log(err, contractjson);
-          window.web3.eth.getGasPrice(function(err, result) {
+          self.web3.eth.getGasPrice(function(err, result) {
             var gasPrice = result.toNumber(10);
             // self.push('statuslog', {
             //   'msg': 'Got gasprice'
             // });
-            var MyContract = window.web3.eth.contract(contractjson.abi);
+            var MyContract = self.web3.eth.contract(contractjson.abi);
             var myContractInstance = MyContract.at(contractjson.address);
             var account = self.$.helpers.fixaddress(window.account);
 
@@ -240,9 +246,9 @@
             self.$.helpers.getfile('./contracts/localsInOut.json', function(err, localsinoutcontractjson) {
             self.$.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
 
-                window.web3.eth.getGasPrice(function(err, result) {
+                self.web3.eth.getGasPrice(function(err, result) {
                   var gasPrice = result.toNumber(10);
-                  var MyContract = window.web3.eth.contract(arccontractjson.abi);
+                  var MyContract = self.web3.eth.contract(arccontractjson.abi);
                   var myContractInstance = MyContract.at(arccontractjson.address);
                   var account = self.$.helpers.fixaddress(window.account);
                   var currentarcbalance = myContractInstance.balanceOf(account);
@@ -289,7 +295,7 @@
         var blockCounter = 15;
         // Wait for tx to be finished
         //debugger;
-        var filter = window.web3.eth.filter('latest').watch(function(err, blockHash) {
+        var filter = self.web3.eth.filter('latest').watch(function(err, blockHash) {
           if (blockCounter <= 0) {
             filter.stopWatching();
             filter = null;
@@ -300,8 +306,8 @@
             return false;
           }
           // Get info about latest Ethereum block
-          var block = window.web3.eth.getBlock(blockHash);
-          //console.log('block: ', block.number);
+          var block = self.web3.eth.getBlock(blockHash);
+          console.log('block: ', block.number);
 
           --blockCounter;
           // Found tx hash?

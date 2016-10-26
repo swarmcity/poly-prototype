@@ -99,43 +99,21 @@ Example:
     // Element Lifecycle
 
     ready: function() {
-      // `ready` is called after all elements have been configured, but
-      // propagates bottom-up. This element's children are ready, but parents
-      // are not.
-      //
-      // This is the point where you should make modifications to the DOM (when
-      // necessary), or kick off any processes the element wants to perform.
+    },
+
+    attached: function() {
       window.setInterval(function() {
         this._getARCbalance();
       }.bind(this), 10000);
     },
 
-    attached: function() {
-      // `attached` fires once the element and its parents have been inserted
-      // into a document.
-      //
-      // This is a good place to perform any work related to your element's
-      // visual state or active behavior (measuring sizes, beginning animations,
-      // loading resources, etc).
-    },
-
     detached: function() {
-      // The analog to `attached`, `detached` fires when the element has been
-      // removed from a document.
-      //
-      // Use this to clean up anything you did in `attached`.
     },
 
-    // Element Behavior
     /**
      * Initialize a new wallet
     */
     initWallet: function() {
-      // web3 is a singleton object. bailout if already exists
-      if(window.web3){
-        return;
-      }
-
       var self = this;
       if (!this.password){
         return;
@@ -165,23 +143,17 @@ Example:
     },
 
     _loadWallet: function() {
-      // web3 is a singleton object. bailout if already exists
-      if(window.web3){
-        return;
-      }
-
       this.keystore = new lightwallet.keystore.deserialize(this.walletData);
       this._configureWeb3();
     },
 
     // HIER TOKEN BALANCE OPVRAGEN EN TONEN
     _getARCbalance: function() {
-      //debugger;
-      if(!this.web3) { return; }
+      var self = this;
+      if(!self.web3 || !self.web3.eth) { return; }
 
       this.contracturl = this.resolveUrl('./contracts/ARCToken.json');
 
-      var self = this;
 
       this.importHref(this.contracturl, function(e) {
         var contractjson = JSON.parse(e.target.import.body.innerText);
@@ -221,13 +193,13 @@ Example:
 
       this.web3 = web3;
 
-      window.web3 = web3;
+      //window.web3 = web3;
 
       this.updateBalance();
 
       this._getARCbalance();
 
-      this.fire('web3-ready');
+      this.fire('web3-ready',{web3:web3});
     }
 
   });

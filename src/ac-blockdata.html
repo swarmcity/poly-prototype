@@ -67,6 +67,10 @@
         listen: {
           type: Boolean,
           observer: '_listen'
+        },
+        lastblock: {
+          type: Number,
+          observer: '_lastblock'
         }
       },
 
@@ -74,7 +78,10 @@
         window.addEventListener('web3-ready', function() {
           console.log('blockdata knows web3?');
           this.web3 = window.web3;
-          this.getBlockData();
+          if(window.web3){
+            this.getBlockData();
+          }
+
         }.bind(this));
       },
 
@@ -83,7 +90,7 @@
         this.password = sessionStorage.getItem('ac-password');
         this.blockobject = {};
         this.blockdata = [];
-        this.lastblock = 1759875;
+        this.lastblock = 1801803;
         this.getblockdata = false;
         //this.getBlockData();
       },
@@ -100,6 +107,10 @@
             //console.log('ac-blockdata: error stopWatching', e);
           }
         }
+      },
+
+      _lastblock: function() {
+        console.log(this.lastblock);
       },
 
       startListening: function() {
@@ -207,7 +218,7 @@
           var MyContract = self.web3.eth.contract(inoutcontractjson.abi);
           var myContractInstance = MyContract.at(inoutcontractjson.address);
 
-          console.log('start-filter');
+          console.log('start-filter at contract',inoutcontractjson.address,'starting from block ',self.lastblock);
           self.eventwatcher = myContractInstance.allEvents({
             fromBlock: self.lastblock,
           });
@@ -218,9 +229,12 @@
             }
             var event = result;
 
+
             switch (event.event) {
               case 'OfferAdded':
                 //  event OfferAdded(uint offerID, address creator, string ipfsdescr, address escrowaddress, address repaddress,uint timestamp);
+
+
 
                 // resolve IPFS data
                 self.$.ipfs.cat(event.args.ipfsdescr, function(err, data) {
