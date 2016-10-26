@@ -160,18 +160,21 @@ Example:
 
       this.contracturl = this.resolveUrl('./contracts/ARCToken.json');
 
-
       this.importHref(this.contracturl, function(e) {
         var contractjson = JSON.parse(e.target.import.body.innerText);
         var tokenContract = self.web3.eth.contract(contractjson.abi);
         var tokenContractInstance = tokenContract.at(contractjson.address);
         var account = self.$.helpers.fixaddress(window.account);
-        var arcbalance = tokenContractInstance.balanceOf(account) / 1e18;
+        console.log('account: ', account);
+        //console.log('instancce: ', tokenContractInstance);
+        var arcbalance = tokenContractInstance.balanceOf(account).toNumber() / 1e18;
+        console.log('arcbalance ', arcbalance);
         self.arcbalance = arcbalance.toFixed(2);
         self.balanceloaded = true;
         window.arcbalance = arcbalance.toFixed(2);
-        console.log('web3wallet: got ARC balance2: ', window.arcbalance);
-        self.fire('arc-there', {msg: arcbalance.toFixed(2)});
+        console.log('web3wallet: got ARC balance2: ', arcbalance, ' account: ', account);
+        console.log('check balance at http://testnet.etherscan.io/token/'+contractjson.address+'?a='+self.$.helpers.fixaddress(account));
+        self.fire('arc-there', {msg: arcbalance.toFixed(2), web3: self.web3});
         self.fire('balance-loaded');
         self.fire('map-update');
       });
@@ -188,7 +191,6 @@ Example:
         host: this.host,
         transaction_signer: this.keystore
       });
-
 
       var web3 = new Web3();
       web3.setProvider(web3Provider);

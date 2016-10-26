@@ -390,15 +390,15 @@
         },
         faucetview: {
           type: Boolean
-        }
+        },
         // account: {
         //   type: String,
         //   notify: true
         // },
-        // arcbalance: {
-        //   type: Number,
-        //   observer: '_arcbalance'
-        // }
+        arcbalance: {
+          type: Number,
+          observer: '_arcbalance'
+        }
 
       },
 
@@ -409,6 +409,7 @@
           //console.log('profile knows arc there?', e);
           this.account = window.account;
           this.arcbalance = window.arcbalance;
+          console.log(e.detail.msg);
         }.bind(this));
 
         window.addEventListener('profile-update', function() {
