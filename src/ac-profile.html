@@ -304,7 +304,7 @@
             <div class="faucetview">
 
             <template is="dom-if" if="{{allowanceview}}">
-              <ac-button id="donatebtn" on-tap="giveallowance" txtbtn bg="yellow" txtcolor="base" small>Give allowance to InOutContract</ac-button>
+              <ac-button id="donatebtn" on-tap="giveallowance" txtbtn bg="yellow" txtcolor="base" small>This Arcade City dapp may spend ARC tokens in my name</ac-button>
           </template>
           </div>
 
@@ -433,10 +433,7 @@
         window.addEventListener('map-ready', function() {
           console.log('profile gets update');
           //this.account = window.account;
-          //this.arcbalance = window.arcbalance;
           this.loadprofile();
-
-
 
         }.bind(this));
 
@@ -455,8 +452,10 @@
       },
 
       giveallowance: function() {
+        var self = this;
         app.$.transact.createAllowance(function(e){
           console.log('allowance created', e);
+          self.allowanceview = false;
         });
       },
 
@@ -476,9 +475,11 @@
         var self = this;
 
         app.$.transact.checkAllowance(function(err, allowance) {
-          //console.log(allowance);
-          if(allowance > 0) {
+          console.log('Allowance ', allowance);
+          if(allowance == 0 && this.arcbalance != 0) {
             self.allowanceview = true;
+          } else {
+            self.allowanceview = false;
           }
         });
 
