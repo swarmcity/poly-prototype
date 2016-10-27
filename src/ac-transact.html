@@ -82,8 +82,8 @@
             result = myContractInstance.newOffer.sendTransaction(self.hashtag, self.offeramount * 1e18, self.ipfshash, {
                 from: account,
                 gasPrice: gasPrice,
-                gasLimit: 1200000,
-                gas: 1200000,
+                gasLimit: 400000,
+                gas: 400000,
                 data: contractjson.bytecode
               },
               function(err, result) {
@@ -149,8 +149,8 @@
             result = myContractInstance.claim.sendTransaction(offerid, {
                 from: account,
                 gasPrice: gasPrice,
-                gasLimit: 1200000,
-                gas: 1200000,
+                gasLimit: 400000,
+                gas: 400000,
                 data: contractjson.bytecode
               },
               function(err, result) {
@@ -202,8 +202,8 @@
             result = myContractInstance.confirm(offerid, {
                 from: account,
                 gasPrice: gasPrice,
-                gasLimit: 1200000,
-                gas: 1200000,
+                gasLimit: 400000,
+                gas: 400000,
                 data: contractjson.bytecode
               },
               function(err, result) {
@@ -255,8 +255,8 @@
                   result = myContractInstance.approve.sendTransaction(localsinoutcontractjson.address, currentarcbalance, {
                       from: account,
                       gasPrice: gasPrice,
-                      gasLimit: 1200000,
-                      gas: 1200000,
+                      gasLimit: 400000,
+                      gas: 400000,
                       data: arccontractjson.bytecode
                     },
                     function(err, result) {
