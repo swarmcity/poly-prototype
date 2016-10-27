@@ -304,7 +304,7 @@
             <div class="faucetview">
 
             <template is="dom-if" if="{{allowanceview}}">
-              <ac-button id="donatebtn" on-tap="giveallowance" txtbtn bg="yellow" txtcolor="base" small>This Arcade City dapp may spend ARC tokens in my name</ac-button>
+              <ac-button id="allowancebtn" on-tap="giveallowance" txtbtn bg="yellow" txtcolor="base" small>This Arcade City dapp may spend ARC tokens in my name</ac-button>
           </template>
           </div>
 
@@ -453,6 +453,7 @@
 
       giveallowance: function() {
         var self = this;
+        //this.$.allowancebtn.disabled = true;
         app.$.transact.createAllowance(function(e){
           console.log('allowance created', e);
           self.allowanceview = false;
