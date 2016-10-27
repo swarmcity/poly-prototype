@@ -637,7 +637,7 @@
         }
         console.log('item detail has key: ', this.offerid);
         this.data = this.blockobject[this.offerid].data;
-        if(this.data.creator == this.$.helpers.fixaddress(this.account)){
+        if(this.data.creator == this.$.helpers.fixaddress(window.account)){
           this.thisismyoffer = true;
         }
         this.status = this.data.status;
