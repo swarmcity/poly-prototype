@@ -41,7 +41,8 @@
 
       :host {
       --app-drawer-width: 290px;
-      @apply(--base-structure);
+      height: 100vh;
+        display: block;
       }
 
       #drawer {
@@ -57,6 +58,18 @@
 
       neon-animated-pages {
         height: 100%;
+      }
+
+      .testtotal {
+        height: 100%;
+        width: 100%;
+        background-color: white;
+      }
+      
+
+      app-drawer-layout {
+                height: 100%;
+
       }
 
     </style>
@@ -90,7 +103,15 @@
         selected="[[page]]"
         attr-for-selected="name"
         fallback-selection="view404"
-        role="main">
+        role="main"
+        entry-animation="slide-from-top-animation"
+        exit-animation="slide-down-animation"
+        >
+<!--         <neon-animatable name="map">
+        <div class="testtotal">
+          <h1>1</h1>
+        </div>
+        </neon-animatable> -->
 
       <ac-newuser
         name="newuser">
@@ -115,7 +136,7 @@
         blockdata="[[blockdata]]"
         on-to-filter="firetoggle">
       </ac-list>
-
+ 
       <ac-detail
         name="detail"
         id="detail"
@@ -157,7 +178,7 @@
       <ac-view404
         name="view404"
         restamp>
-      </ac-view404> -->
+      </ac-view404>
 
     </neon-animated-pages>
 

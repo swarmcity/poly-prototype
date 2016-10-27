@@ -180,6 +180,10 @@
   <script>
     Polymer({
       is: 'ac-list',
+    behaviors: [
+      Polymer.NeonSharedElementAnimatableBehavior
+    ],
+
       properties: {
           blockdata: {
             type: Array,

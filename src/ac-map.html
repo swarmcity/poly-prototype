@@ -195,7 +195,9 @@
   <script>
     Polymer({
       is: 'ac-map',
-
+    behaviors: [
+      Polymer.NeonSharedElementAnimatableBehavior
+    ],
       properties: {
         locationunknown: {
             type: Boolean,
