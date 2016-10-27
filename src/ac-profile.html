@@ -293,7 +293,7 @@
 
           <!-- <ac-button on-tap="toEdit" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button> -->
 
-            <template is="dom-if" if="{{!faucetview}}">
+            <template is="dom-if" if="{{faucetview}}">
             <div class="faucetview">
               <ac-button id="donatebtn" on-tap="donate" txtbtn bg="blue" txtcolor="base" small>Give me test-ARC</ac-button>
             </div>
@@ -301,10 +301,12 @@
 
 
             <div class="whitespace"></div>
+            <div class="faucetview">
 
-            <!-- <template is="dom-if" if="{{!faucetview}}"> -->
+            <template is="dom-if" if="{{allowanceview}}">
               <ac-button id="donatebtn" on-tap="giveallowance" txtbtn bg="yellow" txtcolor="base" small>Give allowance to InOutContract</ac-button>
-            <!-- </template> -->
+          </template>
+          </div>
 
             <!-- <ac-button on-tap="toEdit" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button> -->
           </div>
@@ -407,7 +409,9 @@
 
       ready: function() {
 
-        this.faucetview = localStorage.getItem('test-arc');
+        //this.faucetview = localStorage.getItem('test-arc');
+        this.allowanceview = false;
+        this.faucetview = false;
         window.addEventListener('arc-there', function(e) {
           //console.log('profile knows arc there?', e);
           this.account = window.account;
@@ -420,6 +424,9 @@
           //this.account = window.account;
           //this.arcbalance = window.arcbalance;
           this.loadprofile();
+
+
+
         }.bind(this));
 
 
@@ -454,8 +461,18 @@
       },
 
       _arcbalance: function() {
+
+        var self = this;
+
+        app.$.transact.checkAllowance(function(err, allowance) {
+          //console.log(allowance);
+          if(allowance > 0) {
+            self.allowanceview = true;
+          }
+        });
+
         if(this.arcbalance < 1){
-          //this.faucetview = true;
+          this.faucetview = true;
         }
       },
 
@@ -473,6 +490,7 @@
           }).then(function() {
             console.log('donation requested');
             console.log('check balance at ',self.etherscanroot + '/token/'+arccontractjson.address+'?a='+self.$.helpers.fixaddress(window.account));
+            self.faucetview = false;
 
            localStorage.setItem('test-arc', true);
           });
