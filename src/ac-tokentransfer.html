@@ -288,6 +288,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     topic="{{topic}}"
     progress="{{progress}}"
     decimals="5"
+    listening="{{listening}}"
     on-message-received="handlewhispermessage"
     id="whisper"></ac-whisperer>
 
@@ -506,15 +507,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 
-      toWaiting: function(){
+      toWaiting: function() {
         var self = this;
         //debugger;
         //this.handler = document.querySelector('locals-verification-validator');
         //console.log('wallet: ',this.$.whisper.topic, ' pin: ', this.pincode);
         //debugger;
         this.$.whisper.whisperpost(this.pincode, JSON.stringify({
-                'command': 'requestpubkeyforlocalstransfer',
-              }));
+          'command': 'requestpubkeyforlocalstransfer',
+        }));
         this.state = 'waiting';
         this.sendcoinstate = 'second';
       },
@@ -655,6 +656,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var receivecoins = this.$.receivecoins;
         receivecoins.toggle();
         this.receivecollsclosed=!this.receivecollsclosed;
+        this.$.whisper.listening = !this.receivecollsclosed;
       },
 
 

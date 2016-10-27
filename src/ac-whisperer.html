@@ -51,6 +51,14 @@ Polymer({
       notify: true
     },
 
+    // should whisperer be listening on a channel ?
+    // set this to false to disable (or stop) blockchain polling
+    listening: {
+      type: Boolean,
+      value: false,
+      observer: "_listening"
+    },
+
     // How many decimals should the topic have ( min 2 )
     decimals: {
       type: Number,
@@ -80,8 +88,6 @@ Polymer({
     this.localchannels = {};
     this.remotechannels = {};
 
-    setInterval(this.timer.bind(this), 1000);
-
     window.addEventListener('web3-ready', function() {
       console.log('whisperer knows web3 there?');
       //window.web3 = window.web3;
@@ -91,6 +97,22 @@ Polymer({
   },
 
 
+  _listening: function() {
+    if (this.listening) {
+      console.log('ac-whisperer -> start listening');
+      if (!this.intervaltimer) {
+        // create the interval timer
+        this.intervaltimer = setInterval(this.timertick.bind(this), 1000);
+        this.timertick();
+      }
+    }else{
+      if (this.intervaltimer){
+        clearInterval(this.intervaltimer);
+        delete this.intervaltimer;
+      }
+      console.log('ac-whisperer -> stop listening');
+    }
+  },
 
   _getpincode: function(decimals) {
 
@@ -116,7 +138,7 @@ Polymer({
     }
   },
 
-  timer: function() {
+  timertick: function() {
     if (this.topic == null) {
       this.topic = this._getpincode(this.decimals);
     }
@@ -170,17 +192,28 @@ Polymer({
   closechannel: function(_pin){
     if (this.localchannels[_pin]){
        this.localchannels[_pin].filter.stopWatching();
+       delete this.localchannels[_pin].filter;
+    }
+  },
+
+  closeallchannels: function() {
+    for (var key in this.localchannels) {
+      if (this.localchannels.hasOwnProperty(key)) {
+        this.closechannel(key);
+      }
     }
   },
 
   detached: function() {
     this.stopfilter();
+    this.closeallchannels();
   },
 
   stopfilter: function() {
     if (this.filter) {
       console.log('ac-whisperer: stop watching current channel')
       this.filter.stopWatching();
+      delete this.filter;
     }
   },
 
@@ -211,7 +244,6 @@ Polymer({
       });
 
       console.log("ac-whisperer: channelswitch, start listening to", this.topic, ' knows web3 ', this.web3);
-//debugger;
       this.filter.watch(this._processmessage.bind(this));
     }
   },
@@ -248,8 +280,22 @@ Polymer({
               this.localchannels[datatopic].filter = self.web3.shh.filter({
                 "topics": [self.web3.fromAscii(datatopic)],
               });
-              //debugger;
+              
               self.localchannels[datatopic].filter.watch(this._processmessage.bind(this));
+
+              // auto cleanup of channel
+              self.localchannels[datatopic].timeout = setTimeout(function() {
+                self.closechannel(datatopic);
+                console.log('timeout: closing channel ', datatopic);
+
+                // send message to remote to close this channel
+                self.raw_whisperpost(payload.from, {
+                  command: 'closeremotechannel',
+                  channel: datatopic
+                });
+
+
+              }.bind(this), 1000);
 
               this.remotechannels[payload.from] = {
                 aes: aeskey
@@ -271,7 +317,6 @@ Polymer({
                 aes : hisAES
               };
               self.localchannels[payload.to].aes = hisAES;
-              // self.localchannels[payload.to].from = payload.from;
               this.encryptandsend(payload.to,payload.from,self.localchannels[payload.to].messagequeue[0]);
               // now send the queue
               break;
