@@ -281,6 +281,33 @@
             });
           },
 
+          checkAllowance: function(cb) {
+
+                var self = this;
+
+                self.$.helpers.getfile('./contracts/localsInOut.json', function(err, localsinoutcontractjson) {
+                self.$.helpers.getfile('./contracts/ARCToken.json', function(err, arccontractjson) {
+
+                    self.web3.eth.getGasPrice(function(err, result) {
+                      var gasPrice = result.toNumber(10);
+                      var MyContract = self.web3.eth.contract(arccontractjson.abi);
+                      var myContractInstance = MyContract.at(arccontractjson.address);
+                      var account = self.$.helpers.fixaddress(window.account);
+                      var currentarcbalance = myContractInstance.balanceOf(account);
+                      result = myContractInstance.allowance.call(account, localsinoutcontractjson.address,
+                        function(err, result) {
+                          if (err !== null) {
+                            //console.log(err);
+                          } else {
+                            //console.log('Allowance? ', result.toNumber());
+                            cb(null, result.toNumber());
+                          }
+                        });
+                    });
+                  });
+                });
+              },
+
       waitTx: function(txHash, callback) {
         /*
         * Watch for a particular transaction hash and call the awaiting function when done;
