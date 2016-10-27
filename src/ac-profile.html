@@ -418,8 +418,19 @@
           this.arcbalance = window.arcbalance;
           //console.log(e.detail.msg);
         }.bind(this));
+        this.loadprofile();
 
         window.addEventListener('profile-update', function() {
+          console.log('profile gets update');
+          //this.account = window.account;
+          //this.arcbalance = window.arcbalance;
+          this.loadprofile();
+
+
+
+        }.bind(this));
+
+        window.addEventListener('map-ready', function() {
           console.log('profile gets update');
           //this.account = window.account;
           //this.arcbalance = window.arcbalance;

@@ -535,6 +535,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _getARCbalance: function() {
+        if(!this.web3) return;
         //console.log('ac-tokentransfer ', Date.now());
         this.contracturl = this.resolveUrl('./contracts/ARCToken.json');
 
