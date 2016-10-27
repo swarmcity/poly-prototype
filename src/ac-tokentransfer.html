@@ -495,7 +495,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           case 'confirmtransfer':
             // TODO : show transfer in history...
             console.log('transfer confirmed...', message.amount, 'received');
-          
+
 
 
             break;
@@ -542,7 +542,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         this.importHref(this.contracturl, function(e) {
           var contractjson = JSON.parse(e.target.import.body.innerText);
-          var tokenContract = window.web3.eth.contract(contractjson.abi);
+          var tokenContract = self.web3.eth.contract(contractjson.abi);
           var tokenContractInstance = tokenContract.at(contractjson.address);
           var account = self.$.helpers.fixaddress(window.account);
           self.arcbalance = tokenContractInstance.balanceOf(account) / 1e18;
@@ -554,17 +554,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       transfer: function(amount,pubkey,cb){
-        
+
         var self = this;
 
         this.contracturl = this.resolveUrl('./contracts/ARCToken.json');
         this.importHref(this.contracturl, function(e) {
           this.contractjson = JSON.parse(e.target.import.body.innerText);
-             window.web3.eth.getGasPrice(function(err, result){
+             self.web3.eth.getGasPrice(function(err, result){
             var gasPrice = result.toNumber(10);
           console.log('gasprice: ', gasPrice);
 
-          var MyContract = window.web3.eth.contract(self.contractjson.abi);
+          var MyContract = self.web3.eth.contract(self.contractjson.abi);
           var myContractInstance = MyContract.at(self.contractjson.address);
             console.log('doing transfer of ',amount,' LC to: ', pubkey, 'from: ', window.account);
             myContractInstance.transfer.sendTransaction(pubkey, amount, {

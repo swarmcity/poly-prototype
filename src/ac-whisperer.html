@@ -82,7 +82,7 @@ Polymer({
 
     setInterval(this.timer.bind(this), 1000);
 
-    window.addEventListener('web3-ready', function() {
+    window.addEventListener('web3-ready', function(e) {
       console.log('whisperer knows web3 there?');
       //window.web3 = window.web3;
       this.web3 = e.detail.web3;
