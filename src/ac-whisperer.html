@@ -135,6 +135,7 @@ Polymer({
   },
 
   openchannel: function() {
+    //debugger;
     var _pin = this._getpincode(20);
 
     if (this.web3 && this.topic) {
@@ -211,7 +212,7 @@ Polymer({
 
       console.log("ac-whisperer: channelswitch, start listening to", this.topic, ' knows web3 ', this.web3);
 //debugger;
-      //this.filter.watch(this._processmessage.bind(this));
+      this.filter.watch(this._processmessage.bind(this));
     }
   },
 
