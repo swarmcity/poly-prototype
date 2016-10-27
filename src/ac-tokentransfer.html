@@ -476,7 +476,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           case 'requestpubkeyforlocalstransfer':
             self.$.whisper.whisperpost(m.detail.from, JSON.stringify({
               'command': 'sendpubkey',
-              'pubkey': self.account
+              'pubkey': window.account
             }));
             break;
           case 'sendpubkey':
@@ -545,7 +545,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var contractjson = JSON.parse(e.target.import.body.innerText);
           var tokenContract = window.web3.eth.contract(contractjson.abi);
           var tokenContractInstance = tokenContract.at(contractjson.address);
-          var account = self.$.helpers.fixaddress(self.account);
+          var account = self.$.helpers.fixaddress(window.account);
           self.arcbalance = tokenContractInstance.balanceOf(account) / 1e18;
           self.balanceloaded = true;
           self.fire('balance-loaded');
@@ -570,15 +570,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           var MyContract = window.web3.eth.contract(self.contractjson.abi);
           var myContractInstance = MyContract.at(self.contractjson.address);
-            console.log('doing transfer of ',amount,' LC to: ', pubkey, 'from: ', self.account);
+            console.log('doing transfer of ',amount,' LC to: ', pubkey, 'from: ', window.account);
             myContractInstance.transfer.sendTransaction(pubkey, amount, {
-              from: self.$.helpers.fixaddress(self.account),
+              from: self.$.helpers.fixaddress(window.account),
               gasPrice: gasPrice,
               gasLimit: 3000000,
               gas: 2000000
             }, function(err, result){
               console.log(err, result);
-              var coinbalance = myContractInstance.balanceOf(self.$.helpers.fixaddress(self.account));
+              var coinbalance = myContractInstance.balanceOf(self.$.helpers.fixaddress(window.account));
                 self.arcbalance = coinbalance;
                 if (cb){
                   cb(err,result);
