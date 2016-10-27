@@ -34,6 +34,8 @@
 <link rel="import" href="./ac-helpers.html">
 <link rel="import" href="./ac-password.html">
 <link rel="import" href="./ac-blockdata.html">
+<link rel="import" href="./ac-tokentransfer.html">
+<link rel="import" href="./ac-whisperer.html">
 
 <dom-module id="ac-app">
   <template>
@@ -155,6 +157,7 @@
 
       <ac-profile
         name="profile"
+        web3="{{web3}}"
         account="[[account]]"
         arcbalance="[[arcbalance]]"
         balance="[[balance]]"
@@ -236,6 +239,14 @@
         '_routePageChanged(routeData.page)'
       ],
 
+
+      ready: function() {
+        window.addEventListener('web3-ready', function(e) {
+          console.log('app knows web3 there?');
+          //window.web3 = window.web3;
+          this.web3 = e.detail.web3;
+        }.bind(this));
+      },
 
       attached: function() {
         window.app = this;

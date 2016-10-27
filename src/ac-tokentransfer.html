@@ -256,7 +256,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .initbtns p {
         color: var(--ac-yellow);
         @apply(--montserrat-semibold);
-        margin-top:10px; 
+        margin-top:10px;
         border-bottom: 1px dashed var(--ac-yellow);
         font-size: 16px;
       }
@@ -512,6 +512,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           self._getARCbalance();
         }, 5000);
 
+
         this.sendcoinstate = 'first';
         this.password = sessionStorage.getItem('ac-password');
       },
@@ -523,6 +524,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       handlewhispermessage: function(m) {
         var self = this;
         var message = JSON.parse(m.detail.message);
+        console.log('incoming tokentransfer msg: ', message);
         switch (message.command) {
           case 'requestpubkeyforlocalstransfer':
             self.$.whisper.whisperpost(m.detail.from, JSON.stringify({
@@ -561,7 +563,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var self = this;
         //debugger;
         //this.handler = document.querySelector('locals-verification-validator');
-        console.log('wallet: ',this.$.whisper.topic);
+        //console.log('wallet: ',this.$.whisper.topic, ' pin: ', this.pincode);
         //debugger;
         this.$.whisper.whisperpost(this.pincode, JSON.stringify({
                 'command': 'requestpubkeyforlocalstransfer',

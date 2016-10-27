@@ -288,8 +288,8 @@
 
 
 
-            <!-- <ac-tokentransfer web3="{{web3}}" account="{{acount}}"></ac-tokentransfer> -->
-            <!-- <p>ETH Balance: {{balance}}</p> -->
+            <ac-tokentransfer web3="{{web3}}"></ac-tokentransfer>
+            <!-- <p>ETH Balance: {{balance}}</p>
 
           <!-- <ac-button on-tap="toEdit" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button> -->
 
@@ -398,6 +398,9 @@
         arcbalance: {
           type: Number,
           observer: '_arcbalance'
+        },
+        web3: {
+          type: Object
         }
 
       },
@@ -409,7 +412,7 @@
           //console.log('profile knows arc there?', e);
           this.account = window.account;
           this.arcbalance = window.arcbalance;
-          console.log(e.detail.msg);
+          //console.log(e.detail.msg);
         }.bind(this));
 
         window.addEventListener('profile-update', function() {
@@ -419,12 +422,7 @@
           this.loadprofile();
         }.bind(this));
 
-        window.addEventListener('web3-ready', function() {
-          console.log('profile gets update');
-          //this.account = window.account;
-          //this.arcbalance = window.arcbalance;
-          this.loadprofile();
-        }.bind(this));
+
       },
 
       attached: function() {
