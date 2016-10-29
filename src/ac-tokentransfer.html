@@ -66,7 +66,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .total {
         width: 100%;
         @apply(--layout-vertical);
-        /*border-top: 1px solid rgba(255,255,255,0.1);*/
+        border-top: 1px solid rgba(255,255,255,0.1);
         padding-top: 3vh;
       }
 
@@ -138,17 +138,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       @apply(--layout-center-center);
      }
 
-     .announce {
-      width: 100%;
-      max-width: 500px;
-      box-sizing: border-box;
-/*      padding: 10px 0px 10px 0px;*/
-      @apply(--layout-horizontal);
-      @apply(--layout-center);
-      @apply(--layout-start-justified);
-      @apply(--layout-wrap);
-     }
-
 
      .whitespace {
       height: 2vh;
@@ -166,8 +155,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
      }
 
+
+
+     .announce {
+      width: 100%;
+      max-width: 500px;
+      box-sizing: border-box;
+/*      padding: 10px 0px 10px 0px;*/
+      @apply(--layout-vertical);
+      @apply(--layout-center-center);
+     }
+
      .announce p {
-      margin: 0px 20px 10px 0px;
+      color: var(--ac-yellow);
      }
 
      .marginbtm {
@@ -331,7 +331,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <template is="dom-if" if="{{_is(sendcoinstate,'second')}}">
           <div class="announce">
-          <div class="whitespace"></div>
           <p>Your transaction is being executed.</p>
           <ac-button small icon="declinenew" confirmsmall on-tap="togglesendcoins" class="closebtn"></ac-button>
           </div>
