@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
+<link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
 
 <link rel="import" href="../bower_components/ac-style/ac-style.html">
 <link rel="import" href="../bower_components/ac-button/ac-button.html">
@@ -169,6 +170,11 @@
       max-zoom="17"
       zoom="16">
 
+      <!-- <ac-icon id="mapmarker"
+        icon="ac-mapmarker"> </ac-icon>
+
+        <leaflet-marker on-tap="toDetail" icon="mapmarker" id="test" latitude="{{latitude}}" longitude="{{longitude}}"></leaflet-marker> -->
+
       <template is="dom-repeat" items="{{blockdata}}" filter="_filter">
         <leaflet-marker on-tap="toDetail" id="{{item.offerid}}" latitude="{{item.ipfsdata.from.lat}}" longitude="{{item.ipfsdata.from.lng}}"></leaflet-marker>
       </template>
@@ -231,7 +237,7 @@
       },
 
       _filter: function(e) {
-        console.log(e);
+        //console.log(e);
         if(e.status == "added"){
           return e;
         }

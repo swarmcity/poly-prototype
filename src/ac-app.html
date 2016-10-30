@@ -25,6 +25,8 @@
 <!-- <link rel="import" href="./ac-myitem.html"> -->
 <!-- <link rel="import" href="./ac-myitems.html"> -->
 <link rel="import" href="./ac-map.html">
+<link rel="import" href="./ac-firstuse.html">
+
 <link rel="import" href="./ac-detail.html">
 <link rel="import" href="./ac-ipfsupload.html">
 <link rel="import" href="./ac-wallet.html">
@@ -67,7 +69,7 @@
         width: 100%;
         background-color: white;
       }
-      
+
 
       app-drawer-layout {
                 height: 100%;
@@ -79,7 +81,6 @@
     <app-drawer-layout force-narrow>
       <app-drawer align="right" id="drawer">
         <div class="drawercontent">
-          <h1>here be filters</h1>
           <ac-button id="reset" on-tap="reset" txtbtn bg="red" txtcolor="base" small>Reset</ac-button>
         </div>
       </app-drawer>
@@ -123,6 +124,10 @@
         name="password">
       </ac-password>
 
+      <ac-firstuse
+        name="firstuse">
+      </ac-firstuse>
+
       <ac-map
         name="map"
         blockdata="[[blockdata]]"
@@ -138,7 +143,7 @@
         blockdata="[[blockdata]]"
         on-to-filter="firetoggle">
       </ac-list>
- 
+
       <ac-detail
         name="detail"
         id="detail"
@@ -246,12 +251,19 @@
           //window.web3 = window.web3;
           this.web3 = e.detail.web3;
         }.bind(this));
+
+        if(!localStorage.getItem('ac-firstuse')) {
+          this.page = 'firstuse';
+        } else {
+          this.page = 'map';
+        }
       },
 
       attached: function() {
         window.app = this;
         this.fire('map-update');
-        app.set('route.path', '/map');
+
+
       },
 
       _arcbalance: function() {
@@ -286,7 +298,12 @@
       },
 
       _routePageChanged: function(page) {
-        this.page = page || 'map';
+        if(!localStorage.getItem('ac-firstuse')) {
+          this.page = page || 'firstuse';
+        } else {
+          this.page = page || 'map';
+        }
+
         this.fire('map-update');
       },
 
