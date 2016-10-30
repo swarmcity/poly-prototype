@@ -8,6 +8,7 @@
 <link rel="import" href="./ac-helpers.html">
 <link rel="import" href="./ac-config.html">
 <link rel="import" href="./ac-tokentransfer.html">
+<link rel="import" href="./ac-sizeview.html">
 
 <dom-module id="ac-profile">
   <!-- Defines the element's style and local DOM -->
@@ -18,14 +19,16 @@
         /*--toppart-height: 15vh;
         --toppart-padding: 10px 20px 10px 20px;*/
         --container-height: 85vh;
-        --avatar-size: 44px;
+        --avatarsmall-size: 44px;
+        --avatar-size: 90px;
+
         --flex-align1:end;
         --flex-align2:flex-end;
       }
 
       .avatar {
-        width:130px;
-        height: 130px;
+        width:var(--avatar-size);
+        height: var(--avatar-size);
         border-radius: 50%;
         overflow: hidden;
         background-color: transparent;
@@ -45,8 +48,8 @@
       }
 
       .avatarsmall {
-        width: var(--avatar-size);
-        height: var(--avatar-size);
+        width: var(--avatarsmall-size);
+        height: var(--avatarsmall-size);
         border-radius: 50%;
         overflow: hidden;
         background-color: transparent;
@@ -143,16 +146,19 @@
       }
 
       .whitespace {
+        width: 100%;
+        display: block;
         height: 20px;
       }
 
       .offeramount {
         @apply(--layout-horizontal);
         @apply(--layout-end);
-        @apply(--layout-end-justified);
+        @apply(--layout-center-justified);
         height: 100%;
         box-sizing: border-box;
-        padding: 20px 20px 20px 20px;
+        padding: 20px 0px 20px 0px;
+        width: 80%;
       }
 
       .offeramount h1 {
@@ -194,28 +200,26 @@
         }
 
       .usernamebig {
-        @apply(--montserrat-hairline);
+        @apply(--montserrat-light);
         color:var(--ac-blue);
         margin: 0px;
-        font-size: 40px;
-        line-height: 48px;
+        font-size: 30px;
+        line-height: 38px;
         }
 
         .pubkey {
-          width: 150px;
+          width: 100px;
         }
 
         .pubkey p {
           @apply(--ac-font-nowrap);
           color:var(--ac-blue);
-          @apply(--montserrat-light);
-          font-size: 16px;
+          @apply(--montserrat-reg);
+          font-size: 12px;
         }
 
         .faucetview {
           box-sizing: border-box;
-          margin-top:2vh;
-
           padding:5vh;
           border-top: 1px solid rgba(255,255,255,0.1);
           width: 100%;
@@ -224,6 +228,8 @@
         }
 
     </style>
+    <ac-sizeview sizeview="{{sizeview}}"></ac-sizeview>
+
     <ac-helpers id="helpers"></ac-helpers>
     <ac-config etherscanroot="{{etherscanroot}}"></ac-config>
 
@@ -275,21 +281,23 @@
             <div class="avatar" on-tap="toEdit">
               <img src="{{avatarurl}}" alt="" />
             </div>
+
             <div class="whitespace"></div>
+            
             <div class="pubkey"><p>{{account}}</p></div>
 
             <h1 class="usernamebig">{{username}}</h1>
-            <div class="whitespace"></div>
 
             <div class="offeramount">
               <h1>{{arcbalance}}</h1>
               <p>ARC</p>
             </div>
 
+            <div class="whitespace"></div>
 
 
             <ac-tokentransfer web3="{{web3}}"></ac-tokentransfer>
-            <!-- <p>ETH Balance: {{balance}}</p>
+            <!-- <p>ETH Balance: {{balance}}</p>-->
 
           <!-- <ac-button on-tap="toEdit" icon="ac-filter" bg="yellow" txtcolor="base" small></ac-button> -->
 
@@ -300,7 +308,6 @@
             </template>
 
 
-            <div class="whitespace"></div>
             <div class="faucetview">
 
             <template is="dom-if" if="{{allowanceview}}">
@@ -403,7 +410,12 @@
         },
         web3: {
           type: Object
+        },
+        sizeview: {
+          type: String,
+          observer: '_sizeview'
         }
+
 
       },
 
@@ -569,7 +581,27 @@
         }
         //console.log(a ,'(',typeof a,') is',b,'(',typeof b,') they are equal for ==',a == b,', they are equal for ===',a === b);
         return a === b;
+      },
+
+    _sizeview: function(){
+      switch(this.sizeview) {
+          case 'phone':
+                this.customStyle['--avatar-size'] = '90px';
+              this.updateStyles();
+              break;
+          case 'desktop':
+                this.customStyle['--avatar-size'] = '130px';
+              this.updateStyles();
+              break;
+          case 'xlarge':
+                this.customStyle['--avatar-size'] = '130px';
+              this.updateStyles();
+              break;
+          default:
+          console.log("!!! ** Niks");
       }
+    }
+
 
     });
   </script>

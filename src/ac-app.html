@@ -109,14 +109,27 @@
         role="main"
         entry-animation="slide-from-top-animation"
         exit-animation="slide-down-animation"
+        id="pages"
         >
-<!--         <neon-animatable name="map">
+
+      <!-- <neon-animated-pages
+        selected="{{selectedzzz}}"
+        entry-animation="slide-from-top-animation"
+        exit-animation="slide-down-animation"
+        >
+        <neon-animatable name="map">
         <div class="testtotal">
-          <h1>1</h1>
+          <h1 on-tap="tonext">1</h1>
+        </div>
+        </neon-animatable>
+
+        <neon-animatable name="list">
+        <div class="testtotal">
+          <h1>2</h1>
         </div>
         </neon-animatable> -->
 
-      <ac-newuser
+    <ac-newuser
         name="newuser">
       </ac-newuser>
 
@@ -263,7 +276,8 @@
         window.app = this;
         this.fire('map-update');
 
-
+        //app.set('route.path', '/map');
+        this.selectedzzz ="0";
       },
 
       _arcbalance: function() {
@@ -331,6 +345,13 @@
       _route: function() {
         localStorage.setItem('ac-lastroute', this.route.path);
         this.fire('map-update');
+      },
+
+      tonext:function(){
+        this.page = 'list';
+        this.selectedzzz ++;
+        console.log(this.selectedzzz);
+
       }
     });
   </script>
