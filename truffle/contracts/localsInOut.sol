@@ -125,7 +125,7 @@ contract localsInOut is owned {
 
     o.status = 2;
 
-    ARCTokencontract.transfer(msg.sender,o.balanceCreator + o.balanceClaimer);
+    ARCTokencontract.transfer(o.claimer,o.balanceCreator + o.balanceClaimer);
 
     OfferReleased(offerid, o.creator, o.descriptionipfs, now);
 

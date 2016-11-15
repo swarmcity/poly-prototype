@@ -12,17 +12,22 @@
 
 
   var contents = JSON.stringify(require(config.walletfile));
+  var contents = require(config.walletfile);
+
+//console.log(require(config.walletfile));
+//process.exit();
+
   var global_keystore = lightwallet.keystore.deserialize(contents);
 
   global_keystore.passwordProvider = function(callback) {
-    callback(null, 'test');
+    callback(null, config.walletpassword);
   };
 
 
   ///console.log(lightwallet.keystore);
   ///process.exit();
 
-  lightwallet.keystore.deriveKeyFromPassword('test', function(err, pwDerivedKey) {
+  lightwallet.keystore.deriveKeyFromPassword(config.walletpassword, function(err, pwDerivedKey) {
 
 
     var publickey = global_keystore.getAddresses()[0];
@@ -45,6 +50,7 @@
     ////host: 'https://mainnet.infura.io/fNrdKYnEHWqldP4JnWZp',
     transaction_signer: global_keystore
   });
+
 
   module.exports = {
     build: {
